@@ -1,0 +1,27 @@
+<?php
+
+// Configuración local - Copiar a local.php y ajustar según ambiente
+// Este archivo NO debe contener credenciales reales
+
+$host = 'IP_DEL_SERVIDOR_BD';
+$username = 'USUARIO_BD';
+$password = 'CONTRASEÑA_BD';
+
+return [
+    'db' => [
+        'username' => $username,
+        'password' => $password,
+        'adapters' => [
+            'gestorportal_bd' => [
+                'username' => $username,
+                'password' => $password,
+                'dsn' => "mysql:dbname=test_gestor;host=$host",
+            ],
+            'portal_db' => [
+                'username' => $username,
+                'password' => $password,
+                'dsn' => "mysql:dbname=test_portal;host=$host",
+            ],
+        ],
+    ]
+];
