@@ -5,14 +5,14 @@ return [
         'adapters' => [
             'gestorportal_bd' => [
                 'driver' => 'Pdo',
-                'dsn' => "mysql:dbname=test_gestor;host=%HOST%",  # ← marcador
+                'dsn' => "mysql:dbname=%NOMBRE_BD%;host=%HOST%",  # ← marcador
                 'driver_options' => [
                     PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\''
                 ],
             ],
             'portal_db' => [
                 'driver' => 'Pdo',
-                'dsn' => "mysql:dbname=test_portal;host=%HOST%",  # ← marcador
+                'dsn' => "mysql:dbname=%NOMBRE_BD2%;host=%HOST%",  # ← marcador
                 'driver_options' => [
                     PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\''
                 ],

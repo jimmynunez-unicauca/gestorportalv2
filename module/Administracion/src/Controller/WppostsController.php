@@ -14,7 +14,7 @@ use Administracion\Modelo\Entidades\Wpposts;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
-require_once __DIR__ . '/../../../../vendor/tcpdf/tcpdf.php';
+require_once __DIR__ . '/../../../../vendor/tecnickcom/tcpdf/tcpdf.php';
 
 class WppostsController extends AbstractActionController
 {
