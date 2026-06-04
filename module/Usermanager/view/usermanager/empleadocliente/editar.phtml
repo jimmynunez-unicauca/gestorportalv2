@@ -1,0 +1,190 @@
+<?php
+$form->prepare();
+echo $this->form()->openTag($form);
+?>
+<div class="modal-body ui-front">
+    <div style="padding: 10px" class="container-fluid">
+        <fieldset>
+            <legend>Llene los datos del empleado</legend>
+            <div class="row">
+                <div class="form-group col-md-4 col-sm-12">
+                    <?= $this->formLabel($form->get('tipoIdentificacion')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('tipoIdentificacion')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-id-card"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4 col-sm-12">
+                    <?= $this->formLabel($form->get('identificacion')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('identificacion')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-id-card"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4 col-sm-12">
+                    <?= $this->formLabel($form->get('genero')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('genero')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-venus-mars"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <?= $this->formLabel($form->get('nombre')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('nombre')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-user-tie"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <?= $this->formLabel($form->get('apellido')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('apellido')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-user-tie"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <?= $this->formLabel($form->get('fechaNacimiento')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('fechaNacimiento')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-birthday-cake"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <?= $this->formLabel($form->get('email')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('email')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-envelope"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <?= $this->formLabel($form->get('telefono')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('telefono')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-phone"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <?= $this->formLabel($form->get('direccion')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('direccion')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-map-marker"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>Informacion del registro</legend>
+            <div class="form-row">
+                <div class="form-group col-md-4 col-sm-12">
+                    <label class="control-label" for="idEmpleado"><i class="fa fa-key"></i></label>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('idEmpleadoCliente')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-key"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4 col-sm-12">
+                    <label class="control-label" for="estado">Estado</label>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('estado')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-list-alt"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4 col-sm-12">
+                    <label class="control-label" for="registradopor">Registrado</label>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('registradopor')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-user"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4 col-sm-12">
+                    <label class="control-label" for="modificadopor">Modificado</label>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('modificadopor')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-user"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4 col-sm-12">
+                    <label class="control-label" for="fechahorareg">Registrado</label>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('fechahorareg')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4 col-sm-12">
+                    <label class="control-label" for="fechahoramod">Modificado</label>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('fechahoramod')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</div>
+<div class="modal-footer" style="padding: 20px">
+    <button type="submit" class="btn btn-success" title="EDITAR EMPLEADO"><i class="fas fa-save"></i> Editar Empleado</button>
+    <button type="button" class="btn btn-warning" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
+</div>
+<?php
+echo $this->form()->closeTag();
+?>

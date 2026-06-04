@@ -1,0 +1,134 @@
+<?php
+$form->prepare();
+echo $this->form()->openTag($form);
+?>
+<div class="modal-body ui-front">
+    <div style="padding: 10px" class="container-fluid">
+        <fieldset>
+            <legend>Llene los datos del evento</legend>
+            <div class="row">
+                <div class="form-group col-md-12 col-sm-12">
+                    <?= $this->formLabel($form->get('nombre')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('nombre')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-commenting-o"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-12 col-sm-12">
+                    <?= $this->formLabel($form->get('descripcion')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('descripcion')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-text-width"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <?= $this->formLabel($form->get('publicacion')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('publicacion')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-text-width"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <?= $this->formLabel($form->get('tipo')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('tipo')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-text-width"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6 col-sm-12" id="divInicioConvocatoria" style="display: none;">
+                    <?= $this->formLabel($form->get('inicioConvocatoria')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('inicioConvocatoria')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-text-width"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-sm-12" id="divFinConvocatoria" style="display: none;">
+                    <?= $this->formLabel($form->get('finConvocatoria')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('finConvocatoria')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-text-width"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6 col-sm-12" id="divResolucion" style="display: none;">
+                    <?= $this->formLabel($form->get('idResolucion')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('idResolucion')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-commenting-o"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <?= $this->formLabel($form->get('archivo')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('archivo')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-file-pdf-o"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <label class="control-label" for="dependencias">Dependencias *</label>
+                    <div class="input-group">
+                        <select id="dependencias" name="dependencias[]" multiple="multiple" required style="width: 100%;">
+                            <?php
+                            foreach ($this->dependencias as $dep) {
+                                echo '<option value="' . $dep['idDependencia'] . '">' . $dep['dependencia'] . '</option>';
+                            }
+                            ?>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</div>
+
+<div class="modal-footer" style="padding: 20px">
+    <button type="submit" class="btn btn-success" title="REGISTRAR ARCHIVO"><i class="fas fa-save"></i> Registrar</button>
+    <button type="button" class="btn btn-warning" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
+</div>
+<?php
+echo $this->formHidden($form->get('idArchivo')->setValue(0));
+/* echo $this->formHidden($form->get('idEmitido')->setValue(0)); */
+echo $this->form()->closeTag();
+?>
+
+<script>
+    $(document).ready(function() {
+        $('#dependencias').select2({
+            allowClear: true,
+            search: true,
+        });
+    });
+</script>

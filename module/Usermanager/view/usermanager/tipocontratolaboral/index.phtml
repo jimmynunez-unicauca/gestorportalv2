@@ -1,0 +1,198 @@
+<?php
+//--------- CARGAR MENSAJES DE ALERTA ------------------------------------------
+$flash = $this->flashMessenger();
+$notificaciones = [
+    'success' => array_merge($flash->getSuccessMessages(), $flash->getCurrentSuccessMessages()),
+    'error' => array_merge($flash->getErrorMessages(), $flash->getCurrentErrorMessages()),
+    'alert' => array_merge($flash->getMessages(), $flash->getCurrentMessages()),
+    'information' => array_merge($flash->getInfoMessages(), $flash->getCurrentInfoMessages()),
+    'warning' => array_merge($flash->getWarningMessages(), $flash->getCurrentWarningMessages()),
+];
+$flash->clearCurrentMessages('default');
+$flash->clearCurrentMessages('info');
+$flash->clearCurrentMessages('success');
+$flash->clearCurrentMessages('warning');
+$flash->clearCurrentMessages('error');
+$mostrarMensajes = '';
+foreach (array_filter($notificaciones) as $tipo => $mensajes) {
+    $tipoToastr = 'info';
+    $titulo = 'Josandro';
+    switch ($tipo) {
+        case 'success':
+            $titulo = ' OK ';
+            $tipoToastr = 'success';
+            break;
+        case 'error':
+            $titulo = ' ERROR ';
+            $tipoToastr = 'error';
+            break;
+        case 'alert':
+            $titulo = ' ALERTA ';
+            $tipoToastr = 'warning';
+            break;
+        case 'information':
+            $titulo = ' INFORMACION ';
+            $tipoToastr = 'info';
+            break;
+        case 'warning':
+            $titulo = ' PRECAUCION ';
+            $tipoToastr = 'warning';
+            break;
+    }
+    foreach ($mensajes as $mensaje) {
+        $mostrarMensajes .= "toastr.$tipo('$mensaje', '$titulo', {
+                closeButton: true,
+                debug: false,
+                newestOnTop: false,
+                progressBar: true,
+                positionClass: 'toast-top-right',
+                preventDuplicates: false,
+                onclick: null,
+                showDuration: '300',
+                hideDuration: '1000',
+                timeOut: '8000',
+                extendedTimeOut: '1000',
+                showEasing: 'swing',
+                hideEasing: 'linear',
+                showMethod: 'fadeIn',
+                hideMethod: 'fadeOut'
+            }); ";
+    }
+}
+//------------------------------------------------------------------------------
+
+$title = 'Tipo Contrato Laboral';
+$this->headTitle($title);
+$this->headScript()->prependScript('
+            $(document).ajaxStop($.unblockUI);
+            $(document).ready(function() {
+                $("#tabla").DataTable({
+                    responsive: false,
+                    iDisplayLength: 25,
+                    sPaginationType: "full_numbers",
+                    oLanguage: {
+                        sLengthMenu: "Mostrar: _MENU_ registros por pagina",
+                        sZeroRecords: "NO SE HA ENCONTRADO INFORMACION",
+                        sInfo: "Mostrando <b>_START_</b> a <b>_END_</b> registros <br>TOTAL REGISTROS: <b>_TOTAL_</b> Registros</b>",
+                        sInfoEmpty: "Mostrando 0 A 0 registros",
+                        sInfoFiltered: "(Filtrados de un total de <b>_MAX_</b> registros)",
+                        sLoadingRecords: "CARGANDO...",
+                        sProcessing: "EN PROCESO...",
+                        sSearch: "Buscar:",
+                        sEmptyTable: "NO HAY INFORMACION DISPONIBLE PARA LA TABLA",
+                        oPaginate: {
+                            sFirst: "<i class=\'fa fa-fast-backward\' aria-hidden=\'true\' title=\'Inicio\'></i>",
+                            sPrevious: "<i class=\'fa fa-step-backward\' aria-hidden=\'true\' title=\'Anterior\'></i>",
+                            sNext: "<i class=\'fa fa-step-forward\' aria-hidden=\'true\' title=\'Siguiente\'></i>",
+                            sLast: "<i class=\'fa fa-fast-forward\' aria-hidden=\'true\' title=\'Fin\'></i>",
+                        }
+                    },
+                    aaSorting: [[0, "desc"]]
+                });
+                //------------------------------------------------------------------------------
+                // MANIPULACION DEL EVENTO DE CIERRE DEL MODAL
+                //------------------------------------------------------------------------------
+                $("#modalFormulario").on("hide.bs.modal", function (e) {
+                    Swal.fire({
+                        title: "&iquest;DESEA CERRAR EL FORMULARIO?",
+                        text: "",
+                        icon: "question",
+                        showCancelButton: true,
+                        confirmButtonText: "Si",
+                        cancelButtonText: "No",
+                        allowOutsideClick: false
+                    }).then((result) => {
+                        if (!result.isConfirmed) {
+                            $(this).modal("show");
+                        }
+                    });
+                });
+                //------------------------------------------------------------------------------
+                ' . $mostrarMensajes . '
+            });', 'text/javascript', array('noescape' => true))
+    ->prependFile($this->basePath('/js/sistema/tipoContratoLaboral.js'));
+?>
+<div class="jumbotron">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 col-sm-4" style="text-align: center;">
+                <img src="<?= $this->basePath('img/internetHogar.png'); ?>" class="img-responsive" alt="Imagen Internet Hogar" width="350">
+            </div>
+            <div class="col-md-8 col-sm-8">
+                <h1 class="display-5">Tipo Contrato Laboral</h1>
+                <p>En esta seccion usted puede gestionar todo lo relacionado con los <b>Tipo de Contrato Laboral</b> aplicados a los empleados</p>
+                <button type="button" id="btnRegistrar" onclick="verRegistrar()" class="btn btn-success" title="REGISTRAR UN NUEVO EMPLEADO"><i class="fas fa-plus-circle"></i> Registrar TCL</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="table-responsive" style="font-size: 11px">
+            <table id="tabla" class="table table-striped table-bordered table-hover table-sm">
+                <thead class="thead-dark">
+                    <tr>
+                        <th data-toggle="tooltip" title="ID" scope="col"><i class="fa fa-key"></i></th>
+                        <th data-toggle="tooltip" title="OPCIONES" scope="col"><i class="fa fa-cog fa-spin fa-lg"></i></th>
+                        <th scope="col"><i class="fa fa-list"></i> TIPO CL</th>
+                        <th scope="col"><i class="fa fa-user"></i> REGISTRADO</th>
+                        <th scope="col"><i class="fa fa-calendar"></i> REGISTRADO</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $hoy = new DateTime();
+                    foreach ($this->tcls as $tcl) {
+                        echo '<tr>';
+                        echo '<th scope="col">' . $tcl['idTipoContratoLaboral'] . '</th>';
+                        echo '<td>';
+                        echo '<a href="javascript:verDetalle(' . $tcl['idTipoContratoLaboral'] . ')" title="VER DETALLE DE ESTE EMPLEADO"><i class="fas fa-eye"></i></a>';
+                        echo '&nbsp;&nbsp;';
+                        echo '<a href="javascript:verEditar(' . $tcl['idTipoContratoLaboral'] . ')" title="EDITAR EL EMPLEADO"><i class="fa fa-edit"></i></a>';
+                        echo '&nbsp;&nbsp;';
+                        echo '<a href="#" onclick="verEliminar(' . $tcl['idTipoContratoLaboral'] . '); return false;" title="ELIMINAR EL EMPLEADO"><i style ="color:red" class="fa fa-trash"></i></a>';
+                        echo '</td>';
+                        echo '<td>' . $tcl['tipo'] . '</td>';
+                        echo '<td>' . $tcl['registradopor'] . '</td>';
+                        echo '<td>' . $tcl['fechahorareg'] . '</td>';
+                        echo '</tr>';
+                    }
+                    ?>
+                </tbody>
+                <tfoot></tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="msgBloqueo" style="display: none;">
+    SU SOLICITUD ESTA SIENDO PROCESADA, POR FAVOR ESPERE...
+</div>
+
+<div class="modal fade" id="modalFormulario" data-backdrop="static" tabindex="-1" aria-labelledby="lbModalFormulario" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="lbModalFormulario">Formulario</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="divContenido"></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalFormularioAux" data-backdrop="static" tabindex="-1" aria-labelledby="lbModalFormularioAux" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="lbModalFormularioAux">Formulario</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="divContenidoAux"></div>
+        </div>
+    </div>
+</div>

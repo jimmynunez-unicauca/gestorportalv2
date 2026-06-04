@@ -1,0 +1,212 @@
+<?php
+$form->prepare();
+$form->get('archivo')->setAttribute('readonly', true);
+$form->get('archivo')->setAttribute('required', false);
+$form->get('archivo')->setAttribute('type', 'text');
+echo $this->form()->openTag($form);
+?>
+<div class="modal-body ui-front">
+    <div style="padding: 10px" class="container-fluid">
+        <fieldset>
+            <legend>Llene los datos del evento</legend>
+            <div class="row">
+                <div class="form-group col-md-12 col-sm-12">
+                    <?= $this->formLabel($form->get('nombre')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('nombre')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-commenting-o"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-12 col-sm-12">
+                    <?= $this->formLabel($form->get('descripcion')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('descripcion')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-text-width"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <?= $this->formLabel($form->get('publicacion')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('publicacion')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-text-width"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <?= $this->formLabel($form->get('tipo')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('tipo')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-text-width"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6 col-sm-12" id="divInicioConvocatoria" style="display: none;">
+                    <?= $this->formLabel($form->get('inicioConvocatoria')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('inicioConvocatoria')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-text-width"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-sm-12" id="divFinConvocatoria" style="display: none;">
+                    <?= $this->formLabel($form->get('finConvocatoria')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('finConvocatoria')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-text-width"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6 col-sm-12" id="divResolucion" style="display: none;">
+                    <?= $this->formLabel($form->get('idResolucion')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('idResolucion')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-commenting-o"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <?= $this->formLabel($form->get('archivo')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('archivo')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group">
+                                <button type="button" onclick="actualizarArchivo()" class="btn btn-primary" title="ACTUALIZAR EL ARCHIVO"><i class="fa fa-upload"></i></button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset>
+            <div style="float: right;">
+                <a type="button" class="btn btn-primary" href="javascript:agregarDep();" title="AGREGAR DEPENDENCIA"><i class="fa fa-plus-square"></i> Agregar Dependencias</a>
+            </div>
+            <table class="table table-sm table-dark">
+                <thead>
+                    <tr>
+                        <th data-toggle="tooltip" title="ID" scope="col"><i class="fa fa-key"></i></th>
+                        <th scope="col">DEPENDENCIA</th>
+                        <th scope="col">REGISTRADO</th>
+                        <th data-toggle="tooltip" title="OPCIONES" scope="col"><i class="fa fa-cog fa-spin fa-lg"></i></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    if (empty($this->dependencias)) {
+                        echo '<tr><th><i class="fa fa-exclamation-triangle" style="color: yellow;"></i></th><th>EL DOCUMENTO NO TIENE REGISTRADAS DEPENDENCIAS</th><th></th><th></th></tr>';
+                    } else {
+                        foreach ($this->dependencias as $dep) {
+                            echo '<tr>';
+                            echo '<th scope="row">' . $dep['idDependencia'] . '</th>';
+                            echo  '<th>' . $dep['dependencia'] . '</th>';
+                            echo  '<th>' . $dep['fechahorareg'] . '</th>';
+                            echo  '<th>';
+                            echo '<a href="javascript:eliminarDep(' . $dep['idDependencia']  . ')" title="ELIMINAR"><i class="fa fa-trash" style="color:red;"></i></a>';
+                            echo  '</th>';
+                            echo '</tr>';
+                        }
+                    }
+                    ?>
+                </tbody>
+            </table>
+        </fieldset>
+        <fieldset>
+            <legend>Informacion del registro</legend>
+            <div class="form-row">
+                <div class="form-group col-md-4 col-sm-12">
+                    <label class="control-label" for="idArchivo"><i class="fa fa-key"></i></label>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('idArchivo')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-key"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4 col-sm-12">
+                    <label class="control-label" for="estado">Estado</label>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('estado')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-list-alt"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4 col-sm-12">
+                    <label class="control-label" for="registradopor">Registrado</label>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('registradopor')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-user"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4 col-sm-12">
+                    <label class="control-label" for="modificadopor">Modificado</label>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('modificadopor')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-user"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4 col-sm-12">
+                    <label class="control-label" for="fechahorareg">Registrado</label>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('fechahorareg')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4 col-sm-12">
+                    <label class="control-label" for="fechahoramod">Modificado</label>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('fechahoramod')) ?>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</div>
+<div class="modal-footer" style="padding: 20px">
+    <button type="submit" class="btn btn-success" title="EDITAR ARCHIVO"><i class="fas fa-save"></i> Editar</button>
+    <button type="button" class="btn btn-warning" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
+</div>
+<?php
+echo $this->form()->closeTag();
+?>

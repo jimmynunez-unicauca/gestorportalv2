@@ -1,0 +1,48 @@
+<?php
+$nodo = $this->nodo;
+if (empty($nodo)) {
+    echo '<div class="alert alert-danger">No se encontró información del nodo</div>';
+    return;
+}
+?>
+<div class="modal-body ui-front">
+    <div style="padding: 10px" class="container-fluid">
+        <div class="alert alert-warning">
+            <i class="fa fa-exclamation-triangle fa-2x float-left mr-3"></i>
+            <strong>¡ADVERTENCIA!</strong><br>
+            ¿Está seguro de eliminar el nodo <strong><?= htmlspecialchars($nodo['nombre'] ?? '') ?></strong>?
+            <br><br>Se eliminarán también <strong>TODOS SUS SUBNODOS</strong> (hijos y dependientes).
+        </div>
+
+        <form id="formEliminar" method="post" action="<?= $this->url('administracion/organigrama', ['action' => 'eliminar']) ?>">
+            <input type="hidden" name="id" value="<?= $nodo['id'] ?? 0 ?>">
+        </form>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-danger" onclick="document.getElementById('formEliminar').submit();">
+        <i class="fas fa-trash"></i> Confirmar Eliminación
+    </button>
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+        <i class="fas fa-times"></i> Cancelar
+    </button>
+</div>
+
+<script>
+    document.getElementById('formEliminar').addEventListener('submit', function(e) {
+        e.preventDefault();
+        Swal.fire({
+            title: "¿DESEA ELIMINAR EL NODO?",
+            text: "Esta acción no se puede deshacer",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Si, eliminar",
+            cancelButtonText: "Cancelar"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.submit();
+                bloqueoAjax();
+            }
+        });
+    });
+</script>

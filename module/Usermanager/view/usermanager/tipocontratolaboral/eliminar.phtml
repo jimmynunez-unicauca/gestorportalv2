@@ -1,0 +1,108 @@
+<form id="frmEliminar" action="delete" method="POST" onsubmit="return validarGuardar(event, this,'ELIMINAR')">
+    <div class="modal-body">
+        <div style="padding: 10px" class="container-fluid">
+            <fieldset>
+                <legend>Informacion del tipo contrato laboral</legend>
+                <div class="form-row">
+                    <div class="form-group col-md-6 col-sm-12">
+                        <label class="control-label" for="tipo">Tipo</label>
+                        <div class="input-group">
+                            <input type='text' value="<?php echo $this->form['tipo']; ?>" class="form-control" readonly />
+                            <div class="input-group-append">
+                                <span class="input-group-text">
+                                    <i class="fas fa-id-card"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6 col-sm-12">
+                        <label class="control-label" for="plantilla">Plantilla</label>
+                        <div class="input-group">
+                            <input type='text' value="<?php echo $this->form['plantilla']; ?>" class="form-control" readonly />
+                            <div class="input-group-append">
+                                <span class="input-group-text">
+                                    <i class="fa fa-map-marker-alt"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>Informacion del registro</legend>
+                <div class="form-row">
+                    <div class="form-group col-md-4 col-sm-12">
+                        <label class="control-label" for="idTipoContratoLaboral"><i class="fa fa-key"></i></label>
+                        <div class="input-group">
+                            <input type='text' id="idTipoContratoLaboral" name="idTipoContratoLaboral" value="<?php echo $this->form['idTipoContratoLaboral']; ?>" class="form-control" readonly />
+                            <div class="input-group-append">
+                                <span class="input-group-text">
+                                    <i class="fas fa-key"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4 col-sm-12">
+                        <label class="control-label" for="estado">Estado</label>
+                        <div class="input-group">
+                            <input type='text' value="<?php echo $this->form['estado']; ?>" class="form-control" readonly />
+                            <div class="input-group-append">
+                                <span class="input-group-text">
+                                    <i class="fas fa-list-alt"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4 col-sm-12">
+                        <label class="control-label" for="registradopor">Registrado</label>
+                        <div class="input-group">
+                            <input type='text' value="<?php echo $this->form['registradopor']; ?>" class="form-control" readonly />
+                            <div class="input-group-append">
+                                <span class="input-group-text">
+                                    <i class="fas fa-user"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4 col-sm-12">
+                        <label class="control-label" for="modificadopor">Modificado</label>
+                        <div class="input-group">
+                            <input type='text' value="<?php echo $this->form['modificadopor']; ?>" class="form-control" readonly />
+                            <div class="input-group-append">
+                                <span class="input-group-text">
+                                    <i class="fas fa-user"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4 col-sm-12">
+                        <label class="control-label" for="fechahorareg">Registrado</label>
+                        <div class="input-group">
+                            <input type='text' value="<?php echo $this->form['fechahorareg']; ?>" class="form-control" readonly />
+                            <div class="input-group-append">
+                                <span class="input-group-text">
+                                    <i class="fas fa-calendar"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4 col-sm-12">
+                        <label class="control-label" for="fechahoramod">Modificado</label>
+                        <div class="input-group">
+                            <input type='text' value="<?php echo $this->form['fechahoramod']; ?>" class="form-control" readonly />
+                            <div class="input-group-append">
+                                <span class="input-group-text">
+                                    <i class="fas fa-calendar"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+    <div class="modal-footer" style="padding: 20px">
+        <button type="submit" class="btn btn-danger" title="ELIMINAR EMPLEADO"><i class="fa fa-trash"></i> Eliminar TCL</button>
+        <button type="button" class="btn btn-warning" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
+    </div>
+</form>

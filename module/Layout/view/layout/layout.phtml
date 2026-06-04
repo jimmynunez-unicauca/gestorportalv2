@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="description" content="GestorPortal">
+    <meta name="author" content="GestorPortal">
+    <meta name="generator" content="GestorPortal 1.0">
+    <?= $this->headTitle('GestorPortal')->setSeparator(' - ')->setAutoEscape(false) ?>
+
+    <!-- CSS -->
+    <?=
+    $this->headLink([
+        'rel' => 'shortcut icon',
+        'type' => 'image/vnd.microsoft.icon',
+        'href' => $this->basePath() . '/img/favicon.ico'
+    ])
+        ->prependStylesheet($this->basePath('css/sweetalert2-bootstrap-4.min.css'))
+        ->prependStylesheet($this->basePath('css/all_fontawesome.min.css'));
+    ?>
+    <!-- JS -->
+    <?=
+    $this->headScript()
+        ->prependFile($this->basePath('js/sweetalert2.min.js'), 'text/javascript')
+        ->prependFile($this->basePath('js/feather.min.js'), 'text/javascript')
+        ->prependFile($this->basePath('vendors/jquery/dist/jquery.min.js'), 'text/javascript');
+    ?>
+    <link href="cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
+    <!-- Bootstrap -->
+    <link href="<?= $this->basePath('vendors/bootstrap/dist/css/bootstrap.min.css'); ?>" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="<?= $this->basePath('vendors/font-awesome/css/font-awesome.min.css'); ?>" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="<?= $this->basePath('vendors/nprogress/nprogress.css'); ?>" rel="stylesheet">
+    <!-- FullCalendar -->
+    <link href="<?= $this->basePath('vendors/fullcalendar/dist/fullcalendar.min.css'); ?>" rel="stylesheet">
+    <link href="<?= $this->basePath('vendors/fullcalendar/dist/fullcalendar.print.css'); ?>" rel="stylesheet" media="print">
+    <!-- Animate.css -->
+    <link href="<?php echo $this->basePath('vendors/animate.css/animate.min.css'); ?>" rel="stylesheet">
+    <!-- iCheck -->
+    <link href="<?= $this->basePath('vendors/iCheck/skins/flat/green.css'); ?>" rel="stylesheet">
+    <!-- Datatables -->
+    <link href="<?= $this->basePath('vendors/datatables.net-bs/css/dataTables.bootstrap.min.css'); ?>" rel="stylesheet">
+    <link href="<?= $this->basePath('vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css'); ?>" rel="stylesheet">
+    <link href="<?= $this->basePath('vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css'); ?>" rel="stylesheet">
+    <link href="<?= $this->basePath('vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css'); ?>" rel="stylesheet">
+    <link href="<?= $this->basePath('vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css'); ?>" rel="stylesheet">
+    <!-- bootstrap-progressbar -->
+    <link href="<?= $this->basePath('vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css'); ?>" rel="stylesheet">
+    <!-- PNotify -->
+    <link href="<?= $this->basePath('vendors/pnotify/dist/pnotify.css'); ?>" rel="stylesheet">
+    <link href="<?= $this->basePath('vendors/pnotify/dist/pnotify.buttons.css'); ?>" rel="stylesheet">
+    <link href="<?= $this->basePath('vendors/pnotify/dist/pnotify.nonblock.css'); ?>" rel="stylesheet">
+    <!-- JQVMap -->
+    <link href="<?= $this->basePath('vendors/jqvmap/dist/jqvmap.min.css'); ?>" rel="stylesheet" />
+    <!-- bootstrap-daterangepicker -->
+    <link href="<?= $this->basePath('vendors/bootstrap-daterangepicker/daterangepicker.css'); ?>" rel="stylesheet">
+
+    <!-- Custom Theme Style -->
+    <link href="<?= $this->basePath('build/css/custom.css'); ?>" rel="stylesheet">
+
+    <style>
+        .estilologo {
+            color: #000066;
+            text-shadow: black 0.1em 0.1em 0.2em
+        }
+    </style>
+
+</head>
+
+<body class="nav-md">
+    <?php
+
+    use Laminas\Session\Container;
+
+    $loginUsuario = 'SESION NO INICIADA';
+    $auth = new Laminas\Authentication\AuthenticationService();
+    if ($auth->hasIdentity()) {
+        $infoSesion['login'] = $auth->getIdentity()->login;
+        $infoSesion['usuario'] = $auth->getIdentity()->usuario;
+        $infoSesion['foto'] = $auth->getIdentity()->foto;
+        $rol = $auth->getIdentity()->login;
+        $container = new Container();
+        $rbac = $container->rbac;
+    ?>
+        <div class="container body">
+            <div class="main_container">
+                <div class="col-md-3 left_col">
+                    <div class="left_col scroll-view">
+                        <div class="navbar nav_title" style="border: 0;">
+                            <a href="<?= $this->url('inicio') ?>" class="site_title"><img src="<?= $this->basePath('img/logo.png') ?>" width="50px" /> GestorPortal</a>
+                        </div>
+
+                        <div class="clearfix"></div>
+
+                        <!-- menu profile quick info -->
+                        <div class="profile clearfix">
+                            <div class="profile_pic">
+                                <img src="<?= $this->basePath('img/profile/') . $infoSesion['foto']; ?>" alt="..." class="img-circle profile_img">
+                            </div>
+                            <div class="profile_info">
+                                <span>Bienvenido,</span>
+                                <h2><?= $infoSesion['usuario'] ?></h2>
+                            </div>
+                        </div>
+                        <!-- /menu profile quick info -->
+
+                        <br />
+
+                        <!-- sidebar menu -->
+                        <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+                            <div class="menu_section">
+                                <h3>General</h3>
+                                <ul class="nav side-menu">
+                                    <li><a href="<?= $this->url('inicio') ?>"><img src="<?= $this->basePath('img/iconos/inicio.png') ?>"> INICIO</a></li>
+                                    <li><a href="<?= $this->url('administracion/directorio', array('controller' => 'directorio', 'action' => 'index')) ?>"><img src="<?= $this->basePath('img/iconos/directorio.png') ?>"> DIRECTORIO</a></li>
+                                    <li><a href="<?= $this->url('administracion/organigrama', array('controller' => 'organigrama', 'action' => 'index')) ?>"><img src="<?= $this->basePath('img/iconos/organigrama.png') ?>"> ORGANIGRAMA</a></li>
+                                    <li><a><img src="<?= $this->basePath('img/iconos/calendario.png') ?>"> CALENDARIO <span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a href="<?= $this->url('administracion/evento', array('controller' => 'evento', 'action' => 'index')) ?>">Eventos</a></li>
+                                            <li><a href="<?= $this->url('administracion/culturacalendario', array('controller' => 'culturacalendario', 'action' => 'index')) ?>">Cultura</a></li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <a><img src="<?= $this->basePath('img/iconos/inscripciones.png') ?>"> FORMULARIOS <span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li>
+                                                <a><i class="fas fa-user-tie fa-2x"></i> Rectoría<span class="fa fa-chevron-down"></span></a>
+                                                <ul class="nav child_menu">
+                                                    <li><a href="<?= $this->url('formularios/rectoria', array('controller' => 'rectoria', 'action' => 'index')) ?>">Rectoría</a></li>
+                                                    <li><a href="<?= $this->url('formularios/ocdi', array('controller' => 'ocdi', 'action' => 'index')) ?>">OCDI</a></li>
+                                                    <li><a href="<?= $this->url('formularios/orii', array('controller' => 'orii', 'action' => 'index')) ?>">ORII</a></li>
+                                                    <li><a href="<?= $this->url('formularios/secretariageneral', array('controller' => 'secretariageneral', 'action' => 'index')) ?>">S. General</a></li>
+                                                </ul>
+                                            </li>
+                                            <li>
+                                                <a><i class="fa fa-building"></i> Vicerrectorías<span class="fa fa-chevron-down"></span></a>
+                                                <ul class="nav child_menu">
+                                                    <li><a href="<?= $this->url('formularios/academica', array('controller' => 'academica', 'action' => 'index')) ?>">Académica</a></li>
+                                                    <li><a href="<?= $this->url('formularios/viceadmin', array('controller' => 'viceadmin', 'action' => 'index')) ?>">Administrativa</a></li>
+                                                    <li><a href="<?= $this->url('administracion/cultura', array('controller' => 'cultura', 'action' => 'index')) ?>">Cultura</a></li>
+                                                    <li><a href="<?= $this->url('formularios/viceinvest', array('controller' => 'viceinvest', 'action' => 'index')) ?>">Investigaciones</a></li>
+                                                </ul>
+                                            </li>
+                                            <li>
+                                                <a><i class="fa fa-university"></i> Facultades<span class="fa fa-chevron-down"></span></a>
+                                                <ul class="nav child_menu">
+                                                    <li><a href="<?= $this->url('formularios/agraria', array('controller' => 'agraria', 'action' => 'index')) ?>">Agrarias</a></li>
+                                                    <li><a href="<?= $this->url('formularios/artes', array('controller' => 'artes', 'action' => 'index')) ?>">Artes</a></li>
+                                                    <li><a href="<?= $this->url('formularios/contables', array('controller' => 'contables', 'action' => 'index')) ?>">Contables</a></li>
+                                                    <li><a href="<?= $this->url('formularios/fderecho', array('controller' => 'fderecho', 'action' => 'index')) ?>">Derecho</a></li>
+                                                    <li><a href="<?= $this->url('formularios/facned', array('controller' => 'facned', 'action' => 'index')) ?>">FACNED</a></li>
+                                                    <li><a href="<?= $this->url('formularios/fic', array('controller' => 'fic', 'action' => 'index')) ?>">FIC</a></li>
+                                                    <li><a href="<?= $this->url('formularios/fiet', array('controller' => 'fiet', 'action' => 'index')) ?>">FIET</a></li>
+                                                    <li><a href="<?= $this->url('formularios/fchs', array('controller' => 'fchs', 'action' => 'index')) ?>">Humanas y Sociales</a></li>
+                                                    <li><a href="<?= $this->url('formularios/fsalud', array('controller' => 'fsalud', 'action' => 'index')) ?>">Salud</a></li>
+                                                </ul>
+                                            </li>
+                                            <li>
+                                                <a><i class="fa fa-language"></i> PFI<span class="fa fa-chevron-down"></span></a>
+                                                <ul class="nav child_menu">
+                                                    <li><a href="<?= $this->url('formularios/pfi', array('controller' => 'pfi', 'action' => 'index')) ?>">Configuración</a></li>
+                                                    <li><a href="<?= $this->url('formularios/convocatoria', array('controller' => 'convocatoria', 'action' => 'index')) ?>">Convocatorias</a></li>
+                                                    <li><a href="<?= $this->url('formularios/pfiform', array('controller' => 'pfiform', 'action' => 'index')) ?>">Inscripciones</a></li>
+                                                </ul>
+                                            </li>
+                                            <li><a href="<?= $this->url('formularios/daeempre', array('controller' => 'daeempre', 'action' => 'index')) ?>">Área de Emprendimiento</a></li>
+                                            <li><a href="<?= $this->url('formularios/egresados', array('controller' => 'egresados', 'action' => 'index')) ?>">Área de Egresados</a></li>
+                                            <li><a href="<?= $this->url('formularios/daepropiedad', array('controller' => 'daepropiedad', 'action' => 'index')) ?>">Área de Propiedad Intelectual</a></li>
+                                            <li><a href="<?= $this->url('administracion/cecav', array('controller' => 'cecav', 'action' => 'index')) ?>">CECAV</a></li>
+                                            <li><a href="<?= $this->url('formularios/centroposgrado', array('controller' => 'centroposgrado', 'action' => 'index')) ?>">Centro de Posgrados</a></li>
+                                            <li><a href="<?= $this->url('formularios/pqrsf', array('controller' => 'pqrsf', 'action' => 'index')) ?>">PQRSF</a></li>
+                                            <li><a href="<?= $this->url('formularios/rendicioncuentas', array('controller' => 'rendicioncuentas', 'action' => 'index')) ?>">Rendición de Cuentas</a></li>
+                                            <li><a href="<?= $this->url('formularios/conflictointeres', array('controller' => 'conflictointeres', 'action' => 'index')) ?>">Conflicto de Interés</a></li>
+                                        </ul>
+                                    </li>
+
+                                    <li><a><img src="<?= $this->basePath('img/iconos/archivos.png') ?>"> DOCUMENTOS <span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a href="<?= $this->url('administracion/dependencia', array('controller' => 'dependencia', 'action' => 'index')) ?>">Dependencias</a></li>
+                                            <li><a href="<?= $this->url('administracion/archivo', array('controller' => 'archivo', 'action' => 'index')) ?>">Públicos</a></li>
+                                            <li><a href="<?= $this->url('administracion/lvmen', array('controller' => 'lvmen', 'action' => 'index')) ?>">LVMEN</a></li>
+                                            <li><a href="<?= $this->url('documentos/documentosinteres', array('controller' => 'documentosinteres', 'action' => 'index')) ?>">Interés</a></li>
+                                            <li><a href="<?= $this->url('administracion/normatividad', array('controller' => 'normatividad', 'action' => 'index')) ?>">V.A. Normatividad</a></li>
+                                            <li><a href="<?= $this->url('administracion/cpresultados', array('controller' => 'cpresultados', 'action' => 'index')) ?>">C.P. Resultados</a></li>
+                                            <li><a href="<?= $this->url('administracion/cpnormativa', array('controller' => 'cpnormativa', 'action' => 'index')) ?>">C.P. Normativa</a></li>
+                                            <li><a href="<?= $this->url('administracion/rectoria', array('controller' => 'rectoria', 'action' => 'index')) ?>">Rectoría</a></li>
+                                            <li><a href="<?= $this->url('documentos/cgc', array('controller' => 'cgc', 'action' => 'index')) ?>">CGC</a></li>
+                                            <li><a href="<?= $this->url('documentos/ita', array('controller' => 'ita', 'action' => 'index')) ?>">ITA</a></li>
+                                            <li><a href="<?= $this->url('documentos/orii', array('controller' => 'orii', 'action' => 'index')) ?>">ORII</a></li>
+                                            <li><a href="<?= $this->url('documentos/ocdi', array('controller' => 'ocdi', 'action' => 'index')) ?>">OCDI Boletines</a></li>
+                                            <li><a href="<?= $this->url('documentos/secretariageneral', array('controller' => 'secretariageneral', 'action' => 'index')) ?>">Secretaría General</a></li>
+                                            <li><a href="<?= $this->url('documentos/archivohistorico', array('controller' => 'archivohistorico', 'action' => 'index')) ?>">Archivo Histórico</a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a><img src="<?= $this->basePath('img/iconos/investigacion.png') ?>"> INVESTIGACION <span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a href="<?= $this->url('administracion/grupo', array('controller' => 'grupo', 'action' => 'index')) ?>">Grupos</a></li>
+                                            <li><a href="<?= $this->url('administracion/semillero', array('controller' => 'semillero', 'action' => 'index')) ?>">Semilleros</a></li>
+                                            <li><a href="<?= $this->url('administracion/contribucionesacademicas', array('controller' => 'semillero', 'action' => 'index')) ?>">Contribuciones Académicas</a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a><img src="<?= $this->basePath('img/iconos/emisora.png') ?>"> EMISORA <span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a href="<?= $this->url('administracion/emisora', array('controller' => 'grupo', 'action' => 'index')) ?>">Programas</a></li>
+                                            <li><a href="<?= $this->url('administracion/emisora', array('controller' => 'semillero', 'action' => 'index-podcast')) ?>">Podcast</a></li>
+                                            <li><a href="<?= $this->url('formularios/emisora', array('controller' => 'emisora', 'action' => 'index')) ?>">Formulario</a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a><img src="<?= $this->basePath('img/iconos/comarca.png') ?>"> CoMarca <span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a href="<?= $this->url('administracion/comarca', array('controller' => 'comarca', 'action' => 'index')) ?>">Podcast</a></li>
+                                            <li><a href="<?= $this->url('formularios/comarca', array('controller' => 'comarca', 'action' => 'index')) ?>">Formulario</a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a><img src="<?= $this->basePath('img/iconos/unisalud.png') ?>"> UNISALUD <span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a href="<?= $this->url('documentos/unisaludrendicioncuentas', array('controller' => 'unisaludrendicioncuentas', 'action' => 'index')) ?>"><i class="fa fa-file-text-o"></i> Rendición de cuentas</a></li>
+                                            <li><a href="<?= $this->url('documentos/unisaludtransparencia', array('controller' => 'unisaludtransparencia', 'action' => 'index')) ?>"><i class="fa fa-file-text-o"></i> Transparencia</a></li>
+                                            <li><a href="<?= $this->url('formularios/unisalud', array('controller' => 'unisalud', 'action' => 'index')) ?>"><i class="fa fa-envelope-o"></i> Formulario</a></li>
+                                            <li><a href="<?= $this->url('formularios/unisaludrendicioncuentas', array('controller' => 'unisaludrendicioncuentas', 'action' => 'index')) ?>"><i class="fa fa-envelope-o"></i>F. Rendición de cuentas</a></li>
+                                        </ul>
+                                    </li>
+                                    <?php
+                                    if (isset($container->rbac)) {
+                                        if ($rbac->isGranted($rol, 'Usermanager\Controller\EmpleadoclienteController.index:GET')) { ?>
+                                            <li><a><img src="<?= $this->basePath('img/iconos/usuarios.png') ?>"> GESTOR USUARIOS <span class="fa fa-chevron-down"></span></a>
+                                                <ul class="nav child_menu">
+                                                    <li><a href="<?= $this->url('usermanager/acceso', array('controller' => 'acceso', 'action' => 'index')) ?>">Accesos</a></li>
+                                                    <li><a href="<?= $this->url('usermanager/empleadocliente', array('controller' => 'empleadocliente', 'action' => 'index')) ?>">Usuarios</a></li>
+                                                    <li><a href="<?= $this->url('usermanager/rol', array('controller' => 'rol', 'action' => 'index')) ?>">Roles</a></li>
+                                                    <li><a href="<?= $this->url('formularios/userform', array('controller' => 'userform', 'action' => 'index')) ?>">Gestor de Formularios</a></li>
+                                                    <li><a href="<?= $this->url('administracion/wpposts', array('controller' => 'wpposts', 'action' => 'index')) ?>">Historial de Cambios</a></li>
+                                                    <li><a href="<?= $this->url('administracion/wplogin', array('controller' => 'wplogin', 'action' => 'index')) ?>">Historial de logeos</a></li>
+                                                    <li><a href="<?= $this->url('administracion/pluginunicauca', array('controller' => 'pluginunicauca', 'action' => 'index')) ?>">Plugin Unicauca</a></li>
+                                                </ul>
+                                            </li>
+                                    <?php }
+                                    }
+                                    ?>
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- /sidebar menu -->
+
+                        <!-- /menu footer buttons -->
+                        <div class="sidebar-footer hidden-small" style="color: #FFFFFF;">
+                            <a data-toggle="tooltip" data-placement="top" title="Settings">
+                                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                            </a>
+                            <a data-toggle="tooltip" data-placement="top" title="FullScreen">
+                                <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+                            </a>
+                            <a data-toggle="tooltip" data-placement="top" title="Lock">
+                                <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+                            </a>
+                            <a data-toggle="tooltip" style="color: #FFFFFF" data-placement="top" title="Cerrar Sessión" href="<?= $this->url('cerrarsesion') ?>">
+                                <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+                            </a>
+                        </div>
+                        <!-- /menu footer buttons -->
+                    </div>
+                </div>
+
+                <!-- top navigation -->
+                <div class="top_nav">
+                    <div class="nav_menu">
+                        <div class="nav toggle" style="color: #9D0311;">
+                            <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+                        </div>
+                        <nav class="nav navbar-nav">
+                            <ul class=" navbar-right">
+                                <li class="nav-item dropdown open" style="padding-left: 15px;">
+                                    <a href="javascript:;" class="user-profile dropdown-toggle" aria-haspopup="true" id="navbarDropdown" data-toggle="dropdown" aria-expanded="false">
+                                        <img src="<?= $this->basePath('img/profile/') . $infoSesion['foto']; ?>" alt=""><?= substr($infoSesion['usuario'], 0, 15); ?>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
+                                        <a class="dropdown-item" href="<?= $this->url('usermanager/perfil', array('controller' => 'perfil', 'action' => 'index')) ?>"><i class="fa fa-user pull-right"></i> Perfil</a>
+                                        <a class="dropdown-item" href="javascript:;">
+                                            <span class="badge bg-red pull-right">50%</span>
+                                            <span>Settings</span>
+                                        </a>
+                                        <a class="dropdown-item" href="javascript:;">Help</a>
+                                        <a class="dropdown-item" href="<?= $this->url('cerrarsesion') ?>"><i class="fa fa-sign-out pull-right" style="color:red;"></i> Cerrar Sessión</a>
+                                    </div>
+                                </li>
+
+                                <li role="presentation" class="nav-item dropdown open">
+                                    <a href="javascript:;" class="dropdown-toggle info-number" id="navbarDropdown1" data-toggle="dropdown" aria-expanded="false">
+                                        <i class="fa fa-envelope-o"></i>
+                                        <span class="badge bg-green">6</span>
+                                    </a>
+                                    <ul class="dropdown-menu list-unstyled msg_list" role="menu" aria-labelledby="navbarDropdown1">
+                                        <li class="nav-item">
+                                            <a class="dropdown-item">
+                                                <span class="image"><img src="<?= $this->basePath('img/profile/perfilMujer.png'); ?>" alt="Profile Image" /></span>
+                                                <span>
+                                                    <span>Beatriz Smith</span>
+                                                    <span class="time">3 mins ago</span>
+                                                </span>
+                                                <span class="message">
+                                                    Film festivals used to be do-or-die moments for movie makers. They were where...
+                                                </span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="dropdown-item">
+                                                <span class="image"><img src="<?= $this->basePath('img/profile/perfilMujer.png'); ?>" alt="Profile Image" /></span>
+                                                <span>
+                                                    <span>Beatriz Smith</span>
+                                                    <span class="time">3 mins ago</span>
+                                                </span>
+                                                <span class="message">
+                                                    Film festivals used to be do-or-die moments for movie makers. They were where...
+                                                </span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="dropdown-item">
+                                                <span class="image"><img src="<?= $this->basePath('img/profile/perfilMujer.png'); ?>" alt="Profile Image" /></span>
+                                                <span>
+                                                    <span>Beatriz Smith</span>
+                                                    <span class="time">3 mins ago</span>
+                                                </span>
+                                                <span class="message">
+                                                    Film festivals used to be do-or-die moments for movie makers. They were where...
+                                                </span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="dropdown-item">
+                                                <span class="image"><img src="<?= $this->basePath('img/profile/perfilMujer.png'); ?>" alt="Profile Image" /></span>
+                                                <span>
+                                                    <span>Beatriz Smith</span>
+                                                    <span class="time">3 mins ago</span>
+                                                </span>
+                                                <span class="message">
+                                                    Film festivals used to be do-or-die moments for movie makers. They were where...
+                                                </span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <div class="text-center">
+                                                <a class="dropdown-item">
+                                                    <strong>See All Alerts</strong>
+                                                    <i class="fa fa-angle-right"></i>
+                                                </a>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+                <!-- /top navigation -->
+
+                <!-- page content -->
+                <div class="right_col" role="main">
+                    <?= $this->content ?>
+                </div>
+                <!-- /page content -->
+
+                <!-- footer content -->
+                <footer>
+                    <div class="pull-right">
+                        <p><small>División TIC &copy; Copyright 2023</small></p>
+                    </div>
+                    <div class="clearfix"></div>
+                </footer>
+                <!-- /footer content -->
+            </div>
+        </div>
+
+
+    <?php } else { ?>
+        <div class="container body">
+            <div class="main_container">
+                <!-- page content -->
+                <div class="col-md-12" style="color:#FFFFFF;">
+                    <div class="col-middle">
+                        <div class="text-center text-center">
+                            <a href="https://www.unicauca.edu.co" target="_blank"><img class="animated bounce hvr-buzz estilologo" src="<?= $this->basePath('img/logo.png') ?>" /></a>
+                            <p style="color: #FFFFFF;"><b>Universidad del Cauca</b></p>
+                            <h1 class="error-number">404</h1>
+                            <h2>Lo sentimos pero no pudimos encontrar esta página.</h2>
+                            <p>Esta página que estás buscando no existe <a href="/gestorportalv2" style="color:#9D0311;">&iquest;Ir al inicio&quest;</a>
+                            </p>
+                            <p><small>División TIC &copy; Copyright 2023</small></p>
+                            <div class="mid_center">
+                                <h3>Buscar</h3>
+                                <form>
+                                    <div class="  form-group pull-right top_search">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" placeholder="Buscar...">
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-secondary" type="button"><i class="fa fa-search"></i></button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /page content -->
+            </div>
+        </div>
+    <?php } ?>
+    <script>
+        feather.replace()
+    </script>
+    <!-- Bootstrap -->
+    <script src="<?= $this->basePath('vendors/bootstrap/dist/js/bootstrap.bundle.min.js'); ?>"></script>
+    <!-- FastClick -->
+    <script src="<?= $this->basePath('vendors/fastclick/lib/fastclick.js'); ?>"></script>
+    <!-- NProgress -->
+    <script src="<?= $this->basePath('vendors/nprogress/nprogress.js'); ?>"></script>
+    <!-- FullCalendar -->
+    <script src="<?= $this->basePath('vendors/moment/min/moment.min.js'); ?>"></script>
+    <script src="<?= $this->basePath('vendors/fullcalendar/dist/fullcalendar.min.js'); ?>"></script>
+    <script src="<?= $this->basePath('js/fullcalendar_3.1.0_locale-all.js'); ?>"></script>
+    <!-- <script src="<?= $this->basePath('vendors/fullcalendar/dist/lang/es.js'); ?>"></script> -->
+    <!-- Chart.js -->
+    <script src="<?= $this->basePath('vendors/Chart.js/dist/Chart.min.js'); ?>"></script>
+    <!-- gauge.js -->
+    <script src="<?= $this->basePath('vendors/gauge.js/dist/gauge.min.js'); ?>"></script>
+    <!-- bootstrap-progressbar -->
+    <script src="<?= $this->basePath('vendors/bootstrap-progressbar/bootstrap-progressbar.min.js'); ?>"></script>
+    <!-- iCheck -->
+    <script src="<?= $this->basePath('vendors/iCheck/icheck.min.js'); ?>"></script>
+    <!-- PNotify -->
+    <script src="<?php echo $this->basePath('vendors/pnotify/dist/pnotify.js'); ?>"></script>
+    <script src="<?php echo $this->basePath('vendors/pnotify/dist/pnotify.buttons.js'); ?>"></script>
+    <script src="<?php echo $this->basePath('vendors/pnotify/dist/pnotify.nonblock.js'); ?>"></script>
+    <!-- Datatables -->
+    <script src="<?= $this->basePath('vendors/datatables.net/js/jquery.dataTables.min.js'); ?>"></script>
+    <script src="<?= $this->basePath('vendors/datatables.net-bs/js/dataTables.bootstrap.min.js'); ?>"></script>
+    <script src="<?= $this->basePath('vendors/datatables.net-buttons/js/dataTables.buttons.min.js'); ?>"></script>
+    <script src="<?= $this->basePath('vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js'); ?>"></script>
+    <script src="<?= $this->basePath('vendors/datatables.net-buttons/js/buttons.flash.min.js'); ?>"></script>
+    <script src="<?= $this->basePath('vendors/datatables.net-buttons/js/buttons.html5.min.js'); ?>"></script>
+    <script src="<?= $this->basePath('vendors/datatables.net-buttons/js/buttons.print.min.js'); ?>"></script>
+    <script src="<?= $this->basePath('vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js'); ?>"></script>
+    <script src="<?= $this->basePath('vendors/datatables.net-keytable/js/dataTables.keyTable.min.js'); ?>"></script>
+    <script src="<?= $this->basePath('vendors/datatables.net-responsive/js/dataTables.responsive.min.js'); ?>"></script>
+    <script src="<?= $this->basePath('vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js'); ?>"></script>
+    <script src="<?= $this->basePath('vendors/datatables.net-scroller/js/dataTables.scroller.min.js'); ?>"></script>
+    <script src="<?= $this->basePath('vendors/jszip/dist/jszip.min.js'); ?>"></script>
+    <script src="<?= $this->basePath('vendors/pdfmake/build/pdfmake.min.js'); ?>"></script>
+    <script src="<?= $this->basePath('vendors/pdfmake/build/vfs_fonts.js'); ?>"></script>
+    <!-- Skycons -->
+    <script src="<?= $this->basePath('vendors/skycons/skycons.js'); ?>"></script>
+    <!-- Flot -->
+    <script src="<?= $this->basePath('vendors/Flot/jquery.flot.js'); ?>"></script>
+    <script src="<?= $this->basePath('vendors/Flot/jquery.flot.pie.js'); ?>"></script>
+    <script src="<?= $this->basePath('vendors/Flot/jquery.flot.time.js'); ?>"></script>
+    <script src="<?= $this->basePath('vendors/Flot/jquery.flot.stack.js'); ?>"></script>
+    <script src="<?= $this->basePath('vendors/Flot/jquery.flot.resize.js'); ?>"></script>
+    <!-- Flot plugins -->
+    <script src="<?= $this->basePath('vendors/flot.orderbars/js/jquery.flot.orderBars.js'); ?>"></script>
+    <script src="<?= $this->basePath('vendors/flot-spline/js/jquery.flot.spline.min.js'); ?>"></script>
+    <script src="<?= $this->basePath('vendors/flot.curvedlines/curvedLines.js'); ?>"></script>
+    <!-- DateJS -->
+    <script src="<?= $this->basePath('vendors/DateJS/build/date.js'); ?>"></script>
+    <!-- JQVMap -->
+    <script src="<?= $this->basePath('vendors/jqvmap/dist/jquery.vmap.js'); ?>"></script>
+    <script src="<?= $this->basePath('vendors/jqvmap/dist/maps/jquery.vmap.world.js'); ?>"></script>
+    <script src="<?= $this->basePath('vendors/jqvmap/examples/js/jquery.vmap.sampledata.js'); ?>"></script>
+    <!-- bootstrap-daterangepicker -->
+    <script src="<?= $this->basePath('vendors/moment/min/moment.min.js'); ?>"></script>
+    <script src="<?= $this->basePath('vendors/bootstrap-daterangepicker/daterangepicker.js'); ?>"></script>
+
+    <!-- Custom Theme Scripts -->
+    <script src="<?= $this->basePath('build/js/custom.js'); ?>"></script>
+
+</body>
+
+</html>

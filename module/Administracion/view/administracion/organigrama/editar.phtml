@@ -1,0 +1,312 @@
+<?php
+$form->prepare();
+echo $this->form()->openTag($form);
+?>
+
+<!-- Campo ID oculto - DEBE ESTAR DENTRO DEL FORMULARIO -->
+<input type="hidden" name="id" id="id" value="<?= $form->get('id')->getValue() ?>">
+
+<div class="modal-body ui-front">
+    <div style="padding: 10px" class="container-fluid">
+        <fieldset>
+            <legend>Editar nodo del organigrama</legend>
+
+            <div class="alert alert-info alert-sm mb-3" id="ubicacionActual">
+                <i class="fa fa-info-circle"></i>
+                <strong>Ubicación actual:</strong>
+                <span id="rutaActual"></span>
+            </div>
+
+            <div class="alert alert-warning alert-sm mb-3" id="nuevaUbicacion" style="display: none;">
+                <i class="fa fa-exchange"></i>
+                <strong>Nueva ubicación:</strong>
+                <span id="rutaNueva"></span>
+            </div>
+
+            <div class="row">
+                <div class="form-group col-md-12 col-sm-12">
+                    <label for="nombre">Nombre del nodo *</label>
+                    <div class="input-group">
+                        <input type="text" name="nombre" id="nombre" class="form-control" required value="<?= htmlspecialchars($form->get('nombre')->getValue()) ?>">
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-tag"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6 col-sm-12">
+                    <?= $this->formLabel($form->get('tipo')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('tipo')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-sitemap"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6 col-sm-12">
+                    <label for="padre_id">Depende de</label>
+                    <div class="input-group">
+                        <select name="padre_id" id="padre_id" class="form-control">
+                            <option value="">-- Ninguno (Raíz) --</option>
+                            <?php foreach ($this->nodosPadre as $np): ?>
+                                <option value="<?= $np['id'] ?>" <?= $form->get('padre_id')->getValue() == $np['id'] ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($np['nombre']) ?> (<?= $np['tipo'] ?>)
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-level-up"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <small class="form-text text-muted">Cambiar la dependencia moverá este nodo a otra ubicación</small>
+                </div>
+
+                
+
+                <div class="form-group col-md-6 col-sm-12">
+                    <label for="orden">Orden</label>
+                    <div class="input-group">
+                        <input type="number" name="orden" id="orden" class="form-control" value="<?= $form->get('orden')->getValue() ?>" min="0">
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-sort-numeric-asc"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                
+
+                <div class="form-group col-md-12 col-sm-12">
+                    <label for="descripcion">Descripción</label>
+                    <div class="input-group">
+                        <textarea name="descripcion" id="descripcion" class="form-control" rows="3"><?= htmlspecialchars($form->get('descripcion')->getValue() ?? '') ?></textarea>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-align-left"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset class="mt-3">
+            <legend>Información del registro</legend>
+            <div class="form-row">
+                <div class="form-group col-md-3 col-sm-12">
+                    <label class="control-label"><i class="fa fa-key"></i> ID</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" value="<?= $form->get('id')->getValue() ?>" readonly disabled>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-key"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-3 col-sm-12">
+                    <label class="control-label">Estado</label>
+                    <div class="input-group">
+                        <input type="text" name="estado" id="estado" class="form-control" value="<?= $form->get('estado')->getValue() ?>" readonly>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-list-alt"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-3 col-sm-12">
+                    <label class="control-label">Registrado por</label>
+                    <div class="input-group">
+                        <input type="text" name="registradopor" id="registradopor" class="form-control" value="<?= $form->get('registradopor')->getValue() ?>" readonly>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-user"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-3 col-sm-12">
+                    <label class="control-label">Fecha registro</label>
+                    <div class="input-group">
+                        <input type="text" name="created_at" id="created_at" class="form-control" value="<?= $form->get('created_at')->getValue() ?>" readonly>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</div>
+
+<div class="modal-footer" style="padding: 20px">
+    <button type="submit" class="btn btn-success" title="EDITAR NODO" onclick="return validarGuardar(event, this.form, 'EDITAR')">
+        <i class="fas fa-save"></i> Editar
+    </button>
+    <button type="button" class="btn btn-warning" data-dismiss="modal">
+        <i class="fas fa-times"></i> Cerrar
+    </button>
+</div>
+
+<?php
+echo $this->form()->closeTag();
+?>
+
+<script>
+    $(document).ready(function() {
+        // Inicializar Select2 con dropdownParent dentro del modal
+        $('#padre_id').select2({
+            allowClear: true,
+            placeholder: "-- Ninguno (Raíz) --",
+            width: '100%',
+            dropdownParent: $('#modalFormulario')
+        });
+
+        $('#tipo').select2({
+            width: '100%',
+            dropdownParent: $('#modalFormulario')
+        });
+
+        $('#icono').select2({
+            width: '100%',
+            dropdownParent: $('#modalFormulario')
+        });
+
+        // Forzar foco en el input de búsqueda
+        $('#padre_id').on('select2:open', function() {
+            setTimeout(function() {
+                var searchField = document.querySelector('.select2-search__field');
+                if (searchField) {
+                    searchField.focus();
+                }
+            }, 100);
+        });
+
+        var idNodo = $('#id').val();
+
+        // Cargar ruta actual del nodo
+        function cargarRutaActual() {
+            if (idNodo) {
+                $.ajax({
+                    url: '<?= $this->url('administracion/organigrama', ['action' => 'apiRuta']) ?>',
+                    type: 'GET',
+                    data: {
+                        id: idNodo
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        if (data.ruta) {
+                            $('#rutaActual').html('<strong>' + data.ruta + '</strong>');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.log('Error cargando ruta:', error);
+                    }
+                });
+            }
+        }
+
+        // Cargar ruta del nuevo padre seleccionado
+        function cargarRutaNueva(padreId) {
+            if (padreId && padreId != '') {
+                $.ajax({
+                    url: '<?= $this->url('administracion/organigrama', ['action' => 'apiRuta']) ?>',
+                    type: 'GET',
+                    data: {
+                        id: padreId
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        if (data.ruta) {
+                            $('#nuevaUbicacion').show();
+                            $('#rutaNueva').html('<strong>' + data.ruta + '</strong> → <span class="text-primary">' + $('#nombre').val() + '</span>');
+                        } else {
+                            $('#nuevaUbicacion').hide();
+                        }
+                    },
+                    error: function() {
+                        $('#nuevaUbicacion').hide();
+                    }
+                });
+            } else {
+                $('#nuevaUbicacion').hide();
+            }
+        }
+
+        $('#padre_id').on('change', function() {
+            cargarRutaNueva($(this).val());
+        });
+
+        cargarRutaActual();
+
+        if ($('#padre_id').val()) {
+            cargarRutaNueva($('#padre_id').val());
+        }
+    });
+
+    function validarGuardar(event, form, tipo) {
+        event.preventDefault();
+
+        if (CKEDITOR.instances['descripcion']) {
+            CKEDITOR.instances['descripcion'].updateElement();
+        }
+
+        if ($('#nombre').val().trim() == '') {
+            Swal.fire('Error', 'El nombre del nodo es requerido', 'error');
+            return false;
+        }
+
+        Swal.fire({
+            title: "¿DESEA " + tipo + " EL NODO?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Si",
+            cancelButtonText: "No",
+            allowOutsideClick: false
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+                bloqueoAjax();
+            }
+        });
+        return false;
+    }
+</script>
+<script>
+    $(document).ready(function() {
+        // Inicializar CKEditor en el campo descripcion
+        if (CKEDITOR.instances['descripcion']) {
+            CKEDITOR.instances['descripcion'].destroy();
+        }
+        CKEDITOR.replace('descripcion', {
+            toolbar: [
+                ['Bold', 'Italic', 'Underline', 'Strike'],
+                ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent'],
+                ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+                ['Link', 'Unlink'],
+                ['FontSize', 'FontColor', 'TextColor'],
+                ['Undo', 'Redo', 'Find', 'Replace'],
+                ['RemoveFormat', 'Source']
+            ],
+            height: 250,
+            language: 'es',
+            enterMode: CKEDITOR.ENTER_BR,
+            shiftEnterMode: CKEDITOR.ENTER_P,
+            autoParagraph: false,
+            fillEmptyBlocks: false,
+            removePlugins: 'elementspath',
+            removeButtons: 'Source'
+        });
+    });
+</script>

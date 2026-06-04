@@ -1,0 +1,171 @@
+<div class="modal-body">
+    <div style="padding: 10px" class="container-fluid">
+        <fieldset>
+            <legend>Informacion del empleado</legend>
+            <div class="form-row">
+                <div class="form-group col-md-3 col-sm-12">
+                    <label class="control-label" for="sexo">T.I.</label>
+                    <div class="input-group">
+                        <input type='text' value="<?php echo $this->form['tipoIdentificacion']; ?>" class="form-control" readonly />
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-id-card"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-3 col-sm-12">
+                    <label class="control-label" for="identificacion">Identificacion</label>
+                    <div class="input-group">
+                        <input type='text' value="<?php echo $this->form['identificacion']; ?>" class="form-control" readonly />
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-id-card"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <label class="control-label" for="nombre">Nombre</label>
+                    <div class="input-group">
+                        <input type='text' value="<?php echo $this->form['nombre'] . ' ' . $this->form['apellido'] ?>" class="form-control" readonly />
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-user-tie"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4 col-sm-12">
+                    <label class="control-label" for="sexo">Genero</label>
+                    <div class="input-group">
+                        <input type='text' value="<?php echo $this->form['genero']; ?>" class="form-control" readonly />
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-venus-mars"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4 col-sm-12">
+                    <label class="control-label" for="fechanacimiento">Fecha de nacimiento</label>
+                    <div class="input-group">
+                        <input type='text' value="<?php echo $this->form['fechaNacimiento']; ?>" class="form-control" readonly />
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-birthday-cake"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4 col-sm-12">
+                    <label class="control-label" for="telefono">Telefono</label>
+                    <div class="input-group">
+                        <input type='text' value="<?php echo $this->form['telefono']; ?>" class="form-control" readonly />
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-mobile"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <label class="control-label" for="direccion">Direccion</label>
+                    <div class="input-group">
+                        <input type='text' value="<?php echo $this->form['direccion']; ?>" class="form-control" readonly />
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-map-marker"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <label class="control-label" for="email">Email</label>
+                    <div class="input-group">
+                        <input type='text' value="<?php echo $this->form['email']; ?>" class="form-control" readonly />
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-share"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>Informacion del registro</legend>
+            <div class="form-row">
+                <div class="form-group col-md-4 col-sm-12">
+                    <label class="control-label" for="idEmpleadoCliente"><i class="fa fa-key"></i></label>
+                    <div class="input-group">
+                        <input type='text' value="<?php echo $this->form['idEmpleadoCliente']; ?>" class="form-control" readonly />
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-key"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4 col-sm-12">
+                    <label class="control-label" for="estado">Estado</label>
+                    <div class="input-group">
+                        <input type='text' id="estado" name="estado" value="<?php echo $this->form['estado']; ?>" class="form-control" readonly />
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-list-alt"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4 col-sm-12">
+                    <label class="control-label" for="registradopor">Registrado</label>
+                    <div class="input-group">
+                        <input type='text' id="registradopor" name="registradopor" value="<?php echo $this->form['registradopor']; ?>" class="form-control" readonly />
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-user"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4 col-sm-12">
+                    <label class="control-label" for="modificadopor">Modificado</label>
+                    <div class="input-group">
+                        <input type='text' id="modificadopor" name="modificadopor" value="<?php echo $this->form['modificadopor']; ?>" class="form-control" readonly />
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-user"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4 col-sm-12">
+                    <label class="control-label" for="fechahorareg">Registrado</label>
+                    <div class="input-group">
+                        <input type='text' id="fechahorareg" name="fechahorareg" value="<?php echo $this->form['fechahorareg']; ?>" class="form-control" readonly />
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4 col-sm-12">
+                    <label class="control-label" for="fechahoramod">Modificado</label>
+                    <div class="input-group">
+                        <input type='text' id="fechahoramod" name="fechahoramod" value="<?php echo $this->form['fechahoramod']; ?>" class="form-control" readonly />
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</div>
+<div class="modal-footer" style="padding: 20px">
+    <button type="button" class="btn btn-warning" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
+</div>

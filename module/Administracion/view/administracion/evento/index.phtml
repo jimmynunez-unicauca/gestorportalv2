@@ -1,0 +1,303 @@
+<?php
+//--------- CARGAR MENSAJES DE ALERTA ------------------------------------------
+$flash = $this->flashMessenger();
+$notificaciones = [
+    'success' => array_merge($flash->getSuccessMessages(), $flash->getCurrentSuccessMessages()),
+    'error' => array_merge($flash->getErrorMessages(), $flash->getCurrentErrorMessages()),
+    'alert' => array_merge($flash->getMessages(), $flash->getCurrentMessages()),
+    'information' => array_merge($flash->getInfoMessages(), $flash->getCurrentInfoMessages()),
+    'warning' => array_merge($flash->getWarningMessages(), $flash->getCurrentWarningMessages()),
+];
+$flash->clearCurrentMessages('default');
+$flash->clearCurrentMessages('info');
+$flash->clearCurrentMessages('success');
+$flash->clearCurrentMessages('warning');
+$flash->clearCurrentMessages('error');
+$mostrarMensajes = '';
+foreach (array_filter($notificaciones) as $tipo => $mensajes) {
+    $tipoToastr = 'info';
+    $titulo = 'GestorPortal';
+    switch ($tipo) {
+        case 'success':
+            $titulo = '<p><b><i><i class="fa fa-paw"></i> GestorPortal</i></b></p>';
+            $tipoToastr = 'success';
+            break;
+        case 'error':
+            $titulo = '<p><b><i><i class="fa fa-paw"></i> GestorPortal</i></b></p>';
+            $tipoToastr = 'error';
+            break;
+        case 'alert':
+            $titulo = '<p><b><i><i class="fa fa-paw"></i> GestorPortal</i></b></p>';
+            $tipoToastr = 'warning';
+            break;
+        case 'information':
+            $titulo = '<p><b><i><i class="fa fa-paw"></i> GestorPortal</i></b></p>';
+            $tipoToastr = 'info';
+            break;
+        case 'warning':
+            $titulo = '<p><b><i><i class="fa fa-paw"></i> GestorPortal</i></b></p>';
+            $tipoToastr = 'warning';
+            break;
+    }
+    foreach ($mensajes as $mensaje) {
+        $mostrarMensajes .= "new PNotify({
+            title: '$titulo',
+            text: '$mensaje',
+            type: '$tipoToastr',
+            styling: 'bootstrap3'
+        });";
+    }
+}
+//------------------------------------------------------------------------------
+
+$title = 'Eventos';
+$this->headTitle($title);
+//$this->headLink()->prependStylesheet($this->basePath('js/ckeditor/contents.css'));
+$this->headScript()->prependScript('
+            $(document).ajaxStop($.unblockUI);
+            $(document).ready(function() {
+                $("#myTable").DataTable({
+                    responsive: true,
+                    iDisplayLength: 25,
+                    sPaginationType: "full_numbers",
+                    oLanguage: {
+                        sLengthMenu: "Mostrar: _MENU_ registros por pagina",
+                        sZeroRecords: "NO SE HA ENCONTRADO INFORMACION",
+                        sInfo: "Mostrando <b>_START_</b> a <b>_END_</b> registros <br>TOTAL REGISTROS: <b>_TOTAL_</b> Registros</b>",
+                        sInfoEmpty: "Mostrando 0 A 0 registros",
+                        sInfoFiltered: "(Filtrados de un total de <b>_MAX_</b> registros)",
+                        sLoadingRecords: "CARGANDO...",
+                        sProcessing: "EN PROCESO...",
+                        sSearch: "Buscar:",
+                        sEmptyTable: "NO HAY INFORMACION DISPONIBLE PARA LA TABLA",
+                        oPaginate: {
+                            sFirst: "<i class=\'fa fa-fast-backward\' aria-hidden=\'true\' title=\'Inicio\'></i>",
+                            sPrevious: "<i class=\'fa fa-step-backward\' aria-hidden=\'true\' title=\'Anterior\'></i>",
+                            sNext: "<i class=\'fa fa-step-forward\' aria-hidden=\'true\' title=\'Siguiente\'></i>",
+                            sLast: "<i class=\'fa fa-fast-forward\' aria-hidden=\'true\' title=\'Fin\'></i>",
+                        }
+                    },
+                    aaSorting: [[0, "desc"]]
+                });
+                //------------------------------------------------------------------------------
+                // MANIPULACION DEL EVENTO DE CIERRE DEL MODAL
+                //------------------------------------------------------------------------------
+                $("#modalFormulario").on("hide.bs.modal", function (e) {
+                    Swal.fire({
+                        title: "&iquest;DESEA CERRAR EL FORMULARIO?",
+                        text: "",
+                        icon: "question",
+                        showCancelButton: true,
+                        confirmButtonText: "Si",
+                        cancelButtonText: "No",
+                        allowOutsideClick: false
+                    }).then((result) => {
+                        if (!result.isConfirmed) {
+                            $(this).modal("show");
+                        }
+                    });
+                });
+                //------------------------------------------------------------------------------
+                ' . $mostrarMensajes . '
+            });', 'text/javascript', array('noescape' => true))
+    ->prependFile($this->basePath('js/sistema/evento.js'))
+    //->prependFile($this->basePath('js/ckeditor/ckeditor.js'))
+    ->prependFile('https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js')
+    ->prependFile($this->basePath('js/jquery.blockUI.js'));
+
+?>
+<style>
+    .editor-container {
+        width: 100%;
+    }
+
+    .ck-editor__editable_inline {
+        min-height: 200px;
+    }
+
+    .ck.ck-balloon-panel {
+        z-index: 1051 !important;
+    }
+</style>
+<div class="">
+    <div class="page-title">
+        <div class="title_left">
+            <h3><span data-feather="calendar"></span> Calendario de Eventos</h3>
+        </div>
+    </div>
+
+    <div class="clearfix"></div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2><small>Haga clic para agregar/editar eventos</small></h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="#">Settings 1</a>
+                                <a class="dropdown-item" href="#">Settings 2</a>
+                            </div>
+                        </li>
+                        <li><a class="close-link"><i class="fa fa-close"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+
+                    <ul class="nav nav-tabs bar_tabs" id="myTab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true" title="CALNDARIO"><i class="fa fa-calendar"></i></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false" title="TABLA"><i class="fa fa-table"></i></a>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                            <div id='calendar'></div>
+                        </div>
+                        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                            <table id="myTable" class="table table-striped table-bordered dt-responsive nowrap table-sm table-hover" cellspacing="0" width="100%">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th data-toggle="tooltip" title="ID" scope="col"><i class="fa fa-key"></i></th>
+                                        <th data-toggle="tooltip" title="OPCIONES" scope="col"><i class="fa fa-cog fa-spin fa-lg"></i></th>
+                                        <th scope="col"><i class="fas fa-id-card"></i> TITULO</th>
+                                        <th scope="col"><i class="fas fa-clock-o"></i> EMPIEZA</th>
+                                        <th scope="col"><i class="fas fa-clock-o"></i> TERMINA</th>
+                                        <th scope="col"><i class="fas fa-sun-o"></i> AllDay</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    foreach ($this->fetchAll as $qs) {
+                                        echo '<tr style="color: ' . $qs['textColor'] . '; background-color: ' . $qs['color'] . ';">';
+                                        echo '<td>' . $qs['idEvento']  . '</td>';
+                                        echo '<td>';
+                                        echo '<a style="color: ' . $qs['textColor'] . ';" href="javascript:verEditar(' . $qs['idEvento']  . ')" title="EDITAR"><i class="fa fa-edit"></i></a>';
+                                        echo '&nbsp;&nbsp;';
+                                        echo '<a style="color: ' . $qs['textColor'] . ';" href="javascript:verDetalle(' . $qs['idEvento']  . ')" title="VER"><i class="fa fa-eye"></i></a>';
+                                        echo '</td>';
+                                        echo '<td>' . substr($qs['titulo'], 0, 50)  . '</td>';
+                                        echo '<td>' . $qs['start']  . '</td>';
+                                        echo '<td>' . $qs['end'] . '</td>';
+                                        echo '<td>' . $qs['allDay']  . '</td>';
+                                        echo '</tr>';
+                                    }
+                                    ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="msgBloqueo" style="display: none;">
+    <i class="fa fa-spinner fa-spin" aria-hidden="true"></i> SU SOLICITUD ESTA SIENDO PROCESADA, POR FAVOR ESPERE...
+</div>
+
+<div class="modal fade" id="modalFormulario" data-backdrop="static" tabindex="-1" aria-labelledby="lbModalFormulario" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="lbModalFormulario">Formulario</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="divContenido"></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalFormularioAux" data-backdrop="static" tabindex="-1" aria-labelledby="lbModalFormularioAux" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="lbModalFormularioAux">Formulario</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="divContenidoAux"></div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var hoy = new Date();
+    jQuery(document).ready(function($) {
+        $("#calendar").fullCalendar({
+            height: 600,
+            locale: "es",
+            timeZone: "America/Bogota",
+            themeSystem: "bootstrap4",
+            defaultView: "month",
+            weekNumbers: true,
+            weekNumbersWithinDays: true,
+            nowIndicator: true,
+            now: hoy,
+            header: {
+                left: "prev,next,today",
+                center: "title",
+                right: "month,basickWeek,basickDay,agendaWeek,agendaDay,listMonth"
+            },
+            events: [
+                <?php
+                foreach ($this->fetchAll as $qs) {
+                    echo '{';
+                    echo 'idEvento: "' . $qs['idEvento'] .
+                        '",';
+                    echo 'title: `' . $qs['titulo'] .
+                        '`,';
+                    echo 'contenido: `' . $qs['contenido'] .
+                        '`,';
+                    if ($qs['allDay'] == 'true') {
+                        $start = explode(" ", $qs['start']);
+                        $end = explode(" ", $qs['end']);
+                        echo 'start: "' . $start[0] .
+                            '",';
+                        echo 'end: "' . $end[0] .
+                            '",';
+                    } else {
+                        echo 'start: "' . $qs['start'] .
+                            '",';
+                        echo 'end: "' . $qs['end'] .
+                            '",';
+                    }
+                    echo 'color: "' . $qs['color'] .
+                        '",';
+                    echo 'textColor: "' . $qs['textColor'] .
+                        '",';
+                    echo '},';
+                }
+                ?>
+            ],
+            dayClick: function(event, jsEvent, view) {
+                verRegistrar(event);
+            },
+            eventClick: function(event, jsEvent, view) {
+                verEditar(event.idEvento);
+                $(this).css("border-color", "#ff000a");
+            },
+            editable: true,
+            eventDrop: function(event, delta, revertFunc) {
+                moverEvento(event);
+            },
+            editable: true,
+            eventResize: function(event, delta, revertFunc) {
+                redimensionar(event);
+            },
+            navLinks: true,
+        })
+    });
+</script>';

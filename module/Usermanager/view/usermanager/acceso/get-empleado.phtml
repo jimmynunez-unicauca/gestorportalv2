@@ -1,0 +1,40 @@
+<?php
+$infoEmpleado = $this->infoEmpleado;
+if (is_array($infoEmpleado)) {
+?>
+    <hr>
+    <fieldset>
+        <legend>Informacion del Empleado</legend>
+        <div class="form-row">
+            <div class="form-group col-md-4 col-sm-12">
+                <label>Identificacion</label>
+                <div class="input-group">
+                    <input type="text" id="identificacionAux" name="identificacionAux" value="<?= $infoEmpleado['identificacion'] ?>" class="form-control" readonly>
+                    <div class="input-group-append">
+                        <span class="input-group-text">
+                            <i class="fas fa-id-card"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group col-md-8 col-sm-12">
+                <label>Nombre</label>
+                <div class="input-group">
+                    <input type="text" id="empleadoAux" name="empleadoAux" value="<?= $infoEmpleado['nombre1'] . " " . $infoEmpleado['nombre2'] . " " . $infoEmpleado['apellido1'] . " " . $infoEmpleado['apellido2']    ?>" class="form-control" readonly>
+                    <div class="input-group-append">
+                        <span class="input-group-text">
+                            <i class="fas fa-user"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset hidden>
+        <input type="number" id="idEmpleadoAux" name="idEmpleadoAux" value="<?= $infoEmpleado['idEmpleado'] ?>" class="form-control" readonly>
+    </fieldset>
+<?php } else { ?>
+    <div style="border: 1px solid #555; padding: 10px">
+        EL EMPLEADO NO FUE ENCONTRADO EN JOSANDRO.
+    </div>
+<?php } ?>

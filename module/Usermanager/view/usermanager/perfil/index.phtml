@@ -1,0 +1,631 @@
+<?php
+//--------- CARGAR MENSAJES DE ALERTA ------------------------------------------
+$flash = $this->flashMessenger();
+$notificaciones = [
+    'success' => array_merge($flash->getSuccessMessages(), $flash->getCurrentSuccessMessages()),
+    'error' => array_merge($flash->getErrorMessages(), $flash->getCurrentErrorMessages()),
+    'alert' => array_merge($flash->getMessages(), $flash->getCurrentMessages()),
+    'information' => array_merge($flash->getInfoMessages(), $flash->getCurrentInfoMessages()),
+    'warning' => array_merge($flash->getWarningMessages(), $flash->getCurrentWarningMessages()),
+];
+$flash->clearCurrentMessages('default');
+$flash->clearCurrentMessages('info');
+$flash->clearCurrentMessages('success');
+$flash->clearCurrentMessages('warning');
+$flash->clearCurrentMessages('error');
+$mostrarMensajes = '';
+foreach (array_filter($notificaciones) as $tipo => $mensajes) {
+    $tipoToastr = 'info';
+    $titulo = 'GestorPortal';
+    switch ($tipo) {
+        case 'success':
+            $titulo = '<p><b><i><i class="fa fa-paw"></i> GestorPortal</i></b></p>';
+            $tipoToastr = 'success';
+            break;
+        case 'error':
+            $titulo = '<p><b><i><i class="fa fa-paw"></i> GestorPortal</i></b></p>';
+            $tipoToastr = 'error';
+            break;
+        case 'alert':
+            $titulo = '<p><b><i><i class="fa fa-paw"></i> GestorPortal</i></b></p>';
+            $tipoToastr = 'warning';
+            break;
+        case 'information':
+            $titulo = '<p><b><i><i class="fa fa-paw"></i> GestorPortal</i></b></p>';
+            $tipoToastr = 'info';
+            break;
+        case 'warning':
+            $titulo = '<p><b><i><i class="fa fa-paw"></i> GestorPortal</i></b></p>';
+            $tipoToastr = 'warning';
+            break;
+    }
+    foreach ($mensajes as $mensaje) {
+        $mostrarMensajes .= "new PNotify({
+            title: '$titulo',
+            text: '$mensaje',
+            type: '$tipoToastr',
+            styling: 'bootstrap3'
+        });";
+    }
+}
+//------------------------------------------------------------------------------
+
+$title = 'Perfil';
+$this->headTitle($title);
+$this->headLink()
+    ->prependStylesheet($this->basePath('css/cropper.min.css'));
+$this->headScript()->prependScript('
+            $(document).ajaxStop($.unblockUI);
+            $(document).ready(function() {
+                $("#myTable").DataTable({
+                    responsive: true,
+                    iDisplayLength: 25,
+                    sPaginationType: "full_numbers",
+                    oLanguage: {
+                        sLengthMenu: "Mostrar: _MENU_ registros por pagina",
+                        sZeroRecords: "NO SE HA ENCONTRADO INFORMACION",
+                        sInfo: "Mostrando <b>_START_</b> a <b>_END_</b> registros <br>TOTAL REGISTROS: <b>_TOTAL_</b> Registros</b>",
+                        sInfoEmpty: "Mostrando 0 A 0 registros",
+                        sInfoFiltered: "(Filtrados de un total de <b>_MAX_</b> registros)",
+                        sLoadingRecords: "CARGANDO...",
+                        sProcessing: "EN PROCESO...",
+                        sSearch: "Buscar:",
+                        sEmptyTable: "NO HAY INFORMACION DISPONIBLE PARA LA TABLA",
+                        oPaginate: {
+                            sFirst: "<i class=\'fa fa-fast-backward\' aria-hidden=\'true\' title=\'Inicio\'></i>",
+                            sPrevious: "<i class=\'fa fa-step-backward\' aria-hidden=\'true\' title=\'Anterior\'></i>",
+                            sNext: "<i class=\'fa fa-step-forward\' aria-hidden=\'true\' title=\'Siguiente\'></i>",
+                            sLast: "<i class=\'fa fa-fast-forward\' aria-hidden=\'true\' title=\'Fin\'></i>",
+                        }
+                    },
+                    aaSorting: [[0, "desc"]]
+                });
+                //------------------------------------------------------------------------------
+                // MANIPULACION DEL EVENTO DE CIERRE DEL MODAL
+                //------------------------------------------------------------------------------
+                $("#modalFormulario").on("hide.bs.modal", function (e) {
+                    Swal.fire({
+                        title: "&iquest;DESEA CERRAR EL FORMULARIO?",
+                        text: "",
+                        icon: "question",
+                        showCancelButton: true,
+                        confirmButtonText: "Si",
+                        cancelButtonText: "No",
+                        allowOutsideClick: false
+                    }).then((result) => {
+                        if (!result.isConfirmed) {
+                            $(this).modal("show");
+                        }
+                    });
+                });
+                //------------------------------------------------------------------------------
+                ' . $mostrarMensajes . '
+            });', 'text/javascript', array('noescape' => true))
+    ->prependFile($this->basePath('js/sistema/perfil.js'))
+    ->prependFile($this->basePath('js/jquery.blockUI.js'))
+    ->prependFile($this->basePath('js/cropper.min.js'))
+    ->prependFile($this->basePath('js/filterizr.min.js'))
+    ->prependFile($this->basePath('js/jquery.filterizr.min.js'));
+
+$nacimiento = new DateTime($this->infoUsuario['fechaNacimiento']);
+$ahora = new DateTime(date("Y-m-d"));
+$diferencia = $ahora->diff($nacimiento);
+
+?>
+<style>
+    .label {
+        cursor: pointer;
+    }
+
+    .progress {
+        display: none;
+        margin-bottom: 1rem;
+    }
+
+    .img-container img {
+        max-width: 100%;
+    }
+</style>
+<div class="">
+    <div class="page-title">
+        <div class="title_left">
+            <h3>Perfil del usuario</h3>
+        </div>
+
+        <div class="title_right">
+            <div class="col-md-5 col-sm-5  form-group pull-right top_search">
+                <div class="input-group">
+                    <input type="text" name="filtr-search" class="form-control" placeholder="Buscar..." data-search="">
+                    <span class="input-group-btn">
+                        <button class="btn btn-secondary" type="button"><i class="fa fa-search-plus" style="color:white;"></i></button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="clearfix"></div>
+
+    <div class="row">
+        <div class="col-md-12 col-sm-12 ">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>Informe de usuario <small>Informe de actividad</small></h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="#">Settings 1</a>
+                                <a class="dropdown-item" href="#">Settings 2</a>
+                            </div>
+                        </li>
+                        <li><a class="close-link"><i class="fa fa-close"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <div class="col-md-3 col-sm-3  profile_left">
+                        <div class="profile_img image view view-first">
+                            <div id="crop-avatar">
+                                <!-- Current avatar -->
+                                <label class="label" data-toggle="tooltip" title="Cambie tu avatar">
+                                    <img style="border-radius: 10px; display: block;" id="avatar" class="img-responsive avatar-view" src="<?= $this->basePath('img/profile/') . $this->foto; ?>" width="100%" alt="Avatar" title="Cambie el avatar">
+                                    <input type="file" class="sr-only" id="input" name="image" accept="image/*">
+                                    <div class="mask">
+                                        <p>Cambie tu avatar</p>
+                                        <div class="tools tools-bottom">
+                                            <a href="javascript:verFoto()"><i class="fa fa-search-plus"></i></a>
+                                        </div>
+                                    </div>
+                                </label>
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                                </div>
+                                <div style="display: none;" class="alert" role="alert"></div>
+                            </div>
+                        </div>
+                        <h3><?= $this->usuario; ?></h3>
+
+                        <ul class="list-unstyled user_data">
+                            <li>
+                                <i class="fa fa-phone"></i> <?= $this->infoUsuario['telefono'] ?>
+                            </li>
+                            <li>
+                                <i class="fa fa-envelope"></i> <?= $this->infoUsuario['email'] ?>
+                            </li>
+                            <li>
+                                <i class="fa fa-map-marker user-profile-icon"></i> <?= $this->infoUsuario['direccion'] ?>
+                            </li>
+                            <li>
+                                <i class="fa fa-birthday-cake"></i> <?= $this->infoUsuario['fechaNacimiento'] . ', edad: ' . $diferencia->format("%y") . ' años'; ?>
+                            </li>
+                        </ul>
+                        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                            <button type="button" class="btn btn-success" onclick="verEditar(<?= $this->infoUsuario['idEmpleadoCliente']; ?>)"><i class="fa fa-edit m-right-xs"></i> Editar Perfil</button>
+
+                            <div class="btn-group" role="group">
+                                <button id="btnGroupDrop1" type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                    <a class="dropdown-item" href="javascript:cambiarPassword()"><i class="fa fa-unlock-alt"></i> Cambiar Contraseña</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-9 col-sm-9 ">
+
+
+
+                        <div class="" role="tabpanel" data-example-id="togglable-tabs">
+                            <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
+                                <li role="presentation" class="active"><a href="#tab_content1" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">Usuarios</a>
+                                </li>
+                                <li role="presentation" class=""><a href="#tab_content2" role="tab" id="profile-tab" data-toggle="tab" aria-expanded="false">Projects</a>
+                                </li>
+                                <li role="presentation" class=""><a href="#tab_content3" role="tab" id="profile-tab2" data-toggle="tab" aria-expanded="false">Mensajes</a>
+                                </li>
+                            </ul>
+                            <div id="myTabContent" class="tab-content">
+                                <div role="tabpanel" class="tab-pane active " id="tab_content1" aria-labelledby="home-tab">
+
+                                    <!-- page content -->
+
+                                    <div class="row">
+                                        <div class="x_panel">
+                                            <div class="x_content">
+                                                <div class="col-md-12 col-sm-12  text-center">
+                                                    <ul class="pagination pagination-split">
+                                                        <li><button type="button" class="btn btn-outline-info" data-filter="all">Todos</button></li>
+                                                        <li><button type="button" class="btn btn-outline-info" data-filter="Masculino">Hombres</button></li>
+                                                        <li><button type="button" class="btn btn-outline-info" data-filter="Femenino">Mujeres</button></li>
+                                                    </ul>
+                                                </div>
+
+                                                <div class="clearfix"></div>
+                                                <div class="filtr-container">
+                                                    <?php
+                                                    foreach ($this->usuarios as $user) {
+                                                        echo '<div class="col-md-4 col-sm-4  profile_details filtr-item" data-category="' . $user['genero'] . '" data-sort="' . $user['genero'] . '">
+                                                    <div class="well profile_view">
+                                                        <div class="col-sm-12">';
+                                                        echo '<h4 class="brief"><small><i>' . substr($user['usuario'], 0, 26) . '</i></small></h4>';
+                                                        echo '<div class="left col-md-7 col-sm-7">';
+                                                        echo '<h2 hidden>' . $user['usuario'] . '</h2>';
+                                                        echo '<ul class="list-unstyled">';
+                                                        echo '<li><i class="fa fa-phone"></i> <b>' . $user['telefono'] . '</b></li>';
+                                                        echo '<li><i class="fas fa-address-card"></i> <small>' . $user['identificacion'] . '</small></li>';
+                                                        echo '</ul>
+                                                            </div>
+                                                            <div class="right col-md-5 col-sm-5 text-center">';
+                                                        echo '<img src="' . $this->basePath('img/profile/') . $user['foto'] . '" alt="' . $user['usuario'] . '" class="img-circle img-fluid">';
+                                                        echo '</div>
+                                                        </div>
+                                                        <div class=" profile-bottom text-center">                                                          
+                                                            <div class=" col-sm-12 emphasis">
+                                                                <button type="button" class="btn btn-success btn-sm"> <i class="fa fa-user">
+                                                                    </i> <i class="fa fa-comments-o"></i> </button>
+                                                                <button type="button" class="btn btn-primary btn-sm" onclick="verPerfil(' . $user['idUsuario'] . ')">
+                                                                    <i class="fa fa-user"></i> <i class="fa fa-eye"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>';
+                                                    }
+                                                    ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- /page content -->
+
+                                </div>
+                                <div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="profile-tab">
+
+                                    <!-- start user projects -->
+                                    <table class="data table table-striped no-margin">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Project Name</th>
+                                                <th>Client Company</th>
+                                                <th class="hidden-phone">Hours Spent</th>
+                                                <th>Contribution</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>1</td>
+                                                <td>New Company Takeover Review</td>
+                                                <td>Deveint Inc</td>
+                                                <td class="hidden-phone">18</td>
+                                                <td class="vertical-align-mid">
+                                                    <div class="progress">
+                                                        <div class="progress-bar progress-bar-success" data-transitiongoal="35"></div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>2</td>
+                                                <td>New Partner Contracts Consultanci</td>
+                                                <td>Deveint Inc</td>
+                                                <td class="hidden-phone">13</td>
+                                                <td class="vertical-align-mid">
+                                                    <div class="progress">
+                                                        <div class="progress-bar progress-bar-danger" data-transitiongoal="15"></div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>3</td>
+                                                <td>Partners and Inverstors report</td>
+                                                <td>Deveint Inc</td>
+                                                <td class="hidden-phone">30</td>
+                                                <td class="vertical-align-mid">
+                                                    <div class="progress">
+                                                        <div class="progress-bar progress-bar-success" data-transitiongoal="45"></div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>4</td>
+                                                <td>New Company Takeover Review</td>
+                                                <td>Deveint Inc</td>
+                                                <td class="hidden-phone">28</td>
+                                                <td class="vertical-align-mid">
+                                                    <div class="progress">
+                                                        <div class="progress-bar progress-bar-success" data-transitiongoal="75"></div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <!-- end user projects -->
+
+                                </div>
+                                <div role="tabpanel" class="tab-pane fade" id="tab_content3" aria-labelledby="profile-tab">
+                                    <ul class="messages">
+                                        <li>
+                                            <img src="<?= $this->basePath('img/profile/perfilMujer.png') ?>" class="avatar" alt="Avatar">
+                                            <div class="message_date">
+                                                <h3 class="date text-info">24</h3>
+                                                <p class="month">May</p>
+                                            </div>
+                                            <div class="message_wrapper">
+                                                <h4 class="heading">Desmond Davison</h4>
+                                                <blockquote class="message">Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua butcher retro keffiyeh dreamcatcher synth.</blockquote>
+                                                <br />
+                                                <p class="url">
+                                                    <span class="fs1 text-info" aria-hidden="true" data-icon=""></span>
+                                                    <a href="#"><i class="fa fa-paperclip"></i> User Acceptance Test.doc </a>
+                                                </p>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <img src="<?= $this->basePath('img/profile/perfilHombre.png') ?>" class="avatar" alt="Avatar">
+                                            <div class="message_date">
+                                                <h3 class="date text-error">21</h3>
+                                                <p class="month">May</p>
+                                            </div>
+                                            <div class="message_wrapper">
+                                                <h4 class="heading">Brian Michaels</h4>
+                                                <blockquote class="message">Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua butcher retro keffiyeh dreamcatcher synth.</blockquote>
+                                                <br />
+                                                <p class="url">
+                                                    <span class="fs1" aria-hidden="true" data-icon=""></span>
+                                                    <a href="#" data-original-title="">Download</a>
+                                                </p>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <img src="<?= $this->basePath('img/profile/perfilMujer.png') ?>" class="avatar" alt="Avatar">
+                                            <div class="message_date">
+                                                <h3 class="date text-info">24</h3>
+                                                <p class="month">May</p>
+                                            </div>
+                                            <div class="message_wrapper">
+                                                <h4 class="heading">Desmond Davison</h4>
+                                                <blockquote class="message">Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua butcher retro keffiyeh dreamcatcher synth.</blockquote>
+                                                <br />
+                                                <p class="url">
+                                                    <span class="fs1 text-info" aria-hidden="true" data-icon=""></span>
+                                                    <a href="#"><i class="fa fa-paperclip"></i> User Acceptance Test.doc </a>
+                                                </p>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <img src="<?= $this->basePath('img/profile/perfilHombre.png') ?>" class="avatar" alt="Avatar">
+                                            <div class="message_date">
+                                                <h3 class="date text-error">21</h3>
+                                                <p class="month">May</p>
+                                            </div>
+                                            <div class="message_wrapper">
+                                                <h4 class="heading">Brian Michaels</h4>
+                                                <blockquote class="message">Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua butcher retro keffiyeh dreamcatcher synth.</blockquote>
+                                                <br />
+                                                <p class="url">
+                                                    <span class="fs1" aria-hidden="true" data-icon=""></span>
+                                                    <a href="#" data-original-title="">Download</a>
+                                                </p>
+                                            </div>
+                                        </li>
+
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="msgBloqueo" style="display: none;">
+    <i class="fa fa-spinner fa-spin" aria-hidden="true"></i> SU SOLICITUD ESTA SIENDO PROCESADA, POR FAVOR ESPERE...
+</div>
+
+<div class="modal fade" id="modalFormulario" data-backdrop="static" tabindex="-1" aria-labelledby="lbModalFormulario" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="lbModalFormulario">Formulario</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="divContenido"></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalFormularioAux" data-backdrop="static" tabindex="-1" aria-labelledby="lbModalFormularioAux" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="lbModalFormularioAux">Formulario</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="divContenidoAux"></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal" data-backdrop="static" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabel">Recortar la imagen</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="img-container">
+                    <img id="image" src="<?= $this->basePath('img/profile/') . $this->foto; ?>">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" id="crop"><i class="fa fa-scissors"></i> Cortar</button>
+                <button type="button" class="btn btn-warning" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var filterizd = $('.filtr-container').filterizr({
+        layout: 'sameWidth',
+        delay: 5,
+        delayMode: 'progressive',
+        spinner: {
+            enabled: true,
+            fillColor: '#2184D0',
+            styles: {
+                height: '75px',
+                margin: '0 auto',
+                width: '75px',
+                'z-index': 2,
+            },
+        },
+    });
+
+    function verFoto() {
+        Swal.fire({
+            imageUrl: '<?= $this->basePath('img/profile/') . $this->foto; ?>',
+            imageHeight: 490,
+            imageAlt: 'Foto de Perfil'
+        });
+    }
+
+    window.addEventListener('DOMContentLoaded', function() {
+        var avatar = document.getElementById('avatar');
+        var image = document.getElementById('image');
+        var input = document.getElementById('input');
+        var $progress = $('.progress');
+        var $progressBar = $('.progress-bar');
+        var $alert = $('.alert');
+        var $modal = $('#modal');
+        var cropper;
+
+        $('[data-toggle="tooltip"]').tooltip();
+
+        input.addEventListener('change', function(e) {
+            var files = e.target.files;
+            var done = function(url) {
+                input.value = '';
+                image.src = url;
+                $alert.hide();
+                $modal.modal('show');
+            };
+            var reader;
+            var file;
+            var url;
+
+            if (files && files.length > 0) {
+                file = files[0];
+
+                if (URL) {
+                    done(URL.createObjectURL(file));
+                } else if (FileReader) {
+                    reader = new FileReader();
+                    reader.onload = function(e) {
+                        done(reader.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+        });
+
+        $modal.on('shown.bs.modal', function() {
+            cropper = new Cropper(image, {
+                aspectRatio: 1,
+                viewMode: 3,
+            });
+        }).on('hidden.bs.modal', function() {
+            cropper.destroy();
+            cropper = null;
+        });
+
+        document.getElementById('crop').addEventListener('click', function() {
+            Swal.fire({
+                title: "&iquest;DESEA RECORTAR LA IMAGEN?",
+                text: "Para que se efectuen los cambios debes cerrar la seccion",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "Si",
+                cancelButtonText: "No",
+                allowOutsideClick: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var initialAvatarURL;
+                    var canvas;
+
+                    $modal.modal('hide');
+
+                    if (cropper) {
+                        canvas = cropper.getCroppedCanvas({
+                            width: 160,
+                            height: 160,
+                        });
+                        initialAvatarURL = avatar.src;
+                        avatar.src = canvas.toDataURL();
+                        $progress.show();
+                        $alert.removeClass('alert-success alert-warning');
+                        canvas.toBlob(function(blob) {
+                            var formData = new FormData();
+
+                            formData.append('avatar', blob, 'avatar.jpg');
+                            $.ajax('cambiarfoto', {
+                                method: 'POST',
+                                data: formData,
+                                processData: false,
+                                contentType: false,
+
+                                xhr: function() {
+                                    var xhr = new XMLHttpRequest();
+
+                                    xhr.upload.onprogress = function(e) {
+                                        var percent = '0';
+                                        var percentage = '0%';
+
+                                        if (e.lengthComputable) {
+                                            percent = Math.round((e.loaded / e.total) * 100);
+                                            percentage = percent + '%';
+                                            $progressBar.width(percentage).attr('aria-valuenow', percent).text(percentage);
+                                        }
+                                    };
+
+                                    return xhr;
+                                },
+
+                                success: function(datos) {
+                                    $alert.show().addClass('alert-success').text('Subida exitosa');
+                                    if (datos['error'] == 1) {
+                                        window.location.reload();
+                                    }
+                                },
+
+                                error: function() {
+                                    avatar.src = initialAvatarURL;
+                                    $alert.show().addClass('alert-warning').text('Error al Subir');
+                                },
+
+                                complete: function() {
+                                    $progress.hide();
+                                },
+                            });
+                            bloqueoAjax();
+                        });
+                    }
+                }
+            });
+        });
+    });
+</script>

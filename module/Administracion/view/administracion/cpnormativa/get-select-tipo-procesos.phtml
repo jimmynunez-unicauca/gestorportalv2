@@ -1,0 +1,10 @@
+<option value="">Seleccione...</option>
+<?php
+foreach ($this->tipoProcesos as $tipoProceso) {
+    if ($tipoProceso['idTipoProceso'] == $this->idTipoProceso) {
+        echo "<option value='" . $tipoProceso['idTipoProceso'] . "' selected>" . $tipoProceso['tipoProceso'] . "</option>";
+    } else {
+        echo "<option value='" . $tipoProceso['idTipoProceso'] . "'>" . $tipoProceso['tipoProceso'] . "</option>";
+    }
+}
+?>

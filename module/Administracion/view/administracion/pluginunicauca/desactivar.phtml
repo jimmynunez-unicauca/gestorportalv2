@@ -1,0 +1,74 @@
+<?php
+$form->prepare();
+echo $this->form()->openTag($form);
+?>
+<div class="modal-body ui-front">
+    <div style="padding: 10px" class="container-fluid">
+        <div class="alert alert-danger">
+            <i class="fas fa-exclamation-triangle"></i>
+            <strong>¡ATENCIÓN!</strong> ¿Está seguro que desea <strong>DESACTIVAR</strong> este módulo?
+            <br><small>El módulo dejará de estar disponible en el sistema.</small>
+        </div>
+
+        <fieldset>
+            <legend>Información del módulo</legend>
+            <div class="row">
+                <div class="form-group col-md-12 col-sm-12">
+                    <?= $this->formLabel($form->get('nombre_modulo')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('nombre_modulo')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-id-card"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-12 col-sm-12">
+                    <?= $this->formLabel($form->get('ruta_archivo')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('ruta_archivo')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-briefcase"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-12 col-sm-12">
+                    <?= $this->formLabel($form->get('descripcion')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('descripcion')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-phone-square"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-12 col-sm-12">
+                    <label>Estado Actual:</label>
+                    <?php if ($form->get('activo')->getValue() == 1): ?>
+                        <span class="badge badge-success">ACTIVO</span>
+                    <?php else: ?>
+                        <span class="badge badge-danger">INACTIVO</span>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</div>
+
+<div class="modal-footer" style="padding: 20px">
+    <button type="submit" class="btn btn-danger" title="DESACTIVAR MÓDULO">
+        <i class="fas fa-ban"></i> Desactivar
+    </button>
+    <button type="button" class="btn btn-warning" data-dismiss="modal">
+        <i class="fas fa-times"></i> Cancelar
+    </button>
+</div>
+
+<?php
+echo $this->formHidden($form->get('id'));
+echo $this->form()->closeTag();
+?>

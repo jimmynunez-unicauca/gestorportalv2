@@ -1,0 +1,99 @@
+<?php
+$form->prepare();
+echo $this->form()->openTag($form);
+?>
+<div class="modal-body ui-front">
+    <div style="padding: 10px" class="container-fluid">
+        <fieldset>
+            <legend>Llene los datos del evento</legend>
+            <div class="row">
+                <div class="form-group col-md-12 col-sm-12">
+                    <?= $this->formLabel($form->get('title')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('title')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-commenting-o"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-12 col-sm-12">
+                    <?= $this->formLabel($form->get('descripcion')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('descripcion')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-commenting-o"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <?= $this->formLabel($form->get('start')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('start')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-calendar-check-o"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <?= $this->formLabel($form->get('end')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('end')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-calendar-times-o"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4 col-sm-12">
+                    <?= $this->formLabel($form->get('color')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('color')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-paint-brush"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4 col-sm-12">
+                    <?= $this->formLabel($form->get('textColor')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('textColor')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-paint-brush"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4 col-sm-12">
+                    <?= $this->formLabel($form->get('allDay')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('allDay')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-reply-all"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</div>
+
+<div class="modal-footer" style="padding: 20px">
+    <button type="submit" class="btn btn-success" title="REGISTRAR EMPLEADO"><i class="fas fa-save"></i> Registrar</button>
+    <button type="button" class="btn btn-warning" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
+</div>
+<?php
+echo $this->formHidden($form->get('idEvento')->setValue(0));
+echo $this->form()->closeTag();
+?>

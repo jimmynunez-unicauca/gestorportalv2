@@ -1,0 +1,26 @@
+<strong class="text-gray-dark">Se listan las dependencias</strong>
+<table id="myTableAux" class="table table-sm table-dark">
+    <thead>
+        <tr>
+            <th data-toggle="tooltip" title="ID" scope="col"><i class="fa fa-key"></i></th>
+            <th scope="col">DEPENDENCIAS</th>
+            <th data-toggle="tooltip" title="OPCIONES" scope="col"><i class="fa fa-cog fa-spin fa-lg"></i></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php
+        foreach ($this->dependencias as $dep) {
+            echo '<tr>';
+            echo '<th scope="row">' . $dep['idDependencia'] . '</th>';
+            echo  '<th>' . $dep['dependencia'] . '</th>';
+            echo  '<th>';
+            echo '<a href="javascript:addDep(' . $dep['idDependencia']  . ')" title="AGREGAR"><i class="fa fa-plus-square" style="color:green;"></i></a>';
+            echo  '</th>';
+            echo '</tr>';
+        }
+        ?>
+    </tbody>
+</table>
+<script>
+    $("#myTableAux").DataTable();
+</script>

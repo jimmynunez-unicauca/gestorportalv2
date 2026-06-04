@@ -1,0 +1,165 @@
+<?php
+function convertirAMPM($hora24)
+{
+    return DateTime::createFromFormat('H:i:s', $hora24)->format('g:i A');
+}
+
+?>
+<div class="modal-body">
+    <div style="padding: 10px" class="container-fluid">
+        <fieldset>
+            <legend>Informacion del programa</legend>
+            <div class="form-row">
+                <div class="form-group col-md-12 col-sm-12">
+                    <label class="control-label" for="nombre_programa">Titulo</label>
+                    <div class="input-group">
+                        <input type='text' value="<?php echo $this->form['nombre_programa']; ?>" class="form-control" readonly />
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-commenting-o"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-12 col-sm-12">
+                    <label class="control-label" for="detalle_programa">Contenido</label>
+                    <div class="input-group">
+                        <textarea id="detalle_programa" name="detalle_programa" class="form-control" rows="10" readonly><?php echo $this->form['detalle_programa']; ?></textarea>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-commenting-o"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-12 col-sm-12 text-center">
+                    <a href="javascript:verImagen('<?php echo $this->form['imagen']; ?>')" title="VER IMAGEN"><img src="./../../../archivos/emisora/programas/<?php echo $this->form['imagen']; ?>" width="100" height="100" /></a>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <label class="control-label" for="hora_inicio">Hora de inicio</label>
+                    <div class="input-group">
+                        <input type='text' value="<?php echo convertirAMPM($this->form['hora_inicio'])  ?>" class="form-control" readonly />
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-clock-o"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <label class="control-label" for="hora_fin">Hora de fin</label>
+                    <div class="input-group">
+                        <input type='text' value="<?php echo convertirAMPM($this->form['hora_fin'])  ?>" class="form-control" readonly />
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-clock-o"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <label class="control-label" for="segmento">Segmento</label>
+                    <div class="input-group">
+                        <input type='text' value="<?php echo $this->form['segmento']  ?>" class="form-control" readonly />
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-sun-o"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <label class="control-label" for="color_programa">Color del programa</label>
+                    <div class="input-group">
+                        <input type='text' value="<?php echo $this->form['color_programa']  ?>" class="form-control" readonly style="color: <?= $this->form['color_programa'] ?>; border-color: <?= $this->form['color_programa'] ?>;" />
+                        <div class="input-group-append">
+                            <span class="input-group-text" style="color: <?= $this->form['color_programa'] ?>; border-color: <?= $this->form['color_programa'] ?>;">
+                                <i class="fas fa-paint-brush"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-12 col-sm-12">
+                    <label class="control-label" for="color_programa">Días de transmisión:</label><br>
+                    <?php foreach ($this->dias as $dia) {
+                        echo '<b>' . ucwords($dia) . '</b>, ';
+                    } ?>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>Informacion del registro</legend>
+            <div class="form-row">
+                <div class="form-group col-md-4 col-sm-12">
+                    <label class="control-label" for="idPrograma"><i class="fa fa-key"></i></label>
+                    <div class="input-group">
+                        <input type='text' value="<?php echo $this->form['idPrograma']; ?>" class="form-control" readonly />
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-key"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4 col-sm-12">
+                    <label class="control-label" for="estado">Estado</label>
+                    <div class="input-group">
+                        <input type='text' id="estado" name="estado" value="<?php echo $this->form['estado']; ?>" class="form-control" readonly />
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-list-alt"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4 col-sm-12">
+                    <label class="control-label" for="registradopor">Registrado</label>
+                    <div class="input-group">
+                        <input type='text' id="registradopor" name="registradopor" value="<?php echo $this->form['registradopor']; ?>" class="form-control" readonly />
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-user"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4 col-sm-12">
+                    <label class="control-label" for="modificadopor">Modificado</label>
+                    <div class="input-group">
+                        <input type='text' id="modificadopor" name="modificadopor" value="<?php echo $this->form['modificadopor']; ?>" class="form-control" readonly />
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-user"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4 col-sm-12">
+                    <label class="control-label" for="fechahorareg">Registrado</label>
+                    <div class="input-group">
+                        <input type='text' id="fechahorareg" name="fechahorareg" value="<?php echo $this->form['fechahorareg']; ?>" class="form-control" readonly />
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4 col-sm-12">
+                    <label class="control-label" for="fechahoramod">Modificado</label>
+                    <div class="input-group">
+                        <input type='text' id="fechahoramod" name="fechahoramod" value="<?php echo $this->form['fechahoramod']; ?>" class="form-control" readonly />
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</div>
+<div class="modal-footer" style="padding: 20px">
+    <button type="button" class="btn btn-warning" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
+</div>

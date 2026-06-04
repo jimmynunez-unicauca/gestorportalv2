@@ -1,0 +1,127 @@
+<div class="modal-body">
+    <div style="padding: 10px" class="container-fluid">
+        <fieldset>
+            <legend>Informacion del Plugin</legend>
+            <div class="form-row">
+                <div class="form-group col-md-12 col-sm-12">
+                    <label class="control-label" for="titulo">Titulo</label>
+                    <div class="input-group">
+                        <input type='text' value="<?php echo $this->form['titulo']; ?>" class="form-control" readonly />
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-id-card"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <label class="control-label" for="fecha_publicacion">Fecha de Publicación</label>
+                    <div class="input-group">
+                        <input type='text' value="<?php echo $this->form['fecha_publicacion']; ?>" class="form-control" readonly />
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <label class="control-label" for="tipo_documento ">Tipo de Documento</label>
+                    <div class="input-group">
+                        <input type='text' value="<?php echo $this->form['tipo_documento']; ?>" class="form-control" readonly />
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-file-alt"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <label class="control-label" for="ruta_archivo ">Documento</label>
+                    <div class="input-group">
+                        <input type='text' value="<?php echo $this->form['ruta_archivo']; ?>" class="form-control" readonly />
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-file-alt"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>Informacion del registro</legend>
+            <div class="form-row">
+                <div class="form-group col-md-4 col-sm-12">
+                    <label class="control-label" for="id"><i class="fa fa-key"></i></label>
+                    <div class="input-group">
+                        <input type='text' value="<?php echo $this->form['id']; ?>" class="form-control" readonly />
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-key"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4 col-sm-12">
+                    <label class="control-label" for="activo">Activo </label>
+                    <div class="input-group">
+                        <input type='text' id="activo " name="activo" value="<?php echo $this->form['activo']; ?>" class="form-control" readonly />
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-list-alt"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4 col-sm-12">
+                    <label class="control-label" for="creado_por">Registrado</label>
+                    <div class="input-group">
+                        <input type='text' id="creado_por" name="creado_por" value="<?php echo $this->form['creado_por']; ?>" class="form-control" readonly />
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-user"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4 col-sm-12">
+                    <label class="control-label" for="actualizado_por">Modificado</label>
+                    <div class="input-group">
+                        <input type='text' id="actualizado_por" name="actualizado_por" value="<?php echo $this->form['actualizado_por']; ?>" class="form-control" readonly />
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-user"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4 col-sm-12">
+                    <label class="control-label" for="creado_el">Registrado</label>
+                    <div class="input-group">
+                        <input type='text' id="creado_el" name="creado_el" value="<?php echo $this->form['creado_el']; ?>" class="form-control" readonly />
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4 col-sm-12">
+                    <label class="control-label" for="actualizado_el">Modificado</label>
+                    <div class="input-group">
+                        <input type='text' id="actualizado_el" name="actualizado_el" value="<?php echo $this->form['actualizado_el']; ?>" class="form-control" readonly />
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</div>
+<div class="modal-footer" style="padding: 20px">
+    <button type="button" class="btn btn-warning" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
+</div>

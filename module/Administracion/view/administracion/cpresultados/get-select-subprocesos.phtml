@@ -1,0 +1,10 @@
+<option value="">Seleccione...</option>
+<?php
+foreach ($this->subprocesos as $subproceso) {
+    if ($subproceso['idSubproceso'] == $this->idsubproceso) {
+        echo "<option value='" . $subproceso['idSubproceso'] . "' selected>" . $subproceso['subproceso'] . "</option>";
+    } else {
+        echo "<option value='" . $subproceso['idSubproceso'] . "'>" . $subproceso['subproceso'] . "</option>";
+    }
+}
+?>

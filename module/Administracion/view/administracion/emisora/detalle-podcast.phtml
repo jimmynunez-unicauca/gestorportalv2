@@ -1,0 +1,139 @@
+<div class="modal-body">
+    <div style="padding: 10px" class="container-fluid">
+        <fieldset>
+            <legend>Informacion del programa</legend>
+            <div class="form-row">
+                <div class="form-group col-md-12 col-sm-12">
+                    <label class="control-label" for="titulo">Titulo</label>
+                    <div class="input-group">
+                        <input type='text' value="<?php echo $form->getTitulo(); ?>" class="form-control" readonly />
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-commenting-o"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-12 col-sm-12">
+                    <label class="control-label" for="descripcion">Contenido</label>
+                    <div class="input-group">
+                        <textarea id="descripcion" name="descripcion" class="form-control" rows="10" readonly><?php echo $form->getDescripcion(); ?></textarea>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-commenting-o"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-12 col-sm-12 text-center">
+                    <a href="javascript:verImagen('<?php echo $form->getImagen(); ?>')" title="VER IMAGEN"><img src="./../../../archivos/emisora/podcast/<?php echo $form->getImagen(); ?>" width="100" height="100" /></a>
+                </div>
+                <div class="form-group col-md-12 col-sm-12 text-center">
+                    <label class="control-label" for="audio_url">Audio</label>
+                    <div class="audio-controls">
+                        <audio controls>
+                            <source src="./../../../archivos/emisora/audios/<?php echo $form->getAudio_url(); ?>" type="audio/mpeg">
+                            Tu navegador no soporta el elemento de audio.
+                        </audio>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <label class="control-label" for="segmento">Categoría</label>
+                    <div class="input-group">
+                        <input type='text' value="<?php echo $form->getCategoria(); ?>" class="form-control" readonly />
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-list"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <label class="control-label" for="segmento">Transmision</label>
+                    <div class="input-group">
+                        <input type='text' value="<?php echo $form->getTransmision(); ?>" class="form-control" readonly />
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>Informacion del registro</legend>
+            <div class="form-row">
+                <div class="form-group col-md-4 col-sm-12">
+                    <label class="control-label" for="idPodcast"><i class="fa fa-key"></i></label>
+                    <div class="input-group">
+                        <input type='text' value="<?php echo $form->getIdPodcast(); ?>" class="form-control" readonly />
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-key"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4 col-sm-12">
+                    <label class="control-label" for="estado">Estado</label>
+                    <div class="input-group">
+                        <input type='text' id="estado" name="estado" value="<?php echo $form->getEstado(); ?>" class="form-control" readonly />
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-list-alt"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4 col-sm-12">
+                    <label class="control-label" for="registradopor">Registrado</label>
+                    <div class="input-group">
+                        <input type='text' id="registradopor" name="registradopor" value="<?php echo $form->getRegistradopor(); ?>" class="form-control" readonly />
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-user"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4 col-sm-12">
+                    <label class="control-label" for="modificadopor">Modificado</label>
+                    <div class="input-group">
+                        <input type='text' id="modificadopor" name="modificadopor" value="<?php echo $form->getModificadopor(); ?>" class="form-control" readonly />
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-user"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4 col-sm-12">
+                    <label class="control-label" for="fechahorareg">Registrado</label>
+                    <div class="input-group">
+                        <input type='text' id="fechahorareg" name="fechahorareg" value="<?php echo $form->getFechahorareg(); ?>" class="form-control" readonly />
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4 col-sm-12">
+                    <label class="control-label" for="fechahoramod">Modificado</label>
+                    <div class="input-group">
+                        <input type='text' id="fechahoramod" name="fechahoramod" value="<?php echo $form->getFechahoramod(); ?>" class="form-control" readonly />
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</div>
+<div class="modal-footer" style="padding: 20px">
+    <button type="button" class="btn btn-warning" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
+</div>

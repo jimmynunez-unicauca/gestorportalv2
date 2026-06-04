@@ -1,0 +1,281 @@
+<?php
+//--------- CARGAR MENSAJES DE ALERTA ------------------------------------------
+$flash = $this->flashMessenger();
+$notificaciones = [
+    'success' => array_merge($flash->getSuccessMessages(), $flash->getCurrentSuccessMessages()),
+    'error' => array_merge($flash->getErrorMessages(), $flash->getCurrentErrorMessages()),
+    'alert' => array_merge($flash->getMessages(), $flash->getCurrentMessages()),
+    'information' => array_merge($flash->getInfoMessages(), $flash->getCurrentInfoMessages()),
+    'warning' => array_merge($flash->getWarningMessages(), $flash->getCurrentWarningMessages()),
+];
+$flash->clearCurrentMessages('default');
+$flash->clearCurrentMessages('info');
+$flash->clearCurrentMessages('success');
+$flash->clearCurrentMessages('warning');
+$flash->clearCurrentMessages('error');
+$mostrarMensajes = '';
+foreach (array_filter($notificaciones) as $tipo => $mensajes) {
+    $tipoToastr = 'info';
+    $titulo = 'GestorPortal';
+    switch ($tipo) {
+        case 'success':
+            $titulo = '<p><b><i><i class="fa fa-paw"></i> GestorPortal</i></b></p>';
+            $tipoToastr = 'success';
+            break;
+        case 'error':
+            $titulo = '<p><b><i><i class="fa fa-paw"></i> GestorPortal</i></b></p>';
+            $tipoToastr = 'error';
+            break;
+        case 'alert':
+            $titulo = '<p><b><i><i class="fa fa-paw"></i> GestorPortal</i></b></p>';
+            $tipoToastr = 'warning';
+            break;
+        case 'information':
+            $titulo = '<p><b><i><i class="fa fa-paw"></i> GestorPortal</i></b></p>';
+            $tipoToastr = 'info';
+            break;
+        case 'warning':
+            $titulo = '<p><b><i><i class="fa fa-paw"></i> GestorPortal</i></b></p>';
+            $tipoToastr = 'warning';
+            break;
+    }
+    foreach ($mensajes as $mensaje) {
+        $mostrarMensajes .= "new PNotify({
+            title: '$titulo',
+            text: '$mensaje',
+            type: '$tipoToastr',
+            styling: 'bootstrap3'
+        });";
+    }
+}
+//------------------------------------------------------------------------------
+
+$title = 'Roles & Recursos';
+$this->headTitle($title);
+$this->headLink();
+$this->headScript()->prependScript('
+            $(document).ajaxStop($.unblockUI);
+            $(document).ready(function() {
+                $("#myTable").DataTable({
+                    responsive: true,
+                    iDisplayLength: 25,
+                    sPaginationType: "full_numbers",
+                    oLanguage: {
+                        sLengthMenu: "Mostrar: _MENU_ registros por pagina",
+                        sZeroRecords: "NO SE HA ENCONTRADO INFORMACION",
+                        sInfo: "Mostrando <b>_START_</b> a <b>_END_</b> registros <br>TOTAL REGISTROS: <b>_TOTAL_</b> Registros</b>",
+                        sInfoEmpty: "Mostrando 0 A 0 registros",
+                        sInfoFiltered: "(Filtrados de un total de <b>_MAX_</b> registros)",
+                        sLoadingRecords: "CARGANDO...",
+                        sProcessing: "EN PROCESO...",
+                        sSearch: "Buscar:",
+                        sEmptyTable: "NO HAY INFORMACION DISPONIBLE PARA LA TABLA",
+                        oPaginate: {
+                            sFirst: "<i class=\'fa fa-fast-backward\' aria-hidden=\'true\' title=\'Inicio\'></i>",
+                            sPrevious: "<i class=\'fa fa-step-backward\' aria-hidden=\'true\' title=\'Anterior\'></i>",
+                            sNext: "<i class=\'fa fa-step-forward\' aria-hidden=\'true\' title=\'Siguiente\'></i>",
+                            sLast: "<i class=\'fa fa-fast-forward\' aria-hidden=\'true\' title=\'Fin\'></i>",
+                        }
+                    },
+                    aaSorting: [[0, "desc"]]
+                });
+                $("#myTable2").DataTable({
+                    responsive: true,
+                    iDisplayLength: 25,
+                    sPaginationType: "full_numbers",
+                    oLanguage: {
+                        sLengthMenu: "Mostrar: _MENU_ registros por pagina",
+                        sZeroRecords: "NO SE HA ENCONTRADO INFORMACION",
+                        sInfo: "Mostrando <b>_START_</b> a <b>_END_</b> registros <br>TOTAL REGISTROS: <b>_TOTAL_</b> Registros</b>",
+                        sInfoEmpty: "Mostrando 0 A 0 registros",
+                        sInfoFiltered: "(Filtrados de un total de <b>_MAX_</b> registros)",
+                        sLoadingRecords: "CARGANDO...",
+                        sProcessing: "EN PROCESO...",
+                        sSearch: "Buscar:",
+                        sEmptyTable: "NO HAY INFORMACION DISPONIBLE PARA LA TABLA",
+                        oPaginate: {
+                            sFirst: "<i class=\'fa fa-fast-backward\' aria-hidden=\'true\' title=\'Inicio\'></i>",
+                            sPrevious: "<i class=\'fa fa-step-backward\' aria-hidden=\'true\' title=\'Anterior\'></i>",
+                            sNext: "<i class=\'fa fa-step-forward\' aria-hidden=\'true\' title=\'Siguiente\'></i>",
+                            sLast: "<i class=\'fa fa-fast-forward\' aria-hidden=\'true\' title=\'Fin\'></i>",
+                        }
+                    },
+                    aaSorting: [[0, "desc"]]
+                });
+                //------------------------------------------------------------------------------
+                // MANIPULACION DEL EVENTO DE CIERRE DEL MODAL
+                //------------------------------------------------------------------------------
+                $("#modalFormulario").on("hide.bs.modal", function (e) {
+                    Swal.fire({
+                        title: "&iquest;DESEA CERRAR EL FORMULARIO?",
+                        text: "",
+                        icon: "question",
+                        showCancelButton: true,
+                        confirmButtonText: "Si",
+                        cancelButtonText: "No",
+                        allowOutsideClick: false
+                    }).then((result) => {
+                        if (!result.isConfirmed) {
+                            $(this).modal("show");
+                        }
+                    });
+                });
+                //------------------------------------------------------------------------------
+                ' . $mostrarMensajes . '
+            });', 'text/javascript', array('noescape' => true))
+    ->prependFile($this->basePath('js/sistema/rol.js'))
+    ->prependFile($this->basePath('js/jquery.blockUI.js'));
+
+?>
+<div class="col-md-12 col-sm-12">
+    <div class="x_panel">
+        <div class="x_title">
+            <h2><span data-feather="sliders"></span> Roles y Recursos<small><i><b><i class="fa fa-paw"></i>GestorPortal</small></b></i></h2>
+            <ul class="nav navbar-right panel_toolbox">
+                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="#">Settings 1</a>
+                        <a class="dropdown-item" href="#">Settings 2</a>
+                    </div>
+                </li>
+                <li><a class="close-link"><i class="fa fa-close"></i></a>
+                </li>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+            <ul class="nav nav-tabs bar_tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true" title="ROLES">ROLES</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false" title="RECURSOS">RECURSOS</a>
+                </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="card-box table-responsive">
+                                <div class="d-flex justify-content-between align-items-center w-100">
+                                    <strong class="text-gray-dark">Se listan los roles registrados en el sistema</strong>
+                                    <a type="button" class="btn btn-primary" href="javascript:verRegistrar();" title="REGISTRAR"><span data-feather="plus-circle"></span></a>
+                                </div>
+
+                                <table id="myTable" class="table table-striped table-bordered dt-responsive nowrap table-sm table-hover" cellspacing="0" width="100%">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th data-toggle="tooltip" title="ID" scope="col"><i class="fa fa-key"></i></th>
+                                            <th data-toggle="tooltip" title="OPCIONES" scope="col"><i class="fa fa-cog fa-spin fa-lg"></i></th>
+                                            <th scope="col"><i class="fas fa-id-card"></i> ROL</th>
+                                            <th scope="col"><i class="fas fa-user-circle"></i> CREADO</th>
+                                            <th scope="col"><i class="fa fa-calendar"></i> FECHA</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        foreach ($this->fetchAll as $usuario) {
+                                            echo '<tr>';
+                                            echo '<td>' . $usuario['idRol'] . '</td>';
+                                            echo '<td>';
+                                            echo '<a href="javascript:verDetalle(' . $usuario['idRol'] . ')" title="VER"><i class="fas fa-eye"></i></a>';
+                                            echo '&nbsp;&nbsp;';
+                                            echo '<a href="javascript:verEditar(' . $usuario['idRol'] . ')" title="EDITAR"><i class="fa fa-edit"></i></a>';
+                                            echo '&nbsp;&nbsp;';
+                                            echo '<a href="javascript:verRecursos(' . $usuario['idRol'] . ')" title="RECURSOS"><i class="fa fa-list-alt"></i></a>';
+                                            /*  echo '<a href="#" onclick="verEliminar(' . $usuario['idRol'] . '); return false;" title="ELIMINAR"><i style ="color:red" class="fa fa-trash"></i></a>'; */
+                                            echo '</td>';
+                                            echo '<td>' . $usuario['rol'] . '</td>';
+                                            echo '<td>' . $usuario['registradopor'] . '</td>';
+                                            echo '<td>' . $usuario['fechahorareg'] . '</td>';
+                                            echo '</tr>';
+                                        }
+                                        ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="card-box table-responsive">
+                                <div class="d-flex justify-content-between align-items-center w-100">
+                                    <strong class="text-gray-dark">Se listan los recursos registrados en el sistema</strong>
+                                    <a type="button" class="btn btn-primary" href="javascript:verRegistrar2();" title="REGISTRAR"><span data-feather="plus-circle"></span></a>
+                                </div>
+
+                                <table id="myTable2" class="table table-striped table-bordered dt-responsive nowrap table-sm table-hover" cellspacing="0" width="100%">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th data-toggle="tooltip" title="ID" scope="col"><i class="fa fa-key"></i></th>
+                                            <th data-toggle="tooltip" title="OPCIONES" scope="col"><i class="fa fa-cog fa-spin fa-lg"></i></th>
+                                            <th scope="col"><i class="fas fa-sliders"></i> RECURSO</th>
+                                            <th scope="col"><i class="fas fa-wrench"></i> METODO</th>
+                                            <th scope="col"><i class="fa fa-calendar"></i> FECHA</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        foreach ($this->recursos as $recurso) {
+                                            echo '<tr>';
+                                            echo '<td>' . $recurso['idRecurso'] . '</td>';
+                                            echo '<td>';
+                                            echo '<a href="javascript:verDetalle2(' . $recurso['idRecurso'] . ')" title="VER"><i class="fas fa-eye"></i></a>';
+                                            echo '&nbsp;&nbsp;';
+                                            echo '<a href="javascript:verEditar2(' . $recurso['idRecurso'] . ')" title="EDITAR"><i class="fa fa-edit"></i></a>';
+                                            echo '&nbsp;&nbsp;';
+                                            /*  echo '<a href="#" onclick="verEliminar2(' . $recurso['idRecurso'] . '); return false;" title="ELIMINAR"><i style ="color:red" class="fa fa-trash"></i></a>'; */
+                                            echo '</td>';
+                                            echo '<td>' . $recurso['recurso'] . '</td>';
+                                            echo '<td>' . $recurso['metodo'] . '</td>';
+                                            echo '<td>' . $recurso['fechahorareg'] . '</td>';
+                                            echo '</tr>';
+                                        }
+                                        ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="msgBloqueo" style="display: none;">
+    <i class="fa fa-spinner fa-spin" aria-hidden="true"></i> SU SOLICITUD ESTA SIENDO PROCESADA, POR FAVOR ESPERE...
+</div>
+
+<div class="modal fade" id="modalFormulario" data-backdrop="static" tabindex="-1" aria-labelledby="lbModalFormulario" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="lbModalFormulario">Formulario</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="divContenido"></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalFormularioAux" data-backdrop="static" tabindex="-1" aria-labelledby="lbModalFormularioAux" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="lbModalFormularioAux">Formulario</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="divContenidoAux"></div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,58 @@
+<?php
+
+$form->prepare();
+echo $this->form()->openTag($form);
+?>
+<div class="modal-body">
+    <div class="container-fluid">
+        <div class="alert alert-danger">
+            <strong><i class="fa fa-exclamation-triangle"></i> ¡ADVERTENCIA!</strong>
+            <p>¿Está seguro que desea eliminar esta convocatoria?</p>
+            <p class="text-danger">Esta acción no se puede deshacer.</p>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label><strong>ID Convocatoria:</strong></label>
+                <p class="form-control-static"><?= $this->escapeHtml($form->get('id_convocatoria')->getValue()) ?></p>
+            </div>
+            <div class="form-group col-md-6">
+                <label><strong>Periodo:</strong></label>
+                <p class="form-control-static"><?= $this->escapeHtml($form->get('periodo')->getValue()) ?></p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-12">
+                <label><strong>Nombre Convocatoria:</strong></label>
+                <p class="form-control-static"><?= $this->escapeHtml($form->get('nombre_convocatoria')->getValue()) ?></p>
+            </div>
+        </div>
+
+        <?php if (isset($convocatoria) && $convocatoria->getInscritosActuales() > 0): ?>
+            <div class="alert alert-warning">
+                <strong><i class="fa fa-users"></i> Atención:</strong>
+                Esta convocatoria tiene <?= $convocatoria->getInscritosActuales() ?> inscripciones asociadas.
+                No se puede eliminar hasta que no tenga inscripciones.
+            </div>
+        <?php endif; ?>
+
+        <!-- Campos hidden -->
+        <?= $this->formHidden($form->get('id_convocatoria')) ?>
+        <?= $this->formHidden($form->get('nombre_convocatoria')) ?>
+        <?= $this->formHidden($form->get('periodo')) ?>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button type="submit" class="btn btn-danger">
+        <i class="fa fa-trash"></i> Sí, Eliminar
+    </button>
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+        <i class="fa fa-times"></i> Cancelar
+    </button>
+</div>
+
+<?php
+echo $this->form()->closeTag();
+?>

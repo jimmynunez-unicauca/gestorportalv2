@@ -1,0 +1,166 @@
+<?php
+$form->prepare();
+echo $this->form()->openTag($form);
+?>
+<div class="modal-body ui-front">
+    <div style="padding: 10px" class="container-fluid">
+        <fieldset>
+            <legend>Llene los datos</legend>
+            <div class="row">
+                <div class="form-group col-md-12 col-sm-12">
+                    <?= $this->formLabel($form->get('nombre_formulario')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('nombre_formulario')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-id-card"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <?= $this->formLabel($form->get('slug')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('slug')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <?= $this->formLabel($form->get('cupo_maximo')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('cupo_maximo')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-file-alt"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <?= $this->formLabel($form->get('fecha_inicio')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('fecha_inicio')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-file-alt"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <?= $this->formLabel($form->get('fecha_fin')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('fecha_fin')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-file-alt"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <?= $this->formLabel($form->get('hora_limite_diaria')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('hora_limite_diaria')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-file-alt"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-12 col-sm-12">
+                    <?= $this->formLabel($form->get('descripcion')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('descripcion')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-file-alt"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-12 col-sm-12">
+                    <?= $this->formLabel($form->get('instrucciones')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('instrucciones')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-file-alt"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <label>Estado Actual:</label>
+                    <?php if ($form->get('activo')->getValue() == 1): ?>
+                        <span class="badge badge-success">ACTIVO</span>
+                    <?php else: ?>
+                        <span class="badge badge-danger">INACTIVO</span>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>Informacion del registro</legend>
+            <div class="form-row">
+                <div class="form-group col-md-6 col-sm-12">
+                    <label class="control-label" for="id_config"><i class="fa fa-key"></i></label>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('id_config')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-key"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <label class="control-label" for="created_by">Registrado</label>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('created_by')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-user"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <label class="control-label" for="created_at">Registrado</label>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('created_at')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <label class="control-label" for="updated_at">Modificado</label>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('updated_at')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</div>
+
+<div class="modal-footer" style="padding: 20px">
+    <button type="submit" class="btn btn-danger" title="ELIMINAR FORMULARIO"><i class="fa fa-trash"></i> Eliminar</button>
+    <button type="button" class="btn btn-warning" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
+</div>
+<?php
+echo $this->form()->closeTag();
+?>

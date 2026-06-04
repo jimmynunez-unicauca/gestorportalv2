@@ -1,0 +1,1175 @@
+<?php
+$title = 'Ver Organigrama';
+$this->headTitle($title);
+$this->headLink()->prependStylesheet($this->basePath('css/organigrama.css'));
+$this->headScript()->prependFile($this->basePath('js/sistema/organigrama.js'))
+    ->prependFile('https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js')
+    ->prependFile('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js')
+    ->prependFile('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+
+
+
+// Obtener la URL base para JavaScript
+$urlIndex = $this->url('administracion/organigrama', ['action' => 'index']);
+?>
+
+<style>
+    @media print {
+        body * {
+            visibility: hidden;
+        }
+
+        #print-area,
+        #print-area * {
+            visibility: visible;
+        }
+
+        #print-area {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .org-wrapper {
+            overflow: visible !important;
+        }
+
+        .tree-node {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        .no-print {
+            display: none !important;
+        }
+
+        button,
+        .btn-group,
+        .toolbar,
+        .legend,
+        .instruction,
+        .x_title,
+        .nav-tabs {
+            display: none !important;
+        }
+    }
+</style>
+
+<div class="col-md-12 col-sm-12">
+    <div class="x_panel">
+        <div class="x_title">
+            <h2><i class="fa fa-sitemap"></i> Organigrama Institucional</h2>
+            <ul class="nav navbar-right panel_toolbox">
+                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+            <ul class="nav nav-tabs bar_tabs">
+                <li class="nav-item">
+                    <a class="nav-link" href="<?= $urlIndex ?>">📋 Listado de Nodos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="<?= $this->url('administracion/organigrama', ['action' => 'ver']) ?>">🌳 Ver Organigrama</a>
+                </li>
+            </ul>
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="card-box">
+                        <div class="d-flex justify-content-between align-items-center w-100 mb-3 flex-wrap">
+                            <strong><i class="fa fa-info-circle"></i> Organigrama - Haz clic en los nodos para expandir/contraer</strong>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-primary btn-sm" id="btnCollapseAll">
+                                    <i class="fa fa-compress"></i> Cerrar Todos
+                                </button>
+                                <button type="button" class="btn btn-success btn-sm" id="btnExpandAll">
+                                    <i class="fa fa-expand"></i> Expandir Todos
+                                </button>
+                                <button type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown">
+                                    <i class="fa fa-download"></i> Exportar
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="#" id="btnSelectNode">
+                                        <i class="fa fa-sitemap"></i> Seleccionar nodo para exportar (PNG)
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="#" id="btnExportFull">
+                                        <i class="fa fa-image"></i> Exportar organigrama completo (PNG)
+                                    </a>
+                                    <a class="dropdown-item" href="#" id="btnExportFullPDF">
+                                        <i class="fa fa-file-pdf-o"></i> Exportar organigrama completo (PDF imagen)
+                                    </a>
+                                    <a class="dropdown-item" href="#" id="btnExportFullPDFWithText">
+                                        <i class="fa fa-file-pdf-o"></i> Exportar organigrama completo (PDF con listado)
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3" id="nodeSelectorPanel" style="display: none;">
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fa fa-sitemap"></i> Seleccionar nodo</span>
+                                    </div>
+                                    <select id="selectNodeToPrint" class="form-control">
+                                        <option value="">-- Seleccione un nodo --</option>
+                                    </select>
+                                    <div class="input-group-append">
+                                        <button class="btn btn-success" id="btnExportSelectedNode">
+                                            <i class="fa fa-image"></i> Exportar como PNG
+                                        </button>
+                                    </div>
+                                </div>
+                                <small class="form-text text-muted">Se exportará el nodo seleccionado con TODOS sus subnodos (hijos, nietos, etc.)</small>
+                            </div>
+                        </div>
+
+                        <div class="org-wrapper" style="position: relative;">
+                            <div class="org-tree" id="orgTreeContainer">
+                                <div class="text-center p-5">
+                                    <i class="fa fa-spinner fa-spin fa-2x"></i> Cargando organigrama...
+                                </div>
+                            </div>
+
+                            <!-- Panel lateral de información -->
+                            <div id="infoPanel" style="display: none; position: fixed; right: 20px; top: 100px; width: 320px; background: white; border-radius: 12px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); z-index: 1000; overflow: hidden;">
+                                <div style="background: #1a4a6f; color: white; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center;">
+                                    <strong><i class="fa fa-info-circle"></i> Información del Nodo</strong>
+                                    <button type="button" id="closePanel" style="background: none; border: none; color: white; font-size: 20px; cursor: pointer;">&times;</button>
+                                </div>
+                                <div id="infoPanelContent" style="padding: 15px; max-height: 400px; overflow-y: auto;">
+                                    <!-- Contenido dinámico -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-sm-12">
+                    <div class="legend">
+                        <span>
+                            <div class="color-box" style="background: linear-gradient(135deg,#0d2b42,#1a4a6f);"></div> Rectoría
+                        </span>
+                        <span>
+                            <div class="color-box" style="background: linear-gradient(135deg,#1e4d6f,#2a6a8f);"></div> Vicerrectorías
+                        </span>
+                        <span>
+                            <div class="color-box" style="background: #fef7e8; border-left: 4px solid #2a6a8f;"></div> Facultades
+                        </span>
+                        <span>
+                            <div class="color-box" style="background: #f5f7fa; border-left: 3px solid #8ba9c9;"></div> Divisiones / Centros / Departamentos / Oficinas
+                        </span>
+                    </div>
+                    <div class="instruction text-center mt-3">
+                        💡 <strong>Instrucción:</strong> Haz clic en el nodo para expandir/contraer. Haz clic en el ícono <i class="fa fa-info-circle"></i> para ver detalles del nodo.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalFormulario" data-backdrop="static" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="lbModalFormulario">Formulario</h5>
+                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+            </div>
+            <div id="divContenido"></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalFormularioAux" data-backdrop="static" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="lbModalFormularioAux">Formulario</h5>
+                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+            </div>
+            <div id="divContenidoAux"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Datos del organigrama desde el servidor
+    var organigramaData = <?= $this->arbol ?: '[]' ?>;
+    var urlIndex = '<?= $urlIndex ?>';
+
+    console.log("Datos del organigrama:", organigramaData);
+
+    var allChildrenWrappers = [];
+    var currentInfoPanel = null;
+
+    // ==================== FUNCIONES DEL PANEL DE INFORMACIÓN ====================
+
+    function showInfoPanel(nodeData) {
+        var panel = document.getElementById("infoPanel");
+        var content = document.getElementById("infoPanelContent");
+
+        var html = '<div style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">';
+        html += '<h4 style="margin: 0 0 5px 0; color: #1a4a6f;"><i class="fa ' + (nodeData.icono || 'fa-info-circle') + '"></i> ' + nodeData.nombre + '&nbsp;<a href="javascript:verEditar(' + nodeData.id + ')" title="Editar"><i class="fa fa-edit"></i></a>&nbsp;</h4>';
+        html += '<p style="margin: 0; color: #666; font-size: 12px;">Tipo: <strong>' + nodeData.tipo + '</strong></p>';
+        html += '</div>';
+
+        html += '<div style="margin-bottom: 10px;">';
+        html += '<strong><i class="fa fa-align-left"></i> Descripción:</strong><br>';
+        html += '<div class="info-panel-descripcion" style="margin: 5px 0 0 0; max-height: 250px; overflow-y: auto;">';
+        if (nodeData.descripcion && nodeData.descripcion !== '') {
+            html += nodeData.descripcion;
+        } else {
+            html += '<em>No hay descripción disponible</em>';
+        }
+        html += '</div>';
+        html += '</div>';
+
+        html += '<div style="background: #f5f7fa; padding: 10px; border-radius: 8px; margin-top: 10px;">';
+        html += '<strong><i class="fa fa-sitemap"></i> Jerarquía:</strong><br>';
+        html += '<p style="margin: 5px 0 0 0; font-size: 13px;">';
+
+        if (nodeData.padre_nombre && nodeData.padre_nombre !== '') {
+            html += 'Depende de: <strong>' + nodeData.padre_nombre + '</strong><br>';
+        } else {
+            html += 'Depende de: <strong>Ninguno (Raíz)</strong><br>';
+        }
+
+        html += 'ID: <strong>' + nodeData.id + '</strong><br>';
+        html += 'Orden: <strong>' + (nodeData.orden || 0) + '</strong>';
+        html += '</p>';
+        html += '</div>';
+
+        content.innerHTML = html;
+        panel.style.display = "block";
+        currentInfoPanel = nodeData;
+    }
+
+    function hideInfoPanel() {
+        document.getElementById("infoPanel").style.display = "none";
+        currentInfoPanel = null;
+    }
+
+    // ==================== FUNCIÓN PARA CONSTRUIR EL ÁRBOL ====================
+
+    function buildTreeNode(nodeData, startCollapsed = true, maxDepth = null, currentDepth = 0) {
+        // Si hay maxDepth y ya alcanzamos la profundidad, no mostramos hijos
+        const hasChildren = nodeData.children && nodeData.children.length > 0 && (maxDepth === null || currentDepth < maxDepth);
+
+        const nodeDiv = document.createElement("div");
+        nodeDiv.className = "tree-node";
+        nodeDiv.setAttribute("data-id", nodeData.id);
+        nodeDiv.setAttribute("data-nombre", nodeData.nombre);
+
+        const cardContainer = document.createElement("div");
+        cardContainer.style.display = "flex";
+        cardContainer.style.alignItems = "center";
+        cardContainer.style.gap = "5px";
+        cardContainer.style.position = "relative";
+
+        const card = document.createElement("div");
+        card.className = "node-card";
+
+        // NUEVO ESTILO: fondo blanco, borde azul #000066
+        card.style.backgroundColor = "#ffffff";
+        card.style.color = "#1e2a3e";
+        card.style.border = "2px solid #000066";
+        card.style.borderRadius = "12px";
+        card.style.boxShadow = "0 2px 8px rgba(0,0,0,0.1)";
+
+        // Eliminar clases específicas de color y agregar clase genérica
+        card.classList.add("node-card-generic");
+
+        // SIN ÍCONOS: solo el nombre del nodo y el botón de toggle
+        var toggleSpan = hasChildren ? '<span class="toggle-icon">▶</span>' : '';
+        card.innerHTML = nodeData.nombre + ' ' + toggleSpan;
+        card.style.cursor = "pointer";
+
+        const infoBtn = document.createElement("button");
+        infoBtn.className = "btn btn-sm btn-info";
+        infoBtn.style.borderRadius = "50%";
+        infoBtn.style.width = "28px";
+        infoBtn.style.height = "28px";
+        infoBtn.style.padding = "0";
+        infoBtn.style.marginLeft = "8px";
+        infoBtn.style.backgroundColor = "#17a2b8";
+        infoBtn.style.border = "none";
+        infoBtn.style.cursor = "pointer";
+        infoBtn.innerHTML = '<i class="fa fa-info-circle"></i>';
+        infoBtn.title = "Ver información del nodo";
+
+        infoBtn.addEventListener("click", function(e) {
+            e.stopPropagation();
+            showInfoPanel(nodeData);
+        });
+
+        cardContainer.appendChild(card);
+        cardContainer.appendChild(infoBtn);
+
+        var childrenWrapper = null;
+        if (hasChildren) {
+            childrenWrapper = document.createElement("div");
+            childrenWrapper.className = "children-wrapper";
+            if (startCollapsed) {
+                childrenWrapper.classList.add("collapsed");
+            }
+            var childrenContainer = document.createElement("div");
+            childrenContainer.className = "children-container";
+
+            for (var i = 0; i < nodeData.children.length; i++) {
+                childrenContainer.appendChild(buildTreeNode(nodeData.children[i], true, maxDepth, currentDepth + 1));
+            }
+            childrenWrapper.appendChild(childrenContainer);
+            allChildrenWrappers.push(childrenWrapper);
+        }
+
+        card.addEventListener("click", function(e) {
+            e.stopPropagation();
+            if (!hasChildren) return;
+
+            if (childrenWrapper.classList.contains("collapsed")) {
+                childrenWrapper.classList.remove("collapsed");
+                var iconSpan = card.querySelector(".toggle-icon");
+                if (iconSpan) iconSpan.innerHTML = "▼";
+            } else {
+                childrenWrapper.classList.add("collapsed");
+                var iconSpan = card.querySelector(".toggle-icon");
+                if (iconSpan) iconSpan.innerHTML = "▶";
+            }
+        });
+
+        nodeDiv.appendChild(cardContainer);
+        if (childrenWrapper) nodeDiv.appendChild(childrenWrapper);
+        return nodeDiv;
+    }
+
+    function renderOrganigrama() {
+        var rootContainer = document.getElementById("orgTreeContainer");
+        rootContainer.innerHTML = "";
+        allChildrenWrappers = [];
+
+        if (organigramaData && organigramaData.length > 0) {
+            var treeRoot = buildTreeNode(organigramaData[0], true);
+            rootContainer.appendChild(treeRoot);
+        } else if (organigramaData && !Array.isArray(organigramaData)) {
+            var treeRoot = buildTreeNode(organigramaData, true);
+            rootContainer.appendChild(treeRoot);
+        } else {
+            rootContainer.innerHTML = '<div class="alert alert-info text-center">No hay datos disponibles en el organigrama. <a href="' + urlIndex + '">Agregue nodos</a> para comenzar.</div>';
+        }
+    }
+
+    // ==================== FUNCIONES DE EXPANSIÓN/COLAPSO ====================
+
+    function collapseAllNodes() {
+        for (var i = 0; i < allChildrenWrappers.length; i++) {
+            var wrapper = allChildrenWrappers[i];
+            if (!wrapper.classList.contains("collapsed")) {
+                wrapper.classList.add("collapsed");
+            }
+        }
+        var icons = document.querySelectorAll(".node-card .toggle-icon");
+        for (var j = 0; j < icons.length; j++) {
+            if (icons[j]) icons[j].innerHTML = "▶";
+        }
+    }
+
+    function expandAllNodes() {
+        for (var i = 0; i < allChildrenWrappers.length; i++) {
+            var wrapper = allChildrenWrappers[i];
+            if (wrapper.classList.contains("collapsed")) {
+                wrapper.classList.remove("collapsed");
+            }
+        }
+        var icons = document.querySelectorAll(".node-card .toggle-icon");
+        for (var j = 0; j < icons.length; j++) {
+            if (icons[j]) icons[j].innerHTML = "▼";
+        }
+    }
+
+    // ==================== FUNCIONES PARA FILTRAR ÁRBOL ====================
+
+    // Obtener un nodo por ID desde los datos originales
+    function findNodeById(nodes, id) {
+        for (var i = 0; i < nodes.length; i++) {
+            if (nodes[i].id == id) {
+                return nodes[i];
+            }
+            if (nodes[i].children && nodes[i].children.length > 0) {
+                var found = findNodeById(nodes[i].children, id);
+                if (found) return found;
+            }
+        }
+        return null;
+    }
+
+    // Construir árbol con profundidad limitada (solo hasta cierto nivel)
+    function buildTreeWithMaxDepth(node, maxDepth, currentDepth) {
+        if (!node) return null;
+
+        var newNode = {
+            id: node.id,
+            nombre: node.nombre,
+            tipo: node.tipo,
+            icono: node.icono,
+            color: node.color,
+            descripcion: node.descripcion,
+            orden: node.orden,
+            padre_nombre: node.padre_nombre,
+            children: []
+        };
+
+        // Si no hemos alcanzado la profundidad máxima y hay hijos
+        if (currentDepth < maxDepth && node.children && node.children.length > 0) {
+            for (var i = 0; i < node.children.length; i++) {
+                var childNode = buildTreeWithMaxDepth(node.children[i], maxDepth, currentDepth + 1);
+                if (childNode) {
+                    newNode.children.push(childNode);
+                }
+            }
+        }
+
+        return newNode;
+    }
+
+    // Renderizar árbol filtrado (solo el nodo y sus hijos directos, no nietos)
+    function renderFilteredTree(nodeId, containerId, maxDepth, callback) {
+        var originalNode = null;
+        if (organigramaData && organigramaData.length > 0) {
+            originalNode = findNodeById(organigramaData, nodeId);
+        } else if (organigramaData && !Array.isArray(organigramaData)) {
+            originalNode = findNodeById([organigramaData], nodeId);
+        }
+
+        if (!originalNode) {
+            callback(null);
+            return;
+        }
+
+        // Construir árbol con profundidad limitada
+        var filteredTree = buildTreeWithMaxDepth(originalNode, maxDepth, 0);
+
+        if (!filteredTree) {
+            callback(null);
+            return;
+        }
+
+        // Crear contenedor temporal
+        var tempContainer = document.createElement("div");
+        tempContainer.id = containerId;
+        tempContainer.style.position = "absolute";
+        tempContainer.style.top = "-9999px";
+        tempContainer.style.left = "-9999px";
+        tempContainer.style.width = "auto";
+        tempContainer.style.height = "auto";
+        document.body.appendChild(tempContainer);
+
+        // Renderizar el árbol filtrado (expandido)
+        var tempTree = buildTreeNode(filteredTree, false);
+        tempContainer.appendChild(tempTree);
+
+        setTimeout(function() {
+            callback(tempContainer);
+        }, 300);
+    }
+
+    // ==================== FUNCIÓN DE CAPTURA COMO IMAGEN ====================
+
+    // Exportar un nodo específico (solo el nodo y sus hijos directos)
+    function exportNodeAsPNG(nodeId, nodeName) {
+        Swal.fire({
+            title: 'Generando imagen...',
+            text: 'Nodo: ' + nodeName + ' (solo hijos directos)',
+            allowOutsideClick: false,
+            didOpen: () => Swal.showLoading()
+        });
+
+        renderFilteredTree(nodeId, "tempExportContainer", 1, function(tempContainer) {
+            if (!tempContainer) {
+                Swal.close();
+                Swal.fire('Error', 'No se pudo generar el árbol del nodo seleccionado', 'error');
+                return;
+            }
+
+            html2canvas(tempContainer, {
+                scale: 2,
+                backgroundColor: '#ffffff',
+                logging: false,
+                useCORS: true
+            }).then(function(canvas) {
+                document.body.removeChild(tempContainer);
+                Swal.close();
+
+                var link = document.createElement('a');
+                link.download = 'organigrama-' + nodeName.replace(/[^a-z0-9]/gi, '_').toLowerCase() + '.png';
+                link.href = canvas.toDataURL();
+                link.click();
+                Swal.fire('Éxito', 'Imagen del nodo "' + nodeName + '" generada correctamente', 'success');
+            }).catch(function(error) {
+                document.body.removeChild(tempContainer);
+                Swal.close();
+                Swal.fire('Error', 'No se pudo generar la imagen: ' + error, 'error');
+            });
+        });
+    }
+
+    // Exportar organigrama completo (sin cortes, con scroll infinito)
+    function exportFullOrganigrama() {
+        Swal.fire({
+            title: 'Preparando organigrama completo...',
+            text: 'Expandiendo y ajustando tamaño',
+            allowOutsideClick: false,
+            didOpen: () => Swal.showLoading()
+        });
+
+        // Expandir todos los nodos
+        expandAllNodes();
+
+        // Dar tiempo para que se expanda todo
+        setTimeout(function() {
+            var container = document.querySelector('.org-wrapper');
+            var originalOverflow = container.style.overflow;
+            var originalPosition = container.style.position;
+
+            // Hacer que el contenedor sea visible completamente
+            container.style.overflow = 'visible';
+            container.style.position = 'relative';
+
+            // Ajustar el contenedor del árbol para que no corte
+            var treeContainer = document.getElementById('orgTreeContainer');
+            var originalTreeStyle = treeContainer.style.cssText;
+            treeContainer.style.display = 'inline-block';
+            treeContainer.style.minWidth = treeContainer.scrollWidth + 'px';
+            treeContainer.style.width = 'auto';
+
+            // Calcular dimensiones reales
+            var scrollWidth = container.scrollWidth;
+            var scrollHeight = container.scrollHeight;
+
+            console.log("Dimensiones para exportar - Ancho: " + scrollWidth + ", Alto: " + scrollHeight);
+
+            // Configurar html2canvas para capturar todo sin cortes
+            html2canvas(container, {
+                scale: 2,
+                backgroundColor: '#ffffff',
+                logging: false,
+                useCORS: true,
+                windowWidth: scrollWidth,
+                windowHeight: scrollHeight,
+                width: scrollWidth,
+                height: scrollHeight,
+                onclone: function(clonedDoc, element) {
+                    // En el clon, asegurar que todo sea visible
+                    var clonedContainer = clonedDoc.querySelector('.org-wrapper');
+                    if (clonedContainer) {
+                        clonedContainer.style.overflow = 'visible';
+                        clonedContainer.style.width = scrollWidth + 'px';
+                        clonedContainer.style.height = scrollHeight + 'px';
+                    }
+                }
+            }).then(function(canvas) {
+                // Restaurar estilos originales
+                container.style.overflow = originalOverflow;
+                container.style.position = originalPosition;
+                treeContainer.style.cssText = originalTreeStyle;
+                Swal.close();
+
+                // Crear enlace de descarga
+                var link = document.createElement('a');
+                link.download = 'organigrama-unicauca-completo.png';
+                link.href = canvas.toDataURL();
+                link.click();
+
+                Swal.fire('Éxito', 'Organigrama completo exportado correctamente', 'success');
+            }).catch(function(error) {
+                container.style.overflow = originalOverflow;
+                container.style.position = originalPosition;
+                treeContainer.style.cssText = originalTreeStyle;
+                Swal.close();
+                console.error("Error en html2canvas:", error);
+                Swal.fire('Error', 'No se pudo exportar el organigrama completo. El árbol puede ser demasiado grande.', 'error');
+            });
+        }, 1500);
+    }
+
+    // Exportar organigrama completo como PDF
+    function exportFullPDF() {
+        Swal.fire({
+            title: 'Generando PDF...',
+            text: 'Preparando organigrama completo, por favor espere',
+            allowOutsideClick: false,
+            didOpen: () => Swal.showLoading()
+        });
+
+        // Expandir todos los nodos
+        expandAllNodes();
+
+        // Dar tiempo para que se expanda todo
+        setTimeout(function() {
+            var container = document.querySelector('.org-wrapper');
+            var originalOverflow = container.style.overflow;
+            var originalPosition = container.style.position;
+
+            // Hacer que el contenedor sea visible completamente
+            container.style.overflow = 'visible';
+            container.style.position = 'relative';
+
+            // Ajustar el contenedor del árbol para que no corte
+            var treeContainer = document.getElementById('orgTreeContainer');
+            var originalTreeStyle = treeContainer.style.cssText;
+            treeContainer.style.display = 'inline-block';
+            treeContainer.style.minWidth = treeContainer.scrollWidth + 'px';
+            treeContainer.style.width = 'auto';
+
+            // Calcular dimensiones reales
+            var scrollWidth = container.scrollWidth;
+            var scrollHeight = container.scrollHeight;
+
+            console.log("Dimensiones para PDF - Ancho: " + scrollWidth + ", Alto: " + scrollHeight);
+
+            // Capturar con html2canvas
+            html2canvas(container, {
+                scale: 2,
+                backgroundColor: '#ffffff',
+                logging: false,
+                useCORS: true,
+                windowWidth: scrollWidth,
+                windowHeight: scrollHeight,
+                width: scrollWidth,
+                height: scrollHeight,
+                onclone: function(clonedDoc, element) {
+                    var clonedContainer = clonedDoc.querySelector('.org-wrapper');
+                    if (clonedContainer) {
+                        clonedContainer.style.overflow = 'visible';
+                        clonedContainer.style.width = scrollWidth + 'px';
+                        clonedContainer.style.height = scrollHeight + 'px';
+                    }
+                }
+            }).then(function(canvas) {
+                // Restaurar estilos originales
+                container.style.overflow = originalOverflow;
+                container.style.position = originalPosition;
+                treeContainer.style.cssText = originalTreeStyle;
+
+                // Convertir canvas a imagen
+                var imgData = canvas.toDataURL('image/png');
+                var imgWidth = canvas.width;
+                var imgHeight = canvas.height;
+
+                // Configuración del PDF (A4 horizontal)
+                var pdf = new jspdf.jsPDF({
+                    orientation: imgWidth > imgHeight ? 'landscape' : 'portrait',
+                    unit: 'mm',
+                    format: 'a4'
+                });
+
+                var pdfWidth = pdf.internal.pageSize.getWidth();
+                var pdfHeight = pdf.internal.pageSize.getHeight();
+
+                // Calcular escala para que la imagen quepa en el PDF
+                var scale = pdfWidth / imgWidth;
+                var scaledHeight = imgHeight * scale;
+
+                // Si la imagen es más alta que una página, se divide en varias páginas
+                var position = 0;
+                var pageNum = 1;
+                var remainingHeight = scaledHeight;
+
+                // Agregar título
+                pdf.setFontSize(16);
+                pdf.setTextColor(26, 58, 92);
+                pdf.text('Organigrama - Universidad del Cauca', pdfWidth / 2, 15, {
+                    align: 'center'
+                });
+
+                // Agregar fecha
+                pdf.setFontSize(10);
+                pdf.setTextColor(100, 100, 100);
+                pdf.text('Generado: ' + new Date().toLocaleString(), pdfWidth / 2, 22, {
+                    align: 'center'
+                });
+
+                // Calcular el espacio disponible para la imagen (restando el título)
+                var availableHeight = pdfHeight - 30;
+
+                // Ajustar posición inicial
+                position = 30;
+                remainingHeight = scaledHeight;
+
+                while (remainingHeight > 0) {
+                    // Crear nueva página si es necesario
+                    if (position > 0) {
+                        pdf.addPage();
+                        position = 15; // Margen superior en cada página nueva
+                        // Agregar título en cada página
+                        pdf.setFontSize(12);
+                        pdf.setTextColor(26, 58, 92);
+                        pdf.text('Organigrama UNICAUCA - Página ' + pageNum, pdfWidth / 2, 10, {
+                            align: 'center'
+                        });
+                        pageNum++;
+                    }
+
+                    // Calcular la porción de la imagen para esta página
+                    var yStart = (position - 30) / scale;
+                    var yEnd = Math.min(yStart + (availableHeight / scale), imgHeight);
+                    var sliceHeight = (yEnd - yStart) * scale;
+
+                    // Crear un canvas temporal para la porción de la imagen
+                    var tempCanvas = document.createElement('canvas');
+                    tempCanvas.width = imgWidth;
+                    tempCanvas.height = sliceHeight / scale;
+                    var ctx = tempCanvas.getContext('2d');
+                    ctx.drawImage(canvas, 0, yStart, imgWidth, yEnd - yStart, 0, 0, imgWidth, yEnd - yStart);
+
+                    var sliceData = tempCanvas.toDataURL('image/png');
+
+                    // Agregar la porción al PDF
+                    pdf.addImage(sliceData, 'PNG', 0, position, pdfWidth, sliceHeight);
+
+                    // Actualizar posición y altura restante
+                    position += sliceHeight;
+                    remainingHeight -= sliceHeight;
+                }
+
+                // Guardar el PDF
+                pdf.save('organigrama-unicauca-completo.pdf');
+                Swal.close();
+                Swal.fire('Éxito', 'PDF del organigrama completo generado correctamente', 'success');
+            }).catch(function(error) {
+                container.style.overflow = originalOverflow;
+                container.style.position = originalPosition;
+                treeContainer.style.cssText = originalTreeStyle;
+                Swal.close();
+                console.error("Error en html2canvas:", error);
+                Swal.fire('Error', 'No se pudo generar el PDF. El organigrama puede ser demasiado grande.', 'error');
+            });
+        }, 1500);
+    }
+
+    // Cargar el selector de nodos (jerárquico)
+    function loadNodeSelector() {
+        var select = $('#selectNodeToPrint');
+        select.empty();
+        select.append('<option value="">-- Seleccione un nodo --</option>');
+
+        function addNodes(nodes, level) {
+            for (var i = 0; i < nodes.length; i++) {
+                var node = nodes[i];
+                var prefix = '';
+                for (var j = 0; j < level; j++) prefix += '— ';
+                select.append('<option value="' + node.id + '">' + prefix + node.nombre + ' (' + node.tipo + ')</option>');
+                if (node.children && node.children.length > 0) {
+                    addNodes(node.children, level + 1);
+                }
+            }
+        }
+        if (organigramaData && organigramaData.length > 0) {
+            addNodes(organigramaData, 0);
+        } else if (organigramaData && !Array.isArray(organigramaData)) {
+            addNodes([organigramaData], 0);
+        }
+    }
+
+    // Generar listado jerárquico con formato bonito (con numeración y estilo)
+    function generateHierarchyText(nodes, prefix = '', isLast = true, level = 0) {
+        var result = '';
+        var iconos = {
+            'root': '🏛️',
+            'vicerector': '📌',
+            'facultad': '📚',
+            'division': '📂',
+            'depto': '📁',
+            'centro': '⚖️',
+            'oficina': '📋',
+            'comite': '🤝',
+            'consejo': '👥',
+            'area': '📍',
+            'grupo': '👥',
+            'secretaria': '📜',
+            'coordinacion': '📌',
+            'unidad': '⚙️',
+            'laboratorio': '🔬',
+            'proyecto': '📊'
+        };
+
+        for (var i = 0; i < nodes.length; i++) {
+            var node = nodes[i];
+            var isLastItem = (i === nodes.length - 1);
+            var icono = iconos[node.tipo] || '📄';
+
+            // Construir el prefijo para la línea actual
+            var linePrefix = prefix;
+            if (level > 0) {
+                if (isLast) {
+                    linePrefix += '    ';
+                } else {
+                    linePrefix += '│   ';
+                }
+            }
+
+            // Conector
+            var connector = (level === 0) ? '' : (isLastItem ? '└── ' : '├── ');
+
+            // Número de nivel
+            var levelNum = (level + 1).toString();
+
+            // Formato con estilo: ícono + nombre + tipo en color
+            result += linePrefix + connector + icono + ' ' + node.nombre + '  →  ' + node.tipo + '\n';
+
+            if (node.children && node.children.length > 0) {
+                result += generateHierarchyText(node.children, linePrefix, isLastItem, level + 1);
+            }
+        }
+        return result;
+    }
+
+    // Exportar organigrama completo como PDF con listado jerárquico en primera página
+    function exportFullPDFWithText() {
+        Swal.fire({
+            title: 'Generando PDF con listado...',
+            text: 'Preparando organigrama completo, por favor espere',
+            allowOutsideClick: false,
+            didOpen: () => Swal.showLoading()
+        });
+
+        // Expandir todos los nodos
+        expandAllNodes();
+
+        setTimeout(function() {
+            var container = document.querySelector('.org-wrapper');
+            var originalOverflow = container.style.overflow;
+            var originalPosition = container.style.position;
+
+            container.style.overflow = 'visible';
+            container.style.position = 'relative';
+
+            var treeContainer = document.getElementById('orgTreeContainer');
+            var originalTreeStyle = treeContainer.style.cssText;
+            treeContainer.style.display = 'inline-block';
+            treeContainer.style.minWidth = treeContainer.scrollWidth + 'px';
+            treeContainer.style.width = 'auto';
+
+            var scrollWidth = container.scrollWidth;
+            var scrollHeight = container.scrollHeight;
+
+            // Capturar imagen del organigrama
+            html2canvas(container, {
+                scale: 2,
+                backgroundColor: '#ffffff',
+                logging: false,
+                useCORS: true,
+                windowWidth: scrollWidth,
+                windowHeight: scrollHeight,
+                width: scrollWidth,
+                height: scrollHeight
+            }).then(function(canvas) {
+                // Restaurar estilos originales
+                container.style.overflow = originalOverflow;
+                container.style.position = originalPosition;
+                treeContainer.style.cssText = originalTreeStyle;
+
+                var imgWidth = canvas.width;
+                var imgHeight = canvas.height;
+
+                // Generar listado jerárquico en texto plano
+                var hierarchyText = '';
+                if (organigramaData && organigramaData.length > 0) {
+                    hierarchyText = generatePlainHierarchyText(organigramaData);
+                } else if (organigramaData && !Array.isArray(organigramaData)) {
+                    hierarchyText = generatePlainHierarchyText([organigramaData]);
+                }
+
+                // Verificar que el texto se generó correctamente
+                console.log("Texto jerarquico generado:", hierarchyText);
+
+                // Crear PDF
+                var pdf = new jspdf.jsPDF({
+                    orientation: 'portrait',
+                    unit: 'mm',
+                    format: 'a4'
+                });
+
+                var pdfWidth = pdf.internal.pageSize.getWidth();
+                var pdfHeight = pdf.internal.pageSize.getHeight();
+
+                // ==================== PÁGINA 1: LISTADO JERÁRQUICO ====================
+
+                // Título principal
+                pdf.setFontSize(18);
+                pdf.setTextColor(26, 58, 92);
+                pdf.setFont('helvetica', 'bold');
+                pdf.text('UNIVERSIDAD DEL CAUCA', pdfWidth / 2, 15, {
+                    align: 'center'
+                });
+
+                pdf.setFontSize(12);
+                pdf.setTextColor(100, 100, 100);
+                pdf.setFont('helvetica', 'normal');
+                pdf.text('Organigrama Institucional', pdfWidth / 2, 23, {
+                    align: 'center'
+                });
+
+                // Línea decorativa
+                pdf.setDrawColor(200, 200, 200);
+                pdf.line(20, 28, pdfWidth - 20, 28);
+
+                // Fecha
+                pdf.setFontSize(8);
+                pdf.setTextColor(128, 128, 128);
+                var fechaStr = 'Generado: ' + new Date().toLocaleString();
+                pdf.text(fechaStr, pdfWidth / 2, 35, {
+                    align: 'center'
+                });
+
+                // Subtítulo del listado
+                pdf.setFontSize(11);
+                pdf.setTextColor(26, 58, 92);
+                pdf.setFont('helvetica', 'bold');
+                pdf.text('LISTADO JERARQUICO DE DEPENDENCIAS', 15, 45);
+
+                // Configurar fuente para el listado (Times Roman es más compatible)
+                pdf.setFont('times', 'normal');
+                pdf.setFontSize(9);
+                pdf.setTextColor(0, 0, 0);
+
+                // Dividir el texto en líneas y agregar al PDF
+                var lines = hierarchyText.split('\n');
+                var yPosition = 55;
+                var lineHeight = 5.5;
+                var maxLinesPerPage = Math.floor((pdfHeight - yPosition - 20) / lineHeight);
+                var lineCount = 0;
+
+                for (var i = 0; i < lines.length; i++) {
+                    var line = lines[i];
+
+                    if (lineCount >= maxLinesPerPage && line.trim() !== '') {
+                        pdf.addPage();
+                        yPosition = 15;
+                        lineCount = 0;
+
+                        pdf.setFontSize(10);
+                        pdf.setTextColor(26, 58, 92);
+                        pdf.setFont('helvetica', 'bold');
+                        pdf.text('Organigrama UNICAUCA - Listado (continuacion)', pdfWidth / 2, 10, {
+                            align: 'center'
+                        });
+                        pdf.setFont('times', 'normal');
+                        pdf.setFontSize(9);
+                        pdf.setTextColor(0, 0, 0);
+                    }
+
+                    // Escapar caracteres especiales
+                    var cleanLine = line.replace(/[^\x20-\x7E\u00A0-\u00FF]/g, '');
+                    pdf.text(cleanLine, 12, yPosition);
+                    yPosition += lineHeight;
+                    lineCount++;
+                }
+
+                // ==================== PAGINA SIGUIENTE: IMAGEN DEL ORGANIGRAMA ====================
+                pdf.addPage();
+
+                pdf.setFontSize(12);
+                pdf.setTextColor(26, 58, 92);
+                pdf.setFont('helvetica', 'bold');
+                pdf.text('REPRESENTACION GRAFICA DEL ORGANIGRAMA', pdfWidth / 2, 15, {
+                    align: 'center'
+                });
+
+                // Linea decorativa
+                pdf.setDrawColor(200, 200, 200);
+                pdf.line(20, 20, pdfWidth - 20, 20);
+
+                // Calcular escala para la imagen
+                var scale = pdfWidth / imgWidth;
+                var scaledHeight = imgHeight * scale;
+                var availableHeight = pdfHeight - 35;
+                var position = 25;
+                var remainingHeight = scaledHeight;
+                var pageNum = 2;
+
+                while (remainingHeight > 0) {
+                    if (position > 25) {
+                        pdf.addPage();
+                        position = 15;
+                        pdf.setFontSize(9);
+                        pdf.setTextColor(100, 100, 100);
+                        pdf.setFont('helvetica', 'normal');
+                        pdf.text('Organigrama UNICAUCA - Imagen (continuacion) - Pagina ' + pageNum, pdfWidth / 2, 10, {
+                            align: 'center'
+                        });
+                        pageNum++;
+                    }
+
+                    var yStart = (position - 25) / scale;
+                    var yEnd = Math.min(yStart + (availableHeight / scale), imgHeight);
+                    var sliceHeight = (yEnd - yStart) * scale;
+
+                    var tempCanvas = document.createElement('canvas');
+                    tempCanvas.width = imgWidth;
+                    tempCanvas.height = sliceHeight / scale;
+                    var ctx = tempCanvas.getContext('2d');
+                    ctx.drawImage(canvas, 0, yStart, imgWidth, yEnd - yStart, 0, 0, imgWidth, yEnd - yStart);
+
+                    pdf.addImage(tempCanvas.toDataURL('image/png'), 'PNG', 0, position, pdfWidth, sliceHeight);
+                    position += sliceHeight;
+                    remainingHeight -= sliceHeight;
+                }
+
+                // Guardar el PDF
+                pdf.save('organigrama-unicauca-completo.pdf');
+                Swal.close();
+                Swal.fire('Exito', 'PDF generado correctamente', 'success');
+
+            }).catch(function(error) {
+                container.style.overflow = originalOverflow;
+                container.style.position = originalPosition;
+                treeContainer.style.cssText = originalTreeStyle;
+                Swal.close();
+                console.error("Error en html2canvas:", error);
+                Swal.fire('Error', 'No se pudo generar el PDF. El organigrama puede ser demasiado grande.', 'error');
+            });
+        }, 1500);
+    }
+
+    // Generar listado jerarquico con guiones (compatible con todos los PDF)
+    function generatePlainHierarchyText(nodes, level) {
+        if (typeof level === 'undefined') level = 0;
+
+        var result = '';
+        var indent = '';
+        for (var i = 0; i < level; i++) {
+            indent += '    '; // 4 espacios por nivel
+        }
+
+        for (var i = 0; i < nodes.length; i++) {
+            var node = nodes[i];
+
+            // Guion medio para cada elemento
+            result += indent + '- ' + node.nombre + '\n';
+
+            // Procesar hijos con un nivel más de sangría
+            if (node.children && node.children.length > 0) {
+                result += generatePlainHierarchyText(node.children, level + 1);
+            }
+        }
+        return result;
+    }
+
+    // Generar listado jerarquico con numeracion (version alternativa)
+    function generateNumberedHierarchyText(nodes, level, prefixNum) {
+        if (typeof level === 'undefined') level = 0;
+        if (typeof prefixNum === 'undefined') prefixNum = '';
+
+        var result = '';
+
+        for (var i = 0; i < nodes.length; i++) {
+            var node = nodes[i];
+            var currentNum = (i + 1).toString();
+            var fullNumber = prefixNum ? prefixNum + '.' + currentNum : currentNum;
+
+            // Espacios para indentacion
+            var spaces = '';
+            for (var s = 0; s < level; s++) {
+                spaces += '    ';
+            }
+
+            // Formato: 1. Nombre
+            result += spaces + fullNumber + '. ' + node.nombre + '\n';
+
+            if (node.children && node.children.length > 0) {
+                result += generateNumberedHierarchyText(node.children, level + 1, fullNumber);
+            }
+        }
+        return result;
+    }
+
+    // ==================== EVENTOS Y DOCUMENT READY ====================
+
+    $(document).ready(function() {
+        console.log("Document ready, iniciando renderizado...");
+        renderOrganigrama();
+
+        $("#btnCollapseAll").on("click", collapseAllNodes);
+        $("#btnExpandAll").on("click", expandAllNodes);
+        $("#closePanel").on("click", hideInfoPanel);
+
+        $(document).on("click", function(e) {
+            var panel = document.getElementById("infoPanel");
+            if (panel && panel.style.display === "block") {
+                if (!$(e.target).closest("#infoPanel").length && !$(e.target).closest(".btn-info").length) {
+                    hideInfoPanel();
+                }
+            }
+        });
+
+        // Botón para mostrar el selector de nodos
+        $("#btnSelectNode").on("click", function() {
+            $("#nodeSelectorPanel").toggle();
+            if ($("#nodeSelectorPanel").is(":visible")) {
+                loadNodeSelector();
+            }
+        });
+
+        // Botón para exportar el nodo seleccionado como PNG (solo hijos directos)
+        $("#btnExportSelectedNode").on("click", function() {
+            var selectedId = $("#selectNodeToPrint").val();
+            var selectedName = $("#selectNodeToPrint option:selected").text();
+            if (!selectedId) {
+                Swal.fire('Advertencia', 'Por favor seleccione un nodo', 'warning');
+                return;
+            }
+
+            Swal.fire({
+                title: 'Exportar nodo',
+                html: '¿Desea exportar <strong>' + selectedName + '</strong> con sus hijos directos?<br><small>(No se incluirán nietos)</small>',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, exportar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    exportNodeAsPNG(selectedId, selectedName);
+                    $("#nodeSelectorPanel").hide();
+                }
+            });
+        });
+
+        // Botón Exportar todo (organigrama completo sin cortes)
+        $("#btnExportFull").on("click", function() {
+            exportFullOrganigrama();
+        });
+
+        // Botón Exportar todo como PDF
+        $("#btnExportFullPDF").on("click", function() {
+            if (typeof jspdf !== 'undefined') {
+                exportFullPDF();
+            } else {
+                Swal.fire('Error', 'La librería jsPDF no está cargada', 'error');
+            }
+        });
+
+        // Botón Exportar PDF con listado jerárquico
+        $("#btnExportFullPDFWithText").on("click", function() {
+            if (typeof jspdf !== 'undefined') {
+                exportFullPDFWithText();
+            } else {
+                Swal.fire('Error', 'La librería jsPDF no está cargada', 'error');
+            }
+        });
+
+        // Cerrar panel selector al hacer clic fuera
+        $(document).on("click", function(e) {
+            if (!$(e.target).closest("#nodeSelectorPanel").length && !$(e.target).closest("#btnSelectNode").length) {
+                $("#nodeSelectorPanel").hide();
+            }
+        });
+    });
+</script>
