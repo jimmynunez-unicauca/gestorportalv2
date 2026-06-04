@@ -1,0 +1,10 @@
+<option value="">Seleccione...</option>
+<?php
+foreach ($this->municipios as $municipio) {
+    if ($municipio['idMunicipio'] == $this->idMunicipio) {
+        echo "<option value='" . $municipio['idMunicipio'] . "' selected>" . $municipio['municipio'] . "</option>";
+    } else {
+        echo "<option value='" . $municipio['idMunicipio'] . "'>" . $municipio['municipio'] . "</option>";
+    }
+}
+?>

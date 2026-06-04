@@ -1,0 +1,93 @@
+<?php
+$nodo = $this->nodo;
+$iconosDefecto = [
+    'root' => 'fa-university',
+    'vicerector' => 'fa-building',
+    'facultad' => 'fa-graduation-cap',
+    'division' => 'fa-folder-open',
+    'centro' => 'fa-cubes',
+    'depto' => 'fa-folder',
+    'oficina' => 'fa-desktop'
+];
+$icono = !empty($nodo['icono']) ? $nodo['icono'] : ($iconosDefecto[$nodo['tipo']] ?? 'fa-circle');
+$descripcion = !empty($nodo['metadata_descripcion']) ? $nodo['metadata_descripcion'] : ($nodo['descripcion'] ?? '');
+
+$colorPersonalizado = $nodo['color'] ?? '';
+$colorPorTipo = [
+    'root' => '#0d2b42',
+    'vicerector' => '#1e4d6f',
+    'facultad' => '#fef7e8',
+    'depto' => '#f5f7fa',
+    'centro' => '#f5f7fa',
+    'division' => '#f5f7fa',
+    'oficina' => '#f5f7fa',
+];
+$colorMuestra = !empty($colorPersonalizado) ? $colorPersonalizado : ($colorPorTipo[$nodo['tipo']] ?? '#ffffff');
+?>
+<div class="modal-body ui-front">
+    <div style="padding: 10px" class="container-fluid">
+        <fieldset>
+            <legend>Detalle del nodo</legend>
+            <table class="table table-bordered">
+                <tr>
+                    <th style="width: 35%"><i class="fa fa-key"></i> ID:</th>
+                    <td><?= $nodo['id'] ?? '' ?></td>
+                </tr>
+                <tr>
+                    <th><i class="fa fa-tag"></i> Nombre:</th>
+                    <td><i class="fa <?= $icono ?>"></i> <?= htmlspecialchars($nodo['nombre'] ?? '') ?></td>
+                </tr>
+                <tr>
+                    <th><i class="fa fa-sitemap"></i> Tipo:</th>
+                    <td><?= $nodo['tipo'] ?? '' ?></td>
+                </tr>
+                <tr>
+                    <th><i class="fa fa-level-up"></i> Depende de:</th>
+                    <td><?= htmlspecialchars($nodo['nombre_padre'] ?? 'Ninguno (Raíz)') ?></td>
+                </tr>
+                <tr>
+                    <th><i class="fa fa-sort-numeric-asc"></i> Orden:</th>
+                    <td><?= $nodo['orden'] ?? '' ?></td>
+                </tr>
+                <tr>
+                    <th style="vertical-align: top; width: 120px;">
+                        <i class="fa fa-align-left"></i> Descripción:
+                    </th>
+                    <td style="vertical-align: top;">
+                        <?php if (!empty($descripcion)): ?>
+                            <div class="descripcion-contenido">
+                                <?= $descripcion ?>
+                            </div>
+                        <?php else: ?>
+                            <em>No hay descripción disponible</em>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+                <tr>
+                    <th><i class="fa fa-list-alt"></i> Estado:</th>
+                    <td><b style="color: <?= ($nodo['activo'] ?? 0) == 1 ? 'green' : 'red' ?>">
+                            <?= ($nodo['activo'] ?? 0) == 1 ? 'Activo' : 'Inactivo' ?>
+                        </b></td>
+                </tr>
+                <tr>
+                    <th><i class="fa fa-calendar"></i> Fecha Registro:</th>
+                    <td><?= $nodo['created_at'] ?? '' ?></td>
+                </tr>
+                <tr>
+                    <th><i class="fa fa-calendar"></i> Última Actualización:</th>
+                    <td><?= $nodo['updated_at'] ?? '' ?></td>
+                </tr>
+                <tr>
+                    <th><i class="fa fa-puzzle-piece"></i> Color:</th>
+                    <td>
+                        <span style="display: inline-block; width: 30px; height: 20px; background-color: <?= $colorMuestra ?>; border: 1px solid #ccc; vertical-align: middle;"></span>
+                        <?= !empty($colorPersonalizado) ? $colorPersonalizado : 'Por defecto' ?>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+</div>

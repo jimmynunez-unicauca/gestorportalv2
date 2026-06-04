@@ -1,0 +1,2297 @@
+<?php
+//--------- CARGAR MENSAJES DE ALERTA ------------------------------------------
+$flash = $this->flashMessenger();
+$notificaciones = [
+    'success' => array_merge($flash->getSuccessMessages(), $flash->getCurrentSuccessMessages()),
+    'error' => array_merge($flash->getErrorMessages(), $flash->getCurrentErrorMessages()),
+    'alert' => array_merge($flash->getMessages(), $flash->getCurrentMessages()),
+    'information' => array_merge($flash->getInfoMessages(), $flash->getCurrentInfoMessages()),
+    'warning' => array_merge($flash->getWarningMessages(), $flash->getCurrentWarningMessages()),
+];
+$flash->clearCurrentMessages('default');
+$flash->clearCurrentMessages('info');
+$flash->clearCurrentMessages('success');
+$flash->clearCurrentMessages('warning');
+$flash->clearCurrentMessages('error');
+$mostrarMensajes = '';
+foreach (array_filter($notificaciones) as $tipo => $mensajes) {
+    $tipoToastr = 'info';
+    $titulo = 'GestorPortal';
+    switch ($tipo) {
+        case 'success':
+            $titulo = '<b><i class="fas fa-check-circle"></i> GestorPortal</b>';
+            $tipoToastr = 'success';
+            break;
+        case 'error':
+            $titulo = '<b><i class="fas fa-exclamation-circle"></i> GestorPortal</b>';
+            $tipoToastr = 'error';
+            break;
+        case 'alert':
+        case 'warning':
+            $titulo = '<b><i class="fas fa-exclamation-triangle"></i> GestorPortal</b>';
+            $tipoToastr = 'warning';
+            break;
+        case 'information':
+            $titulo = '<b><i class="fas fa-info-circle"></i> GestorPortal</b>';
+            $tipoToastr = 'info';
+            break;
+    }
+    foreach ($mensajes as $mensaje) {
+        $mostrarMensajes .= "new PNotify({
+            title: '$titulo',
+            text: '$mensaje',
+            type: '$tipoToastr',
+            styling: 'bootstrap3',
+            delay: 4000,
+            animate: {
+                animate: true,
+                inClass: 'fadeInDown',
+                outClass: 'fadeOutUp'
+            }
+        });";
+    }
+}
+//------------------------------------------------------------------------------
+
+$title = 'Inicio';
+$this->headTitle($title);
+$this->headScript()->prependScript(
+    <<<JS
+            $(document).ajaxStop($.unblockUI);
+            $(document).ready(function() {
+                $mostrarMensajes
+
+                // Inicializar tooltips si el plugin está disponible (solo dentro del dashboard)
+                if (typeof $.fn.tooltip === 'function') {
+                    $('#mi-dashboard-container [data-toggle="tooltip"]').tooltip();
+                }
+
+                // Inicializar carrusel
+                initCarousel();
+
+                // Inicializar gráficas
+                setTimeout(function() {
+                    initCharts();
+                }, 500);
+            });
+JS,
+    'text/javascript',
+    array('noescape' => true)
+)
+    ->prependFile($this->basePath('vendors/echarts/dist/echarts.min.js'))
+    ->prependFile($this->basePath('js/sistema/evento.js'))
+    ->prependFile($this->basePath('js/jquery.blockUI.js'));
+
+$numeros = [
+    'Académica' => $this->form_academica,
+    'Agrarias' => $this->form_agraria,
+    'Artes' => $this->form_artes,
+    'CECAV' => $this->form_cecav,
+    'C. Interés' => $this->form_conflicto_interes,
+    'Contables' => $this->form_contables,
+    'Posgrados' => $this->form_cp,
+    'Cultura' => $this->form_cultura,
+    'Emprendim' => $this->form_dae_empre,
+    'Intelectu' => $this->form_dae_propiedad,
+    'Egresados' => $this->form_egresados,
+    'Emisora' => $this->form_emisora,
+    'FCHS' => $this->form_fchs,
+    'FIC' => $this->form_fic,
+    'FIET' => $this->form_fiet,
+    'OCDI' => $this->form_ocdi,
+    'ORII' => $this->form_orii,
+    'PQRSF' => $this->form_pqrsf,
+    'Rectoría' => $this->form_rectoria,
+    'R. Cuentas' => $this->form_rendicion_cuentas,
+    'V. Admin' => $this->form_viceadmin,
+    'V. Invest' => $this->form_viceinvest,
+    'FACNED' => $this->form_facned,
+    'F. Derecho' => $this->form_fderecho,
+    'F. Salud' => $this->form_fsalud,
+    'CoMarca' => $this->form_comarca,
+    'Unisalud' => $this->form_unisalud,
+    'Unisalud RC' => $this->form_unisalud_rendicion_cuentas,
+];
+
+// Sumar todos los valores
+$total = array_sum($numeros);
+
+// Calcular el porcentaje para cada valor
+$porcentajes = [];
+foreach ($numeros as $nombre => $numero) {
+    if ($total > 0) {
+        $porcentaje = ($numero / $total) * 100;
+    } else {
+        $porcentaje = 0;
+    }
+    $porcentajes[$nombre] = $porcentaje;
+}
+?>
+
+<style>
+    /* ===== CONTENEDOR AISLADO - NO AFECTA AL MENÚ LATERAL DE GENTELELLA ===== */
+    #mi-dashboard-container {
+        background: #f5f7fa;
+        min-height: 100vh;
+        padding: 20px;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    /* ===== VARIABLES DE COLOR ===== */
+    :root {
+        --primary: #4361ee;
+        --secondary: #3f37c9;
+        --success: #4cc9f0;
+        --info: #4895ef;
+        --warning: #f72585;
+        --danger: #e63946;
+        --light: #f8f9fa;
+        --dark: #212529;
+        --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        --gradient-4: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        --gradient-5: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        --gradient-6: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
+    }
+
+    /* ===== ESTILOS GENERALES DENTRO DEL CONTENEDOR ===== */
+    #mi-dashboard-container .container-fluid.px-4 {
+        background: transparent;
+        padding: 0 15px;
+        max-width: 100%;
+    }
+
+    #mi-dashboard-container .dashboard-tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 30px;
+        align-items: center;
+        background: #ffffff;
+        padding: 18px 22px;
+        border-radius: 22px;
+        box-shadow: 0 14px 35px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(67, 97, 238, 0.12);
+    }
+
+    #mi-dashboard-container .dashboard-tabs-label {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #3d4a6d;
+        letter-spacing: 0.4px;
+        margin-right: 10px;
+    }
+
+    #mi-dashboard-container .tab-button {
+        padding: 14px 32px;
+        border-radius: 999px;
+        border: none;
+        background: #f3f7ff;
+        color: var(--dark);
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        min-width: 160px;
+        text-align: center;
+    }
+
+    #mi-dashboard-container .tab-button.active,
+    #mi-dashboard-container .tab-button:hover {
+        background: var(--primary);
+        color: white;
+        box-shadow: 0 10px 22px rgba(67, 97, 238, 0.18);
+    }
+
+    #mi-dashboard-container .dashboard-pane {
+        display: none;
+    }
+
+    #mi-dashboard-container .dashboard-pane.active {
+        display: block;
+        animation: fadeInUp 0.6s ease both;
+    }
+
+    /* ===== HEADER DE BIENVENIDA ===== */
+    #mi-dashboard-container .welcome-header {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        border: 1px solid rgba(0, 0, 0, 0.03);
+    }
+
+    #mi-dashboard-container .welcome-title {
+        margin: 0;
+    }
+
+    #mi-dashboard-container .welcome-title h2 {
+        font-size: 2rem;
+        font-weight: 600;
+        color: var(--dark);
+        margin-bottom: 10px;
+    }
+
+    #mi-dashboard-container .welcome-title h2 span {
+        background: var(--gradient-1);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    #mi-dashboard-container .welcome-title p {
+        color: #6c757d;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    #mi-dashboard-container .welcome-title p i {
+        color: var(--primary);
+    }
+
+    #mi-dashboard-container .welcome-stats {
+        display: flex;
+        gap: 20px;
+    }
+
+    #mi-dashboard-container .stat-badge {
+        background: var(--light);
+        padding: 10px 20px;
+        border-radius: 10px;
+        text-align: center;
+        min-width: 120px;
+    }
+
+    #mi-dashboard-container .stat-badge .number {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary);
+        display: block;
+    }
+
+    #mi-dashboard-container .stat-badge .label {
+        font-size: 0.85rem;
+        color: #6c757d;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* ===== SECCIÓN DE FORMULARIOS ===== */
+    #mi-dashboard-container .section-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    #mi-dashboard-container .section-title h3 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--dark);
+        margin: 0;
+    }
+
+    #mi-dashboard-container .section-title h3 i {
+        color: var(--primary);
+        margin-right: 10px;
+    }
+
+    #mi-dashboard-container .total-badge {
+        background: var(--gradient-1);
+        color: white;
+        padding: 8px 20px;
+        border-radius: 30px;
+        font-weight: 500;
+        box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        white-space: nowrap;
+    }
+
+    /* ===== CARRUSEL DE TARJETAS ===== */
+    #mi-dashboard-container .carousel-container {
+        position: relative;
+        margin: 30px 0 50px;
+        padding: 0 45px;
+    }
+
+    #mi-dashboard-container .forms-carousel {
+        overflow: hidden;
+        margin: 0 auto;
+        border-radius: 10px;
+    }
+
+    #mi-dashboard-container .carousel-track {
+        display: flex;
+        transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    #mi-dashboard-container .carousel-slide {
+        flex: 0 0 calc(25% - 20px);
+        margin: 0 10px;
+        min-width: 240px;
+    }
+
+    #mi-dashboard-container .carousel-nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 40px;
+        height: 40px;
+        background: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        transition: all 0.3s ease;
+        z-index: 10;
+        border: none;
+    }
+
+    #mi-dashboard-container .carousel-nav:hover {
+        background: var(--primary);
+        color: white;
+        transform: translateY(-50%) scale(1.1);
+        box-shadow: 0 8px 20px rgba(67, 97, 238, 0.4);
+    }
+
+    #mi-dashboard-container .carousel-nav.carousel-prev {
+        left: -5px;
+    }
+
+    #mi-dashboard-container .carousel-nav.carousel-next {
+        right: -5px;
+    }
+
+    #mi-dashboard-container .carousel-indicators-container {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        margin-top: 25px;
+        margin-bottom: 40px;
+    }
+
+    #mi-dashboard-container .carousel-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #ddd;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    #mi-dashboard-container .carousel-dot.active {
+        background: var(--primary);
+        transform: scale(1.3);
+        width: 25px;
+        border-radius: 10px;
+    }
+
+    /* ===== TARJETAS DE FORMULARIOS OPTIMIZADAS ===== */
+    #mi-dashboard-container .form-card {
+        background: white;
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(0, 0, 0, 0.03);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    #mi-dashboard-container .form-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+    }
+
+    #mi-dashboard-container .form-card::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: var(--primary);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    #mi-dashboard-container .form-card:hover::after {
+        opacity: 1;
+    }
+
+    #mi-dashboard-container .form-card-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    #mi-dashboard-container .form-card-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 12px;
+        color: white;
+        font-size: 1.4rem;
+        transition: all 0.3s ease;
+        flex-shrink: 0;
+    }
+
+    #mi-dashboard-container .form-card:hover .form-card-icon {
+        transform: scale(1.1) rotate(5deg);
+    }
+
+    #mi-dashboard-container .form-card-title {
+        overflow: hidden;
+    }
+
+    #mi-dashboard-container .form-card-title h4 {
+        font-size: 1rem;
+        font-weight: 600;
+        margin: 0 0 3px 0;
+        color: var(--dark);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    #mi-dashboard-container .form-card-title p {
+        font-size: 0.7rem;
+        color: #6c757d;
+        margin: 0;
+        line-height: 1.2;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    #mi-dashboard-container .form-card-stats {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+
+    #mi-dashboard-container .stat-number {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary);
+        line-height: 1;
+    }
+
+    #mi-dashboard-container .stat-percent {
+        padding: 4px 8px;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    #mi-dashboard-container .progress-sm {
+        height: 6px;
+        background: #e9ecef;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 8px;
+    }
+
+    #mi-dashboard-container .progress-bar {
+        height: 100%;
+        border-radius: 10px;
+        transition: width 1s ease;
+    }
+
+    #mi-dashboard-container .card-footer {
+        margin-top: auto;
+        font-size: 0.7rem;
+    }
+
+    /* ===== DASHBOARD DE GRÁFICAS ===== */
+    #mi-dashboard-container .charts-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 25px;
+        margin-top: 40px;
+        margin-bottom: 40px;
+    }
+
+    #mi-dashboard-container .chart-card {
+        background: white;
+        border-radius: 20px;
+        padding: 25px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        border: 1px solid rgba(0, 0, 0, 0.03);
+    }
+
+    #mi-dashboard-container .chart-card:hover {
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    #mi-dashboard-container .chart-card.full-width {
+        grid-column: 1 / -1;
+    }
+
+    #mi-dashboard-container .chart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    #mi-dashboard-container .chart-header h4 {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    #mi-dashboard-container .chart-header select {
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        padding: 8px 15px;
+        font-size: 0.9rem;
+        color: var(--dark);
+        background: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    #mi-dashboard-container .chart-header select:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+    }
+
+    #mi-dashboard-container .badge-primary {
+        background: var(--primary);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+    }
+
+    #mi-dashboard-container .badge-success {
+        background: #4cc9f0;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+    }
+
+    #mi-dashboard-container .badge-warning {
+        background: #f72585;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+    }
+
+    #mi-dashboard-container .badge-info {
+        background: var(--info);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+    }
+
+    /* ===== SECCIÓN DE INFORMACIÓN ADICIONAL ===== */
+    #mi-dashboard-container .info-section {
+        margin: 40px 0;
+    }
+
+    #mi-dashboard-container .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 25px;
+        margin-bottom: 40px;
+    }
+
+    #mi-dashboard-container .info-card {
+        background: white;
+        border-radius: 20px;
+        padding: 25px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        border: 1px solid rgba(0, 0, 0, 0.03);
+        height: fit-content;
+    }
+
+    #mi-dashboard-container .info-card:hover {
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        transform: translateY(-5px);
+    }
+
+    #mi-dashboard-container .info-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    #mi-dashboard-container .info-header h4 {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    /* ===== ACTIVIDADES ===== */
+    #mi-dashboard-container .activities-list {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    #mi-dashboard-container .activity-item {
+        display: flex;
+        align-items: center;
+        padding: 15px 0;
+        border-bottom: 1px solid #f8f9fa;
+        transition: all 0.3s ease;
+    }
+
+    #mi-dashboard-container .activity-item:hover {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding-left: 10px;
+        padding-right: 10px;
+        margin: 0 -10px;
+    }
+
+    #mi-dashboard-container .activity-item:last-child {
+        border-bottom: none;
+    }
+
+    #mi-dashboard-container .activity-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+        flex-shrink: 0;
+    }
+
+    #mi-dashboard-container .activity-content {
+        flex: 1;
+    }
+
+    #mi-dashboard-container .activity-title {
+        font-weight: 600;
+        color: var(--dark);
+        margin-bottom: 5px;
+    }
+
+    #mi-dashboard-container .activity-meta {
+        display: flex;
+        gap: 15px;
+        font-size: 0.8rem;
+        color: #6c757d;
+    }
+
+    #mi-dashboard-container .activity-meta span {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    #mi-dashboard-container .activity-status {
+        flex-shrink: 0;
+    }
+
+    #mi-dashboard-container .status-badge {
+        padding: 4px 8px;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    #mi-dashboard-container .status-badge.active {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    #mi-dashboard-container .status-badge.inactive {
+        background: #f8d7da;
+        color: #721c24;
+    }
+
+    /* ===== EVENTOS ===== */
+    #mi-dashboard-container .events-list {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    #mi-dashboard-container .event-item {
+        display: flex;
+        align-items: center;
+        padding: 15px 0;
+        border-bottom: 1px solid #f8f9fa;
+    }
+
+    #mi-dashboard-container .event-item:last-child {
+        border-bottom: none;
+    }
+
+    #mi-dashboard-container .event-date {
+        width: 50px;
+        height: 50px;
+        background: var(--gradient-1);
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+        flex-shrink: 0;
+        color: white;
+    }
+
+    #mi-dashboard-container .event-day {
+        font-size: 1.2rem;
+        font-weight: 700;
+        line-height: 1;
+    }
+
+    #mi-dashboard-container .event-month {
+        font-size: 0.6rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    #mi-dashboard-container .event-content {
+        flex: 1;
+    }
+
+    #mi-dashboard-container .event-title {
+        font-weight: 600;
+        color: var(--dark);
+        margin-bottom: 5px;
+    }
+
+    #mi-dashboard-container .event-location,
+    #mi-dashboard-container .event-time {
+        font-size: 0.8rem;
+        color: #6c757d;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-bottom: 2px;
+    }
+
+    /* ===== DOCUMENTOS ===== */
+    #mi-dashboard-container .documents-list {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    #mi-dashboard-container .document-item {
+        display: flex;
+        align-items: center;
+        padding: 15px 0;
+        border-bottom: 1px solid #f8f9fa;
+        transition: all 0.3s ease;
+    }
+
+    #mi-dashboard-container .document-item:hover {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding-left: 10px;
+        padding-right: 10px;
+        margin: 0 -10px;
+    }
+
+    #mi-dashboard-container .document-item:last-child {
+        border-bottom: none;
+    }
+
+    #mi-dashboard-container .document-icon {
+        margin-right: 15px;
+        flex-shrink: 0;
+    }
+
+    #mi-dashboard-container .document-content {
+        flex: 1;
+    }
+
+    #mi-dashboard-container .document-title {
+        font-weight: 600;
+        color: var(--dark);
+        margin-bottom: 5px;
+    }
+
+    #mi-dashboard-container .document-meta {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.8rem;
+        color: #6c757d;
+    }
+
+    #mi-dashboard-container .document-type {
+        background: #e9ecef;
+        padding: 2px 8px;
+        border-radius: 10px;
+    }
+
+    #mi-dashboard-container .document-actions {
+        flex-shrink: 0;
+    }
+
+    #mi-dashboard-container .btn-download {
+        background: var(--primary);
+        color: white;
+        padding: 8px 12px;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    #mi-dashboard-container .btn-download:hover {
+        background: var(--secondary);
+        transform: scale(1.05);
+    }
+
+    /* ===== NO DATA ===== */
+    #mi-dashboard-container .no-data {
+        text-align: center;
+        padding: 40px 20px;
+        color: #6c757d;
+    }
+
+    #mi-dashboard-container .no-data i {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        opacity: 0.5;
+    }
+
+    #mi-dashboard-container .no-data p {
+        margin: 0;
+        font-size: 0.9rem;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1400px) {
+        #mi-dashboard-container .carousel-slide {
+            flex: 0 0 calc(33.333% - 20px);
+        }
+
+        #mi-dashboard-container .carousel-container {
+            padding: 0 40px;
+        }
+    }
+
+    @media (max-width: 1200px) {
+        #mi-dashboard-container .carousel-slide {
+            flex: 0 0 calc(50% - 20px);
+        }
+
+        #mi-dashboard-container .charts-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 992px) {
+        #mi-dashboard-container {
+            padding: 15px;
+        }
+
+        #mi-dashboard-container .charts-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 768px) {
+        #mi-dashboard-container .welcome-header {
+            flex-direction: column;
+            text-align: center;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        #mi-dashboard-container .welcome-title h2 {
+            font-size: 1.5rem;
+        }
+
+        #mi-dashboard-container .welcome-stats {
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        #mi-dashboard-container .stat-badge {
+            width: 100%;
+        }
+
+        #mi-dashboard-container .section-title {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        #mi-dashboard-container .carousel-container {
+            padding: 0 35px;
+        }
+
+        #mi-dashboard-container .carousel-slide {
+            flex: 0 0 calc(100% - 20px);
+        }
+
+        #mi-dashboard-container .carousel-nav {
+            width: 35px;
+            height: 35px;
+        }
+
+        #mi-dashboard-container .chart-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        #mi-dashboard-container .chart-header select {
+            width: 100%;
+        }
+
+        #mi-dashboard-container .info-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 480px) {
+        #mi-dashboard-container .form-card-header {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        #mi-dashboard-container .form-card-icon {
+            margin-right: 0;
+            margin-bottom: 12px;
+        }
+
+        #mi-dashboard-container .form-card-stats {
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        #mi-dashboard-container .carousel-container {
+            padding: 0 30px;
+        }
+    }
+
+    /* ===== ANIMACIONES ===== */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    #mi-dashboard-container .animated {
+        animation-duration: 0.6s;
+        animation-fill-mode: both;
+    }
+
+    #mi-dashboard-container .fadeInUp {
+        animation-name: fadeInUp;
+    }
+</style>
+
+<div id="mi-dashboard-container">
+    <div class="container-fluid px-4">
+        <div class="dashboard-tabs">
+            <div class="dashboard-tabs-label">Ver datos de:</div>
+            <button class="tab-button active" data-target="dashboard-gestor">GestorPortal</button>
+            <button class="tab-button" data-target="dashboard-wordpress">WordPress</button>
+        </div>
+
+        <div id="dashboard-gestor" class="dashboard-pane active">
+            <!-- Header de bienvenida -->
+            <div class="welcome-header animated fadeInUp">
+                <div class="welcome-title">
+                    <h2>
+                        ¡Bienvenido, <span><?= $this->usuario; ?></span>!
+                    </h2>
+                    <p>
+                        <i class="fas fa-calendar-alt"></i>
+                        <?php echo date('d \d\e F \d\e Y'); ?> |
+                        <i class="fas fa-chart-line"></i>
+                        Sistema de Gestión de Formularios
+                    </p>
+                </div>
+                <div class="welcome-stats">
+                    <div class="stat-badge">
+                        <span class="number"><?php echo number_format($total); ?></span>
+                        <span class="label">Total Solicitudes</span>
+                    </div>
+                    <div class="stat-badge">
+                        <span class="number"><?php echo count(array_filter($numeros)); ?></span>
+                        <span class="label">Formularios Activos</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección de información adicional -->
+            <div class="info-section animated fadeInUp">
+                <div class="info-grid">
+                    <!-- Últimas actividades -->
+                    <div class="info-card">
+                        <div class="info-header">
+                            <h4>
+                                <i class="fas fa-history" style="color: var(--primary);"></i>
+                                Últimos Formularios
+                            </h4>
+                            <span class="badge-info">Recientes</span>
+                        </div>
+                        <div class="activities-list">
+                            <?php if (!empty($this->ultimas_actividades)): ?>
+                                <?php foreach ($this->ultimas_actividades as $actividad): ?>
+                                    <div class="activity-item">
+                                        <div class="activity-icon" style="background: <?php echo $actividad['color']; ?>20;">
+                                            <i class="fas <?php echo $actividad['icono']; ?>" style="color: <?php echo $actividad['color']; ?>;"></i>
+                                        </div>
+                                        <div class="activity-content">
+                                            <div class="activity-title"><?php echo htmlspecialchars($actividad['tipo']); ?> #<?php echo $actividad['id']; ?></div>
+                                            <div class="activity-meta">
+                                                <span><i class="fas fa-user"></i> <?php echo htmlspecialchars($actividad['usuario']); ?></span>
+                                                <span><i class="fas fa-clock"></i> <?php echo date('d/m/y H:i', strtotime($actividad['fecha'])); ?></span>
+                                            </div>
+                                        </div>
+                                        <div class="activity-status">
+                                            <span class="status-badge <?php echo $actividad['estado'] == 'Activo' ? 'active' : 'inactive'; ?>">
+                                                <?php echo $actividad['estado']; ?>
+                                            </span>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <div class="no-data">
+                                    <i class="fas fa-inbox"></i>
+                                    <p>No hay actividades recientes</p>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+
+                    <!-- Eventos próximos -->
+                    <div class="info-card">
+                        <div class="info-header">
+                            <h4>
+                                <i class="fas fa-calendar-alt" style="color: #4cc9f0;"></i>
+                                Eventos Próximos
+                            </h4>
+                            <span class="badge-success">Agenda</span>
+                        </div>
+                        <div class="events-list">
+                            <?php if (!empty($this->eventos_proximos)): ?>
+                                <?php foreach ($this->eventos_proximos as $evento): ?>
+                                    <div class="event-item">
+                                        <div class="event-date">
+                                            <div class="event-day"><?php echo date('d', strtotime($evento['start'])); ?></div>
+                                            <div class="event-month"><?php echo strtoupper(date('M', strtotime($evento['start']))); ?></div>
+                                        </div>
+                                        <div class="event-content">
+                                            <div class="event-title"><?php echo htmlspecialchars($evento['titulo']); ?></div>
+                                            <div class="event-location">
+                                                <i class="fas fa-map-marker-alt"></i>
+                                                <?php echo htmlspecialchars($evento['lugar']); ?>
+                                            </div>
+                                            <div class="event-time">
+                                                <i class="fas fa-clock"></i>
+                                                <?php echo date('H:i', strtotime($evento['start'])); ?> - <?php echo date('H:i', strtotime($evento['end'])); ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <div class="no-data">
+                                    <i class="fas fa-calendar-times"></i>
+                                    <p>No hay eventos próximos</p>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+
+                    <!-- Documentos recientes -->
+                    <div class="info-card">
+                        <div class="info-header">
+                            <h4>
+                                <i class="fas fa-file-alt" style="color: #f72585;"></i>
+                                Documentos Recientes
+                            </h4>
+                            <span class="badge-warning">Archivos</span>
+                        </div>
+                        <div class="documents-list">
+                            <?php if (!empty($this->documentos_recientes)): ?>
+                                <?php foreach ($this->documentos_recientes as $documento): ?>
+                                    <div class="document-item">
+                                        <div class="document-icon">
+                                            <i class="fas fa-file-pdf" style="color: #e63946;"></i>
+                                        </div>
+                                        <div class="document-content">
+                                            <div class="document-title"><?php echo htmlspecialchars($documento['nombre']); ?></div>
+                                            <div class="document-meta">
+                                                <span class="document-type"><?php echo htmlspecialchars($documento['tipo']); ?></span>
+                                                <span class="document-date"><?php echo date('d/m/Y', strtotime($documento['publicacion'])); ?></span>
+                                            </div>
+                                        </div>
+                                        <div class="document-actions">
+                                            <a href="<?php echo $this->basePath('../../archivos/publicos/' . $documento['archivo']); ?>"
+                                                target="_blank" class="btn-download">
+                                                <i class="fas fa-download"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <div class="no-data">
+                                    <i class="fas fa-folder-open"></i>
+                                    <p>No hay documentos recientes</p>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección de formularios -->
+            <div class="section-title animated fadeInUp">
+                <h3>
+                    <i class="fas fa-layer-group"></i>
+                    Formularios Disponibles
+                </h3>
+                <div class="total-badge">
+                    <i class="fas fa-calculator mr-2"></i>
+                    Total: <?php echo number_format($total); ?> solicitudes
+                </div>
+            </div>
+
+            <?php
+            $formularios = [
+                [
+                    'valor' => $this->form_academica,
+                    'icono' => 'fa-graduation-cap',
+                    'titulo' => 'Académica',
+                    'descripcion' => 'Facultad de Ciencias Académicas',
+                    'color' => '#4361ee'
+                ],
+                [
+                    'valor' => $this->form_agraria,
+                    'icono' => 'fa-leaf',
+                    'titulo' => 'Agrarias',
+                    'descripcion' => 'Facultad de Ciencias Agrarias',
+                    'color' => '#4cc9f0'
+                ],
+                [
+                    'valor' => $this->form_artes,
+                    'icono' => 'fa-palette',
+                    'titulo' => 'Artes',
+                    'descripcion' => 'Facultad de Artes',
+                    'color' => '#f72585'
+                ],
+                [
+                    'valor' => $this->form_cecav,
+                    'icono' => 'fa-video',
+                    'titulo' => 'CECAV',
+                    'descripcion' => 'Centro Audiovisual',
+                    'color' => '#7209b7'
+                ],
+                [
+                    'valor' => $this->form_conflicto_interes,
+                    'icono' => 'fa-balance-scale',
+                    'titulo' => 'Conflicto de Interés',
+                    'descripcion' => 'Gestión de Conflictos',
+                    'color' => '#f8961e'
+                ],
+                [
+                    'valor' => $this->form_contables,
+                    'icono' => 'fa-calculator',
+                    'titulo' => 'Contables',
+                    'descripcion' => 'Ciencias Contables',
+                    'color' => '#43aa8b'
+                ],
+                [
+                    'valor' => $this->form_cp,
+                    'icono' => 'fa-user-graduate',
+                    'titulo' => 'Posgrados',
+                    'descripcion' => 'Centro de Posgrados',
+                    'color' => '#577590'
+                ],
+                [
+                    'valor' => $this->form_cultura,
+                    'icono' => 'fa-theater-masks',
+                    'titulo' => 'Cultura',
+                    'descripcion' => 'Extensión Cultural',
+                    'color' => '#f94144'
+                ],
+                [
+                    'valor' => $this->form_dae_empre,
+                    'icono' => 'fa-lightbulb',
+                    'titulo' => 'Emprendimiento',
+                    'descripcion' => 'Área de Emprendimiento',
+                    'color' => '#f9c74f'
+                ],
+                [
+                    'valor' => $this->form_dae_propiedad,
+                    'icono' => 'fa-copyright',
+                    'titulo' => 'Propiedad Intelectual',
+                    'descripcion' => 'Registro de Propiedad',
+                    'color' => '#90be6d'
+                ],
+                [
+                    'valor' => $this->form_egresados,
+                    'icono' => 'fa-user-tie',
+                    'titulo' => 'Egresados',
+                    'descripcion' => 'Oficina de Egresados',
+                    'color' => '#4d908e'
+                ],
+                [
+                    'valor' => $this->form_emisora,
+                    'icono' => 'fa-broadcast-tower',
+                    'titulo' => 'Emisora',
+                    'descripcion' => 'Unicauca Estéreo',
+                    'color' => '#277da1'
+                ],
+                [
+                    'valor' => $this->form_fchs,
+                    'icono' => 'fa-brain',
+                    'titulo' => 'FCHS',
+                    'descripcion' => 'Ciencias Humanas',
+                    'color' => '#b5838d'
+                ],
+                [
+                    'valor' => $this->form_fic,
+                    'icono' => 'fa-hard-hat',
+                    'titulo' => 'FIC',
+                    'descripcion' => 'Ingeniería Civil',
+                    'color' => '#e76f51'
+                ],
+                [
+                    'valor' => $this->form_fiet,
+                    'icono' => 'fa-microchip',
+                    'titulo' => 'FIET',
+                    'descripcion' => 'Ingeniería Electrónica',
+                    'color' => '#2a9d8f'
+                ],
+                [
+                    'valor' => $this->form_ocdi,
+                    'icono' => 'fa-gavel',
+                    'titulo' => 'OCDI',
+                    'descripcion' => 'Control Disciplinario',
+                    'color' => '#e9c46a'
+                ],
+                [
+                    'valor' => $this->form_orii,
+                    'icono' => 'fa-globe',
+                    'titulo' => 'ORII',
+                    'descripcion' => 'Relaciones Internacionales',
+                    'color' => '#f4a261'
+                ],
+                [
+                    'valor' => $this->form_pqrsf,
+                    'icono' => 'fa-comment-dots',
+                    'titulo' => 'PQRSF',
+                    'descripcion' => 'Peticiones y Reclamos',
+                    'color' => '#e63946'
+                ],
+                [
+                    'valor' => $this->form_rectoria,
+                    'icono' => 'fa-landmark',
+                    'titulo' => 'Rectoría',
+                    'descripcion' => 'Oficina del Rector',
+                    'color' => '#1e6091'
+                ],
+                [
+                    'valor' => $this->form_rendicion_cuentas,
+                    'icono' => 'fa-file-invoice-dollar',
+                    'titulo' => 'Rendición de Cuentas',
+                    'descripcion' => 'Informes Financieros',
+                    'color' => '#76c893'
+                ],
+                [
+                    'valor' => $this->form_viceadmin,
+                    'icono' => 'fa-clipboard-list',
+                    'titulo' => 'Vic. Administrativa',
+                    'descripcion' => 'Gestión Administrativa',
+                    'color' => '#34a0a4'
+                ],
+                [
+                    'valor' => $this->form_viceinvest,
+                    'icono' => 'fa-flask',
+                    'titulo' => 'Vic. Investigaciones',
+                    'descripcion' => 'Investigación',
+                    'color' => '#b56576'
+                ],
+                [
+                    'valor' => $this->form_facned,
+                    'icono' => 'fa-square-root-alt',
+                    'titulo' => 'FACNED',
+                    'descripcion' => 'Ciencias Naturales',
+                    'color' => '#6c757d'
+                ],
+                [
+                    'valor' => $this->form_fderecho,
+                    'icono' => 'fa-gavel',
+                    'titulo' => 'Fac. Derecho',
+                    'descripcion' => 'Ciencias Políticas',
+                    'color' => '#adb5bd'
+                ],
+                [
+                    'valor' => $this->form_fsalud,
+                    'icono' => 'fa-heartbeat',
+                    'titulo' => 'Fac. Salud',
+                    'descripcion' => 'Ciencias de la Salud',
+                    'color' => '#d62828'
+                ],
+                [
+                    'valor' => $this->form_comarca,
+                    'icono' => 'fa-broadcast-tower',
+                    'titulo' => 'CoMarca',
+                    'descripcion' => 'Comunicación y Marca',
+                    'color' => '#003049'
+                ],
+                [
+                    'valor' => $this->form_secretariageneral,
+                    'icono' => 'fa-landmark',
+                    'titulo' => 'Secretaría General',
+                    'descripcion' => 'Gestión Administrativa',
+                    'color' => '#fcbf49'
+                ],
+                [
+                    'valor' => $this->form_unisalud,
+                    'icono' => 'fa-hospital-alt',
+                    'titulo' => 'Unisalud',
+                    'descripcion' => 'Unidad de Salud',
+                    'color' => '#9d4edd'
+                ],
+                [
+                    'valor' => $this->form_unisalud_rendicion_cuentas,
+                    'icono' => 'fa-hospital',
+                    'titulo' => 'Unisalud RC',
+                    'descripcion' => 'Rendición de Cuentas',
+                    'color' => '#6a057f'
+                ],
+            ];
+
+            // Ordenar de mayor a menor
+            usort($formularios, function ($a, $b) {
+                return $b['valor'] <=> $a['valor'];
+            });
+            ?>
+
+            <!-- Carrusel de tarjetas (4 tarjetas por slide) -->
+            <div class="carousel-container animated fadeInUp">
+                <div class="carousel-nav carousel-prev">
+                    <i class="fas fa-chevron-left"></i>
+                </div>
+
+                <div class="forms-carousel">
+                    <div class="carousel-track">
+                        <?php foreach ($formularios as $index => $form):
+                            $porcentaje = $total > 0 ? round(($form['valor'] / $total) * 100, 1) : 0;
+                        ?>
+                            <div class="carousel-slide">
+                                <div class="form-card" data-toggle="tooltip" title="<?php echo htmlspecialchars($form['descripcion']); ?>" style="border-top: 4px solid <?php echo $form['color']; ?>">
+                                    <div class="form-card-header">
+                                        <div class="form-card-icon" style="background: <?php echo $form['color']; ?>">
+                                            <i class="fas <?php echo $form['icono']; ?>"></i>
+                                        </div>
+                                        <div class="form-card-title">
+                                            <h4><?php echo $form['titulo']; ?></h4>
+                                            <p><?php echo $form['descripcion']; ?></p>
+                                        </div>
+                                    </div>
+                                    <div class="form-card-stats">
+                                        <span class="stat-number"><?php echo number_format($form['valor']); ?></span>
+                                        <span class="stat-percent" style="background: <?php echo $form['color']; ?>20; color: <?php echo $form['color']; ?>">
+                                            <i class="fas fa-percent"></i>
+                                            <?php echo $porcentaje; ?>%
+                                        </span>
+                                    </div>
+                                    <div class="progress-sm">
+                                        <div class="progress-bar" style="width: <?php echo $porcentaje; ?>%; background: linear-gradient(90deg, <?php echo $form['color']; ?>, <?php echo $form['color']; ?>dd)"></div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <small class="text-muted">
+                                            <i class="far fa-clock mr-1"></i>
+                                            Hoy
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+
+                <div class="carousel-nav carousel-next">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+
+            <!-- Indicadores del carrusel -->
+            <div class="carousel-indicators-container animated fadeInUp">
+                <?php
+                $totalSlides = ceil(count($formularios) / 4);
+                for ($i = 0; $i < $totalSlides; $i++):
+                ?>
+                    <span class="carousel-dot <?php echo $i === 0 ? 'active' : ''; ?>" data-slide="<?php echo $i; ?>"></span>
+                <?php endfor; ?>
+            </div>
+
+            <!-- Dashboard de gráficas -->
+            <div class="charts-grid animated fadeInUp">
+                <!-- Gráfico 1: Top 10 Formularios -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h4>
+                            <i class="fas fa-trophy" style="color: #ffd700;"></i>
+                            Top 10 Formularios
+                        </h4>
+                        <span class="badge-primary">Más solicitados</span>
+                    </div>
+                    <div id="chartTop10" style="height: 300px;"></div>
+                </div>
+
+                <!-- Gráfico 2: Distribución por Categorías -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h4>
+                            <i class="fas fa-chart-pie" style="color: var(--primary);"></i>
+                            Distribución por Categorías
+                        </h4>
+                        <span class="badge-success">Agrupado</span>
+                    </div>
+                    <div id="chartCategorias" style="height: 300px;"></div>
+                </div>
+
+                <!-- Gráfico 3: Tendencia Mensual (Top 5) -->
+                <div class="chart-card full-width">
+                    <div class="chart-header">
+                        <h4>
+                            <i class="fas fa-chart-line" style="color: #4cc9f0;"></i>
+                            Tendencia Mensual - Top 5 Formularios
+                        </h4>
+                        <select id="selectTop5">
+                            <option value="line">Líneas</option>
+                            <option value="bar">Barras</option>
+                            <option value="area">Área</option>
+                        </select>
+                    </div>
+                    <div id="chartTendencia" style="height: 350px;"></div>
+                </div>
+
+                <!-- Gráfico 4: Mapa de Calor -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h4>
+                            <i class="fas fa-th-large" style="color: #f72585;"></i>
+                            Mapa de Calor Mensual
+                        </h4>
+                    </div>
+                    <div id="chartHeatmap" style="height: 300px;"></div>
+                </div>
+
+                <!-- Gráfico 5: Radial Bars -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h4>
+                            <i class="fas fa-chart-simple" style="color: #7209b7;"></i>
+                            Comparativo Radial
+                        </h4>
+                    </div>
+                    <div id="chartRadial" style="height: 300px;"></div>
+                </div>
+
+                <!-- Gráfico 6: Tendencia Semanal -->
+                <div class="chart-card full-width">
+                    <div class="chart-header">
+                        <h4>
+                            <i class="fas fa-calendar-week" style="color: #43aa8b;"></i>
+                            Tendencia Semanal del Mes
+                        </h4>
+                        <span class="badge-primary"><?php echo date('F Y'); ?></span>
+                    </div>
+                    <div id="chartSemanal" style="height: 350px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="dashboard-wordpress" class="dashboard-pane">
+            <div class="section-title">
+                <h3>
+                    <i class="fab fa-wordpress"></i>
+                    WordPress / newportal
+                </h3>
+                <div class="total-badge">
+                    Posts publicados: <?php echo number_format($this->wp_summary['posts'] ?? 0); ?>
+                </div>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-card">
+                    <div class="info-header">
+                        <h4><i class="fas fa-file-alt" style="color: #4cc9f0;"></i> Publicaciones</h4>
+                    </div>
+                    <p style="font-size: 2rem; font-weight: 700; color: var(--dark);">
+                        <?php echo number_format($this->wp_summary['posts'] ?? 0); ?>
+                    </p>
+                    <p style="color: #6c757d;">Entradas publicadas</p>
+                </div>
+                <div class="info-card">
+                    <div class="info-header">
+                        <h4><i class="fas fa-file" style="color: #f72585;"></i> Páginas</h4>
+                    </div>
+                    <p style="font-size: 2rem; font-weight: 700; color: var(--dark);">
+                        <?php echo number_format($this->wp_summary['pages'] ?? 0); ?>
+                    </p>
+                    <p style="color: #6c757d;">Páginas activas</p>
+                </div>
+                <div class="info-card">
+                    <div class="info-header">
+                        <h4><i class="fas fa-comments" style="color: #7209b7;"></i> Comentarios</h4>
+                    </div>
+                    <p style="font-size: 2rem; font-weight: 700; color: var(--dark);">
+                        <?php echo number_format($this->wp_summary['comments'] ?? 0); ?>
+                    </p>
+                    <p style="color: #6c757d;">Comentarios totales</p>
+                </div>
+                <div class="info-card">
+                    <div class="info-header">
+                        <h4><i class="fas fa-users" style="color: #43aa8b;"></i> Usuarios</h4>
+                    </div>
+                    <p style="font-size: 2rem; font-weight: 700; color: var(--dark);">
+                        <?php echo number_format($this->wp_summary['users'] ?? 0); ?>
+                    </p>
+                    <p style="color: #6c757d;">Usuarios registrados</p>
+                </div>
+            </div>
+
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h4><i class="fas fa-clock" style="color: #f8961e;"></i> Publicaciones recientes</h4>
+                    </div>
+                    <div class="documents-list">
+                        <?php if (!empty($this->wp_posts)): ?>
+                            <?php foreach ($this->wp_posts as $post): ?>
+                                <div class="document-item">
+                                    <div class="document-icon">
+                                        <i class="fas fa-file-alt" style="color: #4cc9f0;"></i>
+                                    </div>
+                                    <div class="document-content">
+                                        <div class="document-title"><?php echo htmlspecialchars($post['post_title']); ?></div>
+                                        <span><?php echo htmlspecialchars($post['display_name'] ?: $post['post_author']); ?></span>
+                                        <div class="document-meta">
+                                            <span><?php echo htmlspecialchars($post['post_status']); ?></span>
+                                            <span><?php echo date('d/m/Y H:i', strtotime($post['post_date'])); ?></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <div class="no-data">
+                                <i class="fas fa-file-upload"></i>
+                                <p>No hay publicaciones nuevas</p>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h4><i class="fas fa-comment-dots" style="color: #7209b7;"></i> Comentarios recientes</h4>
+                    </div>
+                    <div class="documents-list">
+                        <?php if (!empty($this->wp_comments)): ?>
+                            <?php foreach ($this->wp_comments as $comment): ?>
+                                <div class="document-item">
+                                    <div class="document-icon">
+                                        <i class="fas fa-comment" style="color: #f72585;"></i>
+                                    </div>
+                                    <div class="document-content">
+                                        <div class="document-title"><?php echo htmlspecialchars($comment['comment_author']); ?></div>
+                                        <div class="document-meta">
+                                            <span><?php echo htmlspecialchars($comment['comment_approved'] == '0' ? 'Pendiente' : 'Aprobado'); ?></span>
+                                            <span><?php echo date('d/m/Y', strtotime($comment['comment_date'])); ?></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <div class="no-data">
+                                <i class="fas fa-comments-slash"></i>
+                                <p>No hay comentarios recientes</p>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h4><i class="fas fa-user-plus" style="color: #43aa8b;"></i> Inicios recientes</h4>
+                    </div>
+                    <div class="documents-list">
+                        <?php if (!empty($this->wp_users)): ?>
+                            <?php foreach ($this->wp_users as $user): ?>
+                                <div class="document-item">
+                                    <div class="document-icon">
+                                        <i class="fas fa-user" style="color: #30cfd0;"></i>
+                                    </div>
+                                    <div class="document-content">
+                                        <div class="document-title"><?php echo htmlspecialchars($user['display_name'] ?: $user['username']); ?></div>
+                                        <div class="document-meta">
+                                            <span><?php echo htmlspecialchars($user['user_email']); ?></span>
+                                            <span><?php echo date('d/m/Y H:i', strtotime($user['login_time'])); ?></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <div class="no-data">
+                                <i class="fas fa-user-slash"></i>
+                                <p>No hay usuarios recientes</p>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h4><i class="fas fa-calendar-week" style="color: #f8961e;"></i> Próximos eventos</h4>
+                    </div>
+                    <div class="events-list">
+                        <?php if (!empty($this->wp_events)): ?>
+                            <?php foreach ($this->wp_events as $event): ?>
+                                <div class="event-item">
+                                    <div class="event-date">
+                                        <div class="event-day"><?php echo date('d', strtotime($event['start_date'])); ?></div>
+                                        <div class="event-month"><?php echo strtoupper(date('M', strtotime($event['start_date']))); ?></div>
+                                    </div>
+                                    <div class="event-content">
+                                        <div class="event-title"><?php echo htmlspecialchars($event['post_title']); ?></div>
+                                        <div class="event-location">
+                                            <i class="fas fa-clock"></i>
+                                            <?php echo date('H:i', strtotime($event['start_date'])); ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <div class="no-data">
+                                <i class="fas fa-calendar-times"></i>
+                                <p>No hay eventos activos</p>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Función para inicializar el carrusel
+    function initCarousel() {
+        let currentSlide = 0;
+        const track = $('#mi-dashboard-container .carousel-track');
+        const slides = $('#mi-dashboard-container .carousel-slide');
+        const dots = $('#mi-dashboard-container .carousel-dot');
+
+        function getSlidesPerView() {
+            if ($(window).width() <= 768) return 1;
+            if ($(window).width() <= 1200) return 2;
+            if ($(window).width() <= 1400) return 3;
+            return 4;
+        }
+
+        function updateCarousel() {
+            const slidesPerView = getSlidesPerView();
+            const slideWidth = $('#mi-dashboard-container .carousel-slide').outerWidth(true);
+            const maxSlide = Math.ceil(slides.length / slidesPerView) - 1;
+
+            if (currentSlide < 0) currentSlide = maxSlide;
+            if (currentSlide > maxSlide) currentSlide = 0;
+
+            const offset = -currentSlide * slideWidth * slidesPerView;
+            track.css('transform', `translateX(${offset}px)`);
+
+            dots.removeClass('active');
+            $(dots[currentSlide]).addClass('active');
+        }
+
+        $('#mi-dashboard-container .carousel-next').click(function() {
+            currentSlide++;
+            updateCarousel();
+        });
+
+        $('#mi-dashboard-container .carousel-prev').click(function() {
+            currentSlide--;
+            updateCarousel();
+        });
+
+        $('#mi-dashboard-container .carousel-dot').click(function() {
+            currentSlide = $(this).data('slide');
+            updateCarousel();
+        });
+
+        $(window).resize(function() {
+            currentSlide = 0;
+            updateCarousel();
+        });
+
+        updateCarousel();
+    }
+
+    // Función para inicializar todas las gráficas
+    function initCharts() {
+        // Datos para Top 10
+        var top10Data = <?php
+                        $top10 = array_slice($formularios, 0, 10);
+                        $labels = [];
+                        $values = [];
+                        foreach ($top10 as $form) {
+                            $labels[] = $form['titulo'];
+                            $values[] = $form['valor'];
+                        }
+                        echo json_encode(['labels' => $labels, 'values' => $values]);
+                        ?>;
+
+        // Gráfico 1: Top 10 (Barras horizontales)
+        var chartTop10 = echarts.init(document.getElementById('chartTop10'));
+        chartTop10.setOption({
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow'
+                },
+                formatter: '{b}: {c} solicitudes'
+            },
+            grid: {
+                left: '20%',
+                right: '5%',
+                top: '10%',
+                bottom: '10%'
+            },
+            xAxis: {
+                type: 'value',
+                name: 'Solicitudes',
+                nameLocation: 'middle',
+                nameGap: 30
+            },
+            yAxis: {
+                type: 'category',
+                data: top10Data.labels.reverse(),
+                axisLabel: {
+                    fontSize: 10,
+                    overflow: 'truncate'
+                }
+            },
+            series: [{
+                name: 'Solicitudes',
+                type: 'bar',
+                data: top10Data.values.reverse(),
+                itemStyle: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [{
+                            offset: 0,
+                            color: '#4361ee'
+                        },
+                        {
+                            offset: 1,
+                            color: '#4cc9f0'
+                        }
+                    ]),
+                    borderRadius: [0, 10, 10, 0]
+                },
+                label: {
+                    show: true,
+                    position: 'right',
+                    formatter: '{c}'
+                }
+            }]
+        });
+
+        // Agrupación por categorías
+        var categorias = [{
+                name: 'Rectoría',
+                value: 0
+            },
+            {
+                name: 'Vicerrectorías',
+                value: 0
+            },
+            {
+                name: 'Facultades',
+                value: 0
+            },
+            {
+                name: 'Oficinas',
+                value: 0
+            }
+        ];
+
+        <?php
+        $categorias = [
+            'Rectoría' => ['Rectoría', 'OCDI', 'ORII', 'S. General', 'Unisalud', 'Unisalud RC'],
+            'Vicerrectorías' => ['Académica', 'V. Admin', 'V. Invest', 'Cultura'],
+            'Facultades' => ['Agrarias', 'Artes', 'Contables', 'F. Derecho', 'FACNED', 'FIC', 'FIET', 'FCHS', 'F. Salud'],
+            'Oficinas' => ['Emprendimiento', 'Egresados', 'Propiedad Intelectual', 'CECAV', 'Posgrados', 'PQRSF', 'R. Cuentas', 'C. Interés', 'Emisora', 'CoMarca']
+        ];
+
+        $catValues = [];
+        foreach ($categorias as $catName => $forms) {
+            $totalCat = 0;
+            foreach ($formularios as $form) {
+                if (in_array($form['titulo'], $forms)) {
+                    $totalCat += $form['valor'];
+                }
+            }
+            $catValues[] = ['name' => $catName, 'value' => $totalCat];
+        }
+        ?>
+
+        // Gráfico 2: Distribución por Categorías
+        var chartCategorias = echarts.init(document.getElementById('chartCategorias'));
+        chartCategorias.setOption({
+            tooltip: {
+                trigger: 'item',
+                formatter: '{b}<br/>Solicitudes: {c} ({d}%)'
+            },
+            legend: {
+                orient: 'vertical',
+                left: 'left',
+                top: 'center',
+                textStyle: {
+                    fontSize: 11
+                }
+            },
+            series: [{
+                name: 'Categorías',
+                type: 'pie',
+                radius: ['40%', '70%'],
+                center: ['60%', '50%'],
+                avoidLabelOverlap: false,
+                itemStyle: {
+                    borderRadius: 10,
+                    borderColor: '#fff',
+                    borderWidth: 2
+                },
+                label: {
+                    show: false
+                },
+                emphasis: {
+                    scale: true,
+                    label: {
+                        show: true
+                    }
+                },
+                data: <?php echo json_encode($catValues); ?>
+            }]
+        });
+
+        // Datos para tendencia mensual
+        var meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+
+        // Gráfico 3: Tendencia Mensual
+        var chartTendencia = echarts.init(document.getElementById('chartTendencia'));
+
+        <?php
+        // Obtener Top 5 formularios para tendencia
+        $top5Forms = array_slice($formularios, 0, 5);
+        $top5Map = [
+            'Académica' => 'form_academica',
+            'Agrarias' => 'form_agraria',
+            'Artes' => 'form_artes',
+            'CECAV' => 'form_cecav',
+            'C. Interés' => 'form_conflicto_interes',
+            'Contables' => 'form_contables',
+            'Posgrados' => 'form_cp',
+            'Cultura' => 'form_cultura',
+            'Emprendimiento' => 'form_dae_empre',
+            'Propiedad Intelectual' => 'form_dae_propiedad',
+            'Egresados' => 'form_egresados',
+            'Emisora' => 'form_emisora',
+            'FCHS' => 'form_fchs',
+            'FIC' => 'form_fic',
+            'FIET' => 'form_fiet',
+            'OCDI' => 'form_ocdi',
+            'ORII' => 'form_orii',
+            'PQRSF' => 'form_pqrsf',
+            'Rectoría' => 'form_rectoria',
+            'R. Cuentas' => 'form_rendicion_cuentas',
+            'V. Admin' => 'form_viceadmin',
+            'V. Invest' => 'form_viceinvest',
+            'FACNED' => 'form_facned',
+            'F. Derecho' => 'form_fderecho',
+            'F. Salud' => 'form_fsalud',
+            'CoMarca' => 'form_comarca',
+            'S. General' => 'form_secretariageneral',
+            'Unisalud' => 'form_unisalud',
+            'Unisalud RC' => 'form_unisalud_rendicion_cuentas',
+        ];
+        ?>
+
+        var seriesData = [];
+        <?php foreach ($top5Forms as $form):
+            $formVar = $top5Map[$form['titulo']] ?? '';
+            if ($formVar):
+        ?>
+                seriesData.push({
+                    name: '<?php echo $form['titulo']; ?>',
+                    type: 'line',
+                    smooth: true,
+                    symbol: 'circle',
+                    symbolSize: 8,
+                    data: [
+                        <?php
+                        for ($m = 1; $m <= 12; $m++) {
+                            $value = isset($this->{$formVar . '_' . $m}[0]['total']) ? $this->{$formVar . '_' . $m}[0]['total'] : 0;
+                            echo $value . ',';
+                        }
+                        ?>
+                    ],
+                    lineStyle: {
+                        width: 3
+                    },
+                    areaStyle: {
+                        opacity: 0.1
+                    }
+                });
+        <?php
+            endif;
+        endforeach;
+        ?>
+
+        chartTendencia.setOption({
+            tooltip: {
+                trigger: 'axis',
+                formatter: function(params) {
+                    var result = params[0].axisValue + '<br/>';
+                    params.sort(function(a, b) {
+                        return b.value - a.value;
+                    });
+                    params.forEach(function(item) {
+                        result += '<span style="display:inline-block;margin-right:5px;border-radius:10px;width:10px;height:10px;background-color:' + item.color + '"></span>';
+                        result += item.seriesName + ': ' + item.value + ' solicitudes<br/>';
+                    });
+                    return result;
+                }
+            },
+            legend: {
+                data: <?php echo json_encode(array_column($top5Forms, 'titulo')); ?>,
+                type: 'scroll',
+                bottom: 0,
+                pageIconColor: 'var(--primary)'
+            },
+            grid: {
+                left: '10%',
+                right: '5%',
+                top: '15%',
+                bottom: '25%'
+            },
+            xAxis: {
+                type: 'category',
+                data: meses
+            },
+            yAxis: {
+                type: 'value',
+                name: 'Solicitudes',
+                nameLocation: 'middle',
+                nameGap: 40
+            },
+            series: seriesData
+        });
+
+        // Gráfico 4: Mapa de Calor
+        var chartHeatmap = echarts.init(document.getElementById('chartHeatmap'));
+        var horas = ['8am', '10am', '12pm', '2pm', '4pm', '6pm'];
+        var dias = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+
+        var heatData = [];
+        for (var i = 0; i < dias.length; i++) {
+            for (var j = 0; j < horas.length; j++) {
+                heatData.push([i, j, Math.floor(Math.random() * 100) + 20]);
+            }
+        }
+
+        chartHeatmap.setOption({
+            tooltip: {
+                position: 'top',
+                formatter: function(params) {
+                    return dias[params.value[0]] + ' ' + horas[params.value[1]] + '<br/>Actividad: ' + params.value[2];
+                }
+            },
+            grid: {
+                left: '10%',
+                right: '5%',
+                top: '10%',
+                bottom: '15%'
+            },
+            xAxis: {
+                type: 'category',
+                data: dias,
+                splitArea: {
+                    show: true
+                }
+            },
+            yAxis: {
+                type: 'category',
+                data: horas,
+                splitArea: {
+                    show: true
+                }
+            },
+            visualMap: {
+                min: 0,
+                max: 150,
+                calculable: true,
+                orient: 'horizontal',
+                left: 'center',
+                inRange: {
+                    color: ['#e0f2fe', '#bae6fd', '#7dd3fc', '#38bdf8', '#0ea5e9', '#0284c7']
+                }
+            },
+            series: [{
+                name: 'Actividad',
+                type: 'heatmap',
+                data: heatData,
+                label: {
+                    show: false
+                },
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 10
+                    }
+                }
+            }]
+        });
+
+        // Gráfico 5: Radial Bars
+        var chartRadial = echarts.init(document.getElementById('chartRadial'));
+        var radialData = <?php
+                            $top8 = array_slice($formularios, 0, 8);
+                            $radialArray = [];
+                            foreach ($top8 as $form) {
+                                $radialArray[] = [
+                                    'name' => $form['titulo'],
+                                    'value' => $form['valor'],
+                                    'color' => $form['color']
+                                ];
+                            }
+                            echo json_encode($radialArray);
+                            ?>;
+
+        chartRadial.setOption({
+            tooltip: {
+                trigger: 'item',
+                formatter: '{b}<br/>Solicitudes: {c} ({d}%)'
+            },
+            legend: {
+                show: true,
+                orient: 'vertical',
+                left: 'left',
+                top: 'center',
+                textStyle: {
+                    fontSize: 10
+                }
+            },
+            series: [{
+                type: 'pie',
+                radius: ['15%', '70%'],
+                center: ['60%', '50%'],
+                roseType: 'area',
+                data: radialData,
+                label: {
+                    show: true,
+                    position: 'outside',
+                    formatter: '{b}',
+                    fontSize: 10
+                },
+                emphasis: {
+                    scale: true,
+                    label: {
+                        show: true
+                    }
+                },
+                itemStyle: {
+                    borderRadius: 8,
+                    borderColor: '#fff',
+                    borderWidth: 2
+                }
+            }]
+        });
+
+        // Cambiar tipo de gráfico de tendencia
+        $('#selectTop5').change(function() {
+            var type = $(this).val();
+            var option = chartTendencia.getOption();
+            if (type === 'area') {
+                option.series.forEach(function(s) {
+                    s.type = 'line';
+                    s.areaStyle = {
+                        opacity: 0.3
+                    };
+                });
+            } else {
+                option.series.forEach(function(s) {
+                    s.type = type;
+                    s.areaStyle = null;
+                });
+            }
+            chartTendencia.setOption(option);
+        });
+    }
+
+    // Gráfico 6: Tendencia Semanal
+    var semanalData = <?php
+                        $semanas = $this->estadisticas_semanales;
+                        $semanasLabels = [];
+                        $semanasValues = [];
+                        foreach ($semanas as $semana) {
+                            $semanasLabels[] = 'Sem ' . $semana['semana'];
+                            $semanasValues[] = (int)$semana['total'];
+                        }
+                        echo json_encode(['labels' => $semanasLabels, 'values' => $semanasValues]);
+                        ?>;
+
+    var chartSemanal = echarts.init(document.getElementById('chartSemanal'));
+    chartSemanal.setOption({
+        title: {
+            text: 'Tendencia Semanal - <?php echo date('F Y'); ?>',
+            left: 'center'
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        xAxis: {
+            type: 'category',
+            data: semanalData.labels,
+            axisLine: {
+                lineStyle: {
+                    color: '#ddd'
+                }
+            }
+        },
+        yAxis: {
+            type: 'value',
+            name: 'Solicitudes',
+            axisLine: {
+                lineStyle: {
+                    color: '#ddd'
+                }
+            },
+            splitLine: {
+                lineStyle: {
+                    color: '#f0f0f0'
+                }
+            }
+        },
+        series: [{
+            name: 'Solicitudes',
+            type: 'line',
+            data: semanalData.values,
+            smooth: true,
+            symbol: 'circle',
+            symbolSize: 8,
+            lineStyle: {
+                width: 3,
+                color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [{
+                    offset: 0,
+                    color: '#43aa8b'
+                }, {
+                    offset: 1,
+                    color: '#4cc9f0'
+                }])
+            },
+            itemStyle: {
+                color: '#43aa8b'
+            },
+            areaStyle: {
+                opacity: 0.3,
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                    offset: 0,
+                    color: '#43aa8b'
+                }, {
+                    offset: 1,
+                    color: 'rgba(67, 170, 139, 0.1)'
+                }])
+            }
+        }]
+    });
+
+    // Función para animar elementos al hacer scroll
+    function animateOnScroll() {
+        $('#mi-dashboard-container .info-card, #mi-dashboard-container .chart-card').each(function() {
+            var elementTop = $(this).offset().top;
+            var elementBottom = elementTop + $(this).outerHeight();
+            var viewportTop = $(window).scrollTop();
+            var viewportBottom = viewportTop + $(window).height();
+
+            if (elementBottom > viewportTop && elementTop < viewportBottom) {
+                $(this).addClass('animated fadeInUp');
+            }
+        });
+    }
+
+    function initDashboardTabs() {
+        $('#mi-dashboard-container .tab-button').on('click', function() {
+            var target = $(this).data('target');
+            $('#mi-dashboard-container .tab-button').removeClass('active');
+            $(this).addClass('active');
+            $('#mi-dashboard-container .dashboard-pane').removeClass('active');
+            $('#' + target).addClass('active');
+        });
+    }
+
+    // Ejecutar animaciones al cargar y hacer scroll
+    $(window).on('scroll', animateOnScroll);
+    $(document).ready(function() {
+        initDashboardTabs();
+    });
+    animateOnScroll();
+
+    // Mejorar tooltips si el plugin está disponible
+    if (typeof $.fn.tooltip === 'function') {
+        $('#mi-dashboard-container [data-toggle="tooltip"]').tooltip({
+            delay: {
+                show: 300,
+                hide: 100
+            },
+            html: true
+        });
+    }
+
+    // Agregar efecto de carga a las gráficas
+    $('#mi-dashboard-container .chart-card').each(function(index) {
+        $(this).css('animation-delay', (index * 0.1) + 's');
+    });
+</script>

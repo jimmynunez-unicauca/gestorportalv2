@@ -1,0 +1,10 @@
+<option value="">Seleccione...</option>
+<?php
+foreach ($this->programas as $pro) {
+    if ($pro['idPrograma'] == $this->idPrograma) {
+        echo "<option value='" . $pro['idPrograma'] . "' selected>" . $pro['programa'] . "</option>";
+    } else {
+        echo "<option value='" . $pro['idPrograma'] . "'>" . $pro['programa'] . "</option>";
+    }
+}
+?>

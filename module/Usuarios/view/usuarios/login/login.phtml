@@ -1,0 +1,55 @@
+<?php
+$form = $this->formLogin;
+$form->prepare();
+echo $this->form()->openTag($form);
+?>
+
+<div class="login-container">
+    <div class="login-card">
+        <div class="logo-container">
+            <a href="https://www.unicauca.edu.co" target="_blank" class="hvr-buzz">
+                <img class="logo animated bounce" src="<?= $this->basePath('img/logo.png') ?>" alt="Universidad del Cauca" />
+            </a>
+            <h1 class="estilologo">GestorPortal</h1>
+            <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 0;">Universidad del Cauca</p>
+        </div>
+
+        <form method="post">
+            <h2 style="color: #FFFFFF; text-align: center; margin-bottom: 30px; font-weight: 300;">
+                <i class="fa fa-sign-in"></i> Iniciar Sesión
+            </h2>
+
+            <div class="form-group-modern">
+                <?= $this->formElement($form->get('login')) ?>
+                <i class="fa fa-user input-icon"></i>
+            </div>
+
+            <div class="form-group-modern">
+                <?= $this->formElement($form->get('password')) ?>
+                <span class="input-icon" onclick="hideshow()" style="cursor: pointer;">
+                    <i id="slash" class="fa fa-eye-slash"></i>
+                    <i id="eye" class="fa fa-eye"></i>
+                </span>
+            </div>
+
+            <?= $this->formRow($form->get('csrf')) ?>
+
+            <div style="margin: 25px 0;">
+                <?= $this->formElement($form->get('btnIniciarSesion')) ?>
+            </div>
+
+            <div style="text-align: center; margin: 15px 0;">
+                <a href="#" class="forgot-password">
+                    <i class="fa fa-question-circle"></i> ¿Olvidaste tu contraseña?
+                </a>
+            </div>
+
+            <div class="footer-info">
+                <p class="university-name">Universidad del Cauca</p>
+                <p><small>División TIC &copy; Copyright <?= date('Y') ?></small></p>
+            </div>
+        </form>
+    </div>
+</div>
+
+<?= $this->form()->closeTag() ?>

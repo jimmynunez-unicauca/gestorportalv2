@@ -1,0 +1,102 @@
+<?php
+
+use Laminas\Form\Element;
+?>
+
+<div class="modal-body">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-info">
+                    <strong><i class="fa fa-info-circle"></i> Información de la Convocatoria</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label><strong>ID Convocatoria:</strong></label>
+                <p class="form-control-static"><?= $convocatoria->getIdConvocatoria() ?></p>
+            </div>
+            <div class="form-group col-md-6">
+                <label><strong>Formulario PSI:</strong></label>
+                <p class="form-control-static"><?= $this->escapeHtml($nombreFormulario) ?></p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-12">
+                <label><strong>Nombre Convocatoria:</strong></label>
+                <p class="form-control-static"><?= $this->escapeHtml($convocatoria->getNombreConvocatoria()) ?></p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label><strong>Periodo:</strong></label>
+                <p class="form-control-static"><?= $this->escapeHtml($convocatoria->getPeriodo()) ?></p>
+            </div>
+            <div class="form-group col-md-6">
+                <label><strong>Cupo Máximo:</strong></label>
+                <p class="form-control-static"><?= number_format($convocatoria->getCupoMaximo(), 0, ',', '.') ?></p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label><strong>Inscritos Actuales:</strong></label>
+                <p class="form-control-static">
+                    <span class="badge badge-primary"><?= number_format($convocatoria->getInscritosActuales(), 0, ',', '.') ?></span>
+                    <?php if ($convocatoria->getCupoMaximo() > 0): ?>
+                        <small>(<?= round(($convocatoria->getInscritosActuales() / $convocatoria->getCupoMaximo()) * 100, 1) ?>% del cupo)</small>
+                    <?php endif; ?>
+                </p>
+            </div>
+            <div class="form-group col-md-6">
+                <label><strong>Estado:</strong></label>
+                <p class="form-control-static">
+                    <?php if ($convocatoria->getActivo() == 1): ?>
+                        <span class="badge badge-success">ACTIVA</span>
+                    <?php else: ?>
+                        <span class="badge badge-danger">FINALIZADA</span>
+                    <?php endif; ?>
+                </p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label><strong>Fecha Inicio:</strong></label>
+                <p class="form-control-static"><?= date('d/m/Y H:i', strtotime($convocatoria->getFechaInicio())) ?></p>
+            </div>
+            <div class="form-group col-md-6">
+                <label><strong>Fecha Fin:</strong></label>
+                <p class="form-control-static"><?= date('d/m/Y H:i', strtotime($convocatoria->getFechaFin())) ?></p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label><strong>Hora Límite Diaria:</strong></label>
+                <p class="form-control-static"><?= $convocatoria->getHoraLimiteDiaria() ?: 'No definida' ?></p>
+            </div>
+            <div class="form-group col-md-6">
+                <label><strong>Fecha Registro:</strong></label>
+                <p class="form-control-static"><?= date('d/m/Y H:i:s', strtotime($convocatoria->getCreatedAt())) ?></p>
+            </div>
+        </div>
+
+        <?php if ($convocatoria->getUpdatedAt() && $convocatoria->getUpdatedAt() != '0000-00-00 00:00:00'): ?>
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label><strong>Última Actualización:</strong></label>
+                    <p class="form-control-static"><?= date('d/m/Y H:i:s', strtotime($convocatoria->getUpdatedAt())) ?></p>
+                </div>
+            </div>
+        <?php endif; ?>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+</div>

@@ -1,0 +1,27 @@
+<?php
+$nacimiento = new DateTime($this->form['fechaNacimiento']);
+$ahora = new DateTime(date("Y-m-d"));
+$diferencia = $ahora->diff($nacimiento);
+?>
+<div class="col-md-12 col-sm-12">
+    <div class="x_panel">
+        <div class="well profile_view">
+            <div class="col-sm-12">
+                <h2 class="brief"><i class="fas fa-user-circle"></i> <i><?= $this->form['usuario']; ?></i></h2>
+                <div class="left col-md-7 col-sm-7">
+                    <h2><?= $this->form['tipoIdentificacion'] . ': ' . $this->form['identificacion']; ?></i></h2>
+                    <ul class="list-unstyled">
+                        <li><i class="fa fa-birthday-cake"></i> <?= $this->form['fechaNacimiento'] . ', edad: ' . $diferencia->format("%y") . ' años'; ?></li>
+                        <li><i class="fa fa-envelope"></i> <?= $this->form['email']; ?></li>
+                        <li><i class="fa fa-phone"></i> <?= $this->form['telefono']; ?></li>
+                        <li><i class="fas fa-address-book"></i> <?= $this->form['direccion']; ?></li>
+                        <li><i class="fas fa-venus-mars"></i> <?= $this->form['genero']; ?></li>
+                    </ul>
+                </div>
+                <div class="right col-md-5 col-sm-5 text-center">
+                    <img src="<?= $this->basePath('img/profile/') . $this->form['foto']; ?>" alt="" class="img-circle img-fluid">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

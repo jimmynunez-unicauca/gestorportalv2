@@ -1,0 +1,61 @@
+<?php
+// module/Formularios/view/formularios/convocatoria/registrar.phtml
+
+$form->prepare();
+echo $this->form()->openTag($form);
+?>
+<div class="modal-body">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="form-group col-md-12">
+                <?= $this->formLabel($form->get('id_config')) ?>
+                <?= $this->formElement($form->get('id_config')) ?>
+                <div class="text-danger"><?= $this->formElementErrors($form->get('id_config')) ?></div>
+            </div>
+            <div class="form-group col-md-12">
+                <?= $this->formLabel($form->get('nombre_convocatoria')) ?>
+                <?= $this->formElement($form->get('nombre_convocatoria')) ?>
+                <div class="text-danger"><?= $this->formElementErrors($form->get('nombre_convocatoria')) ?></div>
+            </div>
+            <div class="form-group col-md-6">
+                <?= $this->formLabel($form->get('periodo')) ?>
+                <?= $this->formElement($form->get('periodo')) ?>
+                <div class="text-danger"><?= $this->formElementErrors($form->get('periodo')) ?></div>
+            </div>
+            <div class="form-group col-md-6">
+                <?= $this->formLabel($form->get('cupo_maximo')) ?>
+                <?= $this->formElement($form->get('cupo_maximo')) ?>
+                <div class="text-danger"><?= $this->formElementErrors($form->get('cupo_maximo')) ?></div>
+            </div>
+            <div class="form-group col-md-6">
+                <?= $this->formLabel($form->get('fecha_inicio')) ?>
+                <?= $this->formElement($form->get('fecha_inicio')) ?>
+                <div class="text-danger"><?= $this->formElementErrors($form->get('fecha_inicio')) ?></div>
+            </div>
+            <div class="form-group col-md-6">
+                <?= $this->formLabel($form->get('fecha_fin')) ?>
+                <?= $this->formElement($form->get('fecha_fin')) ?>
+                <div class="text-danger"><?= $this->formElementErrors($form->get('fecha_fin')) ?></div>
+            </div>
+            <div class="form-group col-md-6">
+                <?= $this->formLabel($form->get('hora_limite_diaria')) ?>
+                <?= $this->formElement($form->get('hora_limite_diaria')) ?>
+                <div class="text-danger"><?= $this->formElementErrors($form->get('hora_limite_diaria')) ?></div>
+            </div>
+        </div>
+
+        <!-- Campos hidden -->
+        <?= $this->formHidden($form->get('id_convocatoria')) ?>
+        <?= $this->formHidden($form->get('inscritos_actuales')) ?>
+        <?= $this->formHidden($form->get('activo')) ?>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button type="submit" class="btn btn-success">Guardar</button>
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+</div>
+
+<?php
+echo $this->form()->closeTag();
+?>

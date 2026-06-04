@@ -1,0 +1,47 @@
+<?php
+$nodo = $this->nodo;
+if (empty($nodo)) {
+    echo '<div class="alert alert-danger">No se encontró información del nodo</div>';
+    return;
+}
+?>
+<div class="modal-body ui-front">
+    <div style="padding: 10px" class="container-fluid">
+        <div class="alert alert-info">
+            <i class="fa fa-recycle fa-2x float-left mr-3"></i>
+            <strong>¡ACTIVACIÓN!</strong><br>
+            ¿Está seguro de activar el nodo <strong><?= htmlspecialchars($nodo['nombre'] ?? '') ?></strong>?
+            <br><br>El nodo volverá a ser visible en el organigrama.
+        </div>
+
+        <form id="formActivar" method="post" action="<?= $this->url('administracion/organigrama', ['action' => 'activar']) ?>">
+            <input type="hidden" name="id" value="<?= $nodo['id'] ?? 0 ?>">
+        </form>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-success" onclick="document.getElementById('formActivar').submit();">
+        <i class="fas fa-check"></i> Confirmar Activación
+    </button>
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+        <i class="fas fa-times"></i> Cancelar
+    </button>
+</div>
+
+<script>
+    document.getElementById('formActivar').addEventListener('submit', function(e) {
+        e.preventDefault();
+        Swal.fire({
+            title: "¿DESEA ACTIVAR EL NODO?",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "Si, activar",
+            cancelButtonText: "Cancelar"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.submit();
+                bloqueoAjax();
+            }
+        });
+    });
+</script>

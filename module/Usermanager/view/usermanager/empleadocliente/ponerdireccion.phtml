@@ -1,0 +1,747 @@
+<style>
+    div.filtr-container {
+        border-radius: 25px;
+        background: #333333;
+    }
+</style>
+<form id="frmPonerDireccion" onsubmit="confirm('DESEAS PONER LA DIRECCION')">
+    <div class="modal-body">
+        <div style="padding: 10px" class="container-fluid">
+            <legend>Generador de Direcciones</legend>
+            <div class="form-row">
+                <div class="form-group col-md-12 col-sm-12">
+                    <label class="control-label" for="txtDireccion">Dirección</label>
+                    <div class="input-group">
+                        <!-- <input type='text' id="txtDireccion" value="" class="form-control" required onkeypress="return false;" /> -->
+                        <textarea id="txtDireccion" required="required" onkeypress="return false;" class="form-control" rows="1"></textarea>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-address-book"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <input type="text" name="filtr-search" value="" placeholder="BUSCAR..." data-search="">
+                    <div class="input-group-append">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    </div>
+                    <button type="button" id="space" class="btn btn-primary"><i class="fa fa-terminal"></i> Espacio</button>
+                </div>
+                <div class="container">
+                    <div class="btn-group row row-cols-1 row-cols-md-3" role="group">
+                        <button type="button" class="btn btn-outline-info" data-filter="all">Todos</button>
+                        <button type="button" class="btn btn-outline-info" data-filter="1">Nomenclaturas</button>
+                        <button type="button" class="btn btn-outline-info" data-filter="2">Letras</button>
+                        <button type="button" class="btn btn-outline-info" data-filter="3">Digitos</button>
+                        <button type="button" class="btn btn-outline-info" data-filter="4">Más Usadas</button>
+                    </div>
+                    <div class="filtr-container">
+                        <div class="row row-cols-1 row-cols-md-3">
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Administración">
+                                <button type="button" id="administracion" class="btn btn-info">Administración</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Agencia">
+                                <button type="button" id="agencia" class="btn btn-info">Agencia</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Agrupación">
+                                <button type="button" id="agrupacion" class="btn btn-info">Agrupación</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Almacen">
+                                <button type="button" id="almacen" class="btn btn-info">Almacen</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Altillo">
+                                <button type="button" id="altillo" class="btn btn-info">Altillo</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Apartado">
+                                <button type="button" id="apartado" class="btn btn-info">Apartado</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1,4" data-sort="Apartamento">
+                                <button type="button" id="apartamento" class="btn btn-info">Apartamento</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1,4" data-sort="Autopista">
+                                <button type="button" id="autopista" class="btn btn-info">Autopista</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1,4" data-sort="Avenida">
+                                <button type="button" id="avenida" class="btn btn-info">Avenida</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Avenida Carrera">
+                                <button type="button" id="avenidaCarrera" class="btn btn-info">Avenida Carrera</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1,4" data-sort="Barrio">
+                                <button type="button" id="barrio" class="btn btn-info">Barrio</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Bloque">
+                                <button type="button" id="bloque" class="btn btn-info">Bloque</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Bodega">
+                                <button type="button" id="bodega" class="btn btn-info">Bodega</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Boulevar">
+                                <button type="button" id="boulevar" class="btn btn-info">Boulevar</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1,4" data-sort="Calle">
+                                <button type="button" id="calle" class="btn btn-info">Calle</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1,4" data-sort="Camino">
+                                <button type="button" id="camino" class="btn btn-info">Camino</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1,4" data-sort="Carrera">
+                                <button type="button" id="carrera" class="btn btn-info">Carrera</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Carretera">
+                                <button type="button" id="carretera" class="btn btn-info">Carretera</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Casa">
+                                <button type="button" id="casa" class="btn btn-info">Casa</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Celula">
+                                <button type="button" id="celula" class="btn btn-info">Celula</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Centro Comercial">
+                                <button type="button" id="centroComercial" class="btn btn-info">Centro Comercial</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Circular">
+                                <button type="button" id="circular" class="btn btn-info">Circular</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Circunvalar">
+                                <button type="button" id="circunvalar" class="btn btn-info">Circunvalar</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Ciudadela">
+                                <button type="button" id="ciudadela" class="btn btn-info">Ciudadela</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Conjunto">
+                                <button type="button" id="conjunto" class="btn btn-info">Conjunto</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Conjunto Recidencial">
+                                <button type="button" id="conjuntoRecidencial" class="btn btn-info">Conjunto Recidencial</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Consultorio">
+                                <button type="button" id="consultorio" class="btn btn-info">Consultorio</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Corregimiento">
+                                <button type="button" id="corregimiento" class="btn btn-info">Corregimiento</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Departamento">
+                                <button type="button" id="departamento" class="btn btn-info">Departamento</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Deposito">
+                                <button type="button" id="deposito" class="btn btn-info">Deposito</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Deposito Sotano">
+                                <button type="button" id="depositoSotano" class="btn btn-info">Deposito Sotano</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1,4" data-sort="Diagonal">
+                                <button type="button" id="diagonal" class="btn btn-info">Diagonal</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1,4" data-sort="Edificio">
+                                <button type="button" id="edificio" class="btn btn-info">Edificio</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Entrada">
+                                <button type="button" id="entrada" class="btn btn-info">Entrada</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Esquina">
+                                <button type="button" id="esquina" class="btn btn-info">Esquina</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Este">
+                                <button type="button" id="este" class="btn btn-info">Este</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Etapa">
+                                <button type="button" id="etapa" class="btn btn-info">Etapa</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Exterior">
+                                <button type="button" id="exterior" class="btn btn-info">Exterior</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Finca">
+                                <button type="button" id="finca" class="btn btn-info">Finca</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Garaje">
+                                <button type="button" id="garaje" class="btn btn-info">Garaje</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Garaje Sotano">
+                                <button type="button" id="garajeSotano" class="btn btn-info">Garaje Sotano</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Hacienda">
+                                <button type="button" id="hacienda" class="btn btn-info">Hacienda</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Interior">
+                                <button type="button" id="interior" class="btn btn-info">Interior</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Kilometro">
+                                <button type="button" id="kilometro" class="btn btn-info">Kilometro</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Local">
+                                <button type="button" id="local" class="btn btn-info">Local</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Local Mezzanine">
+                                <button type="button" id="localMezzanine" class="btn btn-info">Local Mezzanine</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Lote">
+                                <button type="button" id="lote" class="btn btn-info">Lote</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Manzana">
+                                <button type="button" id="manzana" class="btn btn-info">Manzana</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Mezzanine">
+                                <button type="button" id="mezzanine" class="btn btn-info">Mezzanine</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Modulo">
+                                <button type="button" id="modulo" class="btn btn-info">Modulo</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Municipio">
+                                <button type="button" id="municipio" class="btn btn-info">Municipio</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1,4" data-sort="Norte">
+                                <button type="button" id="norte" class="btn btn-info">Norte</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Occidente">
+                                <button type="button" id="occidente" class="btn btn-info">Occidente</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Oeste">
+                                <button type="button" id="oeste" class="btn btn-info">Oeste</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Oficina">
+                                <button type="button" id="oficina" class="btn btn-info">Oficina</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Oriente">
+                                <button type="button" id="oriente" class="btn btn-info">Oriente</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Parcela">
+                                <button type="button" id="parcela" class="btn btn-info">Parcela</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Parque">
+                                <button type="button" id="parque" class="btn btn-info">Parque</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Parqueadero">
+                                <button type="button" id="parqueadero" class="btn btn-info">Parqueadero</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Pasaje">
+                                <button type="button" id="pasaje" class="btn btn-info">Pasaje</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Paseo">
+                                <button type="button" id="paseo" class="btn btn-info">Paseo</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Penthouse">
+                                <button type="button" id="penthouse" class="btn btn-info">Penthouse</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Piso">
+                                <button type="button" id="piso" class="btn btn-info">Piso</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Planta">
+                                <button type="button" id="planta" class="btn btn-info">Planta</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Porteria">
+                                <button type="button" id="porteria" class="btn btn-info">Porteria</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Predio">
+                                <button type="button" id="predio" class="btn btn-info">Predio</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Puente">
+                                <button type="button" id="puente" class="btn btn-info">Puente</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Puesto">
+                                <button type="button" id="puesto" class="btn btn-info">Puesto</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Salón">
+                                <button type="button" id="salon" class="btn btn-info">Salón</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Salón Comunal">
+                                <button type="button" id="salonComunal" class="btn btn-info">Salón Comunal</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Sector">
+                                <button type="button" id="sector" class="btn btn-info">Sector</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Semisotano">
+                                <button type="button" id="semisotano" class="btn btn-info">Semisotano</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Solar">
+                                <button type="button" id="solar" class="btn btn-info">Solar</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Sotano">
+                                <button type="button" id="sotano" class="btn btn-info">Sotano</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Suite">
+                                <button type="button" id="suite" class="btn btn-info">Suite</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Supermanzana">
+                                <button type="button" id="supermanzana" class="btn btn-info">Supermanzana</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1,4" data-sort="Sur">
+                                <button type="button" id="sur" class="btn btn-info">Sur</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Terminal">
+                                <button type="button" id="terminal" class="btn btn-info">Terminal</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Terraza">
+                                <button type="button" id="terraza" class="btn btn-info">Terraza</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Torre">
+                                <button type="button" id="torre" class="btn btn-info">Torre</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1,4" data-sort="Tranversal">
+                                <button type="button" id="tranversal" class="btn btn-info">Tranversal</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Unidad">
+                                <button type="button" id="unidad" class="btn btn-info">Unidad</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Unidad Residencial">
+                                <button type="button" id="unidadResidencial" class="btn btn-info">Unidad Residencial</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Urbanización">
+                                <button type="button" id="urbanizacion" class="btn btn-info">Urbanización</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Variante">
+                                <button type="button" id="variante" class="btn btn-info">Variante</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Vereda">
+                                <button type="button" id="vereda" class="btn btn-info">Vereda</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Zona">
+                                <button type="button" id="zona" class="btn btn-info">Zona</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="Zona Franca">
+                                <button type="button" id="zonaFranca" class="btn btn-info">Zona Franca</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1,3" data-sort="#">
+                                <button type="button" id="numeral" class="btn btn-info">#</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="1" data-sort="-">
+                                <button type="button" id="guionMedio" class="btn btn-info">-</button>
+                            </div>
+
+
+                            <div class="col mb-3 filtr-item" data-category="2" data-sort="A">
+                                <button type="button" id="letraA" class="btn btn-info">A</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="2" data-sort="B">
+                                <button type="button" id="letraB" class="btn btn-info">B</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="2" data-sort="C">
+                                <button type="button" id="letraC" class="btn btn-info">C</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="2" data-sort="D">
+                                <button type="button" id="letraD" class="btn btn-info">D</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="2" data-sort="E">
+                                <button type="button" id="letraE" class="btn btn-info">E</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="2" data-sort="F">
+                                <button type="button" id="letraF" class="btn btn-info">F</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="2" data-sort="G">
+                                <button type="button" id="letraG" class="btn btn-info">G</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="2" data-sort="H">
+                                <button type="button" id="letraH" class="btn btn-info">H</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="2" data-sort="I">
+                                <button type="button" id="letraI" class="btn btn-info">I</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="2" data-sort="J">
+                                <button type="button" id="letraJ" class="btn btn-info">J</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="2" data-sort="K">
+                                <button type="button" id="letraK" class="btn btn-info">K</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="2" data-sort="L">
+                                <button type="button" id="letraL" class="btn btn-info">L</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="2" data-sort="M">
+                                <button type="button" id="letraM" class="btn btn-info">M</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="2" data-sort="N">
+                                <button type="button" id="letraN" class="btn btn-info">N</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="2" data-sort="Ñ">
+                                <button type="button" id="letraEnie" class="btn btn-info">Ñ</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="2" data-sort="O">
+                                <button type="button" id="letraO" class="btn btn-info">O</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="2" data-sort="P">
+                                <button type="button" id="letraP" class="btn btn-info">P</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="2" data-sort="Q">
+                                <button type="button" id="letraQ" class="btn btn-info">Q</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="2" data-sort="R">
+                                <button type="button" id="letraR" class="btn btn-info">R</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="2" data-sort="S">
+                                <button type="button" id="letraS" class="btn btn-info">S</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="2" data-sort="T">
+                                <button type="button" id="letraT" class="btn btn-info">T</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="2" data-sort="U">
+                                <button type="button" id="letraU" class="btn btn-info">U</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="2" data-sort="V">
+                                <button type="button" id="letraV" class="btn btn-info">V</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="2" data-sort="W">
+                                <button type="button" id="letraW" class="btn btn-info">W</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="2" data-sort="X">
+                                <button type="button" id="letraX" class="btn btn-info">X</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="2" data-sort="Y">
+                                <button type="button" id="letraY" class="btn btn-info">Y</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="2" data-sort="Z">
+                                <button type="button" id="letraZ" class="btn btn-info">Z</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="2" data-sort="BIS">
+                                <button type="button" id="bis" class="btn btn-info">BIS</button>
+                            </div>
+
+
+                            <div class="col mb-3 filtr-item" data-category="3" data-sort="1">
+                                <button type="button" id="uno" class="btn btn-info">1</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="3" data-sort="2">
+                                <button type="button" id="dos" class="btn btn-info">2</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="3" data-sort="3">
+                                <button type="button" id="tres" class="btn btn-info">3</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="3" data-sort="4">
+                                <button type="button" id="cuatro" class="btn btn-info">4</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="3" data-sort="5">
+                                <button type="button" id="cinco" class="btn btn-info">5</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="3" data-sort="6">
+                                <button type="button" id="seis" class="btn btn-info">6</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="3" data-sort="7">
+                                <button type="button" id="siete" class="btn btn-info">7</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="3" data-sort="8">
+                                <button type="button" id="ocho" class="btn btn-info">8</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="3" data-sort="9">
+                                <button type="button" id="nueve" class="btn btn-info">9</button>
+                            </div>
+                            <div class="col mb-3 filtr-item" data-category="3" data-sort="0">
+                                <button type="button" id="cero" class="btn btn-info">0</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer" style="padding: 20px">
+            <button type="button" class="btn btn-warning" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
+            <button type="button" class="btn btn-primary" id="clear"><i class="fas fa-eraser"></i> Limpiar</button>
+            <button type="submit" class="btn btn-success"><i class="fa fa-address-book"></i> Enviar</button>
+        </div>
+</form>
+
+<script>
+    var filterizd = $('.filtr-container').filterizr({});
+
+    var txtDireccion = document.getElementById("txtDireccion");
+    var space = document.getElementById("space");
+
+    var uno = document.getElementById("uno");
+    var dos = document.getElementById("dos");
+    var tres = document.getElementById("tres");
+    var cuatro = document.getElementById("cuatro");
+    var cinco = document.getElementById("cinco");
+    var seis = document.getElementById("seis");
+    var siete = document.getElementById("siete");
+    var ocho = document.getElementById("ocho");
+    var nueve = document.getElementById("nueve");
+    var cero = document.getElementById("cero");
+    var numeral = document.getElementById("numeral");
+
+    var letraA = document.getElementById("letraA");
+    var letraB = document.getElementById("letraB");
+    var letraC = document.getElementById("letraC");
+    var letraD = document.getElementById("letraD");
+    var letraE = document.getElementById("letraE");
+    var letraF = document.getElementById("letraF");
+    var letraG = document.getElementById("letraG");
+    var letraH = document.getElementById("letraH");
+    var letraI = document.getElementById("letraI");
+    var letraJ = document.getElementById("letraJ");
+    var letraK = document.getElementById("letraK");
+    var letraL = document.getElementById("letraL");
+    var letraM = document.getElementById("letraM");
+    var letraN = document.getElementById("letraN");
+    var letraEnie = document.getElementById("letraEnie");
+    var letraO = document.getElementById("letraO");
+    var letraP = document.getElementById("letraP");
+    var letraQ = document.getElementById("letraQ");
+    var letraR = document.getElementById("letraR");
+    var letraS = document.getElementById("letraS");
+    var letraT = document.getElementById("letraT");
+    var letraU = document.getElementById("letraU");
+    var letraV = document.getElementById("letraV");
+    var letraW = document.getElementById("letraW");
+    var letraX = document.getElementById("letraX");
+    var letraY = document.getElementById("letraY");
+    var letraZ = document.getElementById("letraZ");
+    var bis = document.getElementById("bis");
+
+
+
+    var administracion = document.getElementById("administracion");
+    var agencia = document.getElementById("agencia");
+    var agrupacion = document.getElementById("agrupacion");
+    var almacen = document.getElementById("almacen");
+    var altillo = document.getElementById("altillo");
+    var apartado = document.getElementById("apartado");
+    var apartamento = document.getElementById("apartamento");
+    var autopista = document.getElementById("autopista");
+    var avenida = document.getElementById("avenida");
+    var avenidaCarrera = document.getElementById("avenidaCarrera");
+    var barrio = document.getElementById("barrio");
+    var bloque = document.getElementById("bloque");
+    var bodega = document.getElementById("bodega");
+    var boulevar = document.getElementById("boulevar");
+    var calle = document.getElementById("calle");
+    var camino = document.getElementById("camino");
+    var carrera = document.getElementById("carrera");
+    var carretera = document.getElementById("carretera");
+    var casa = document.getElementById("casa");
+    var celula = document.getElementById("celula");
+    var centroComercial = document.getElementById("centroComercial");
+    var circular = document.getElementById("circular");
+    var circunvalar = document.getElementById("circunvalar");
+    var ciudadela = document.getElementById("ciudadela");
+    var conjunto = document.getElementById("conjunto");   
+    var conjuntoRecidencial = document.getElementById("conjuntoRecidencial");
+    var consultorio = document.getElementById("consultorio");
+    var corregimiento = document.getElementById("corregimiento");
+    var departamento = document.getElementById("departamento");
+    var deposito = document.getElementById("deposito");
+
+    var guionMedio = document.getElementById("guionMedio");
+
+    var clear = document.getElementById("clear");
+
+
+    space.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + " ";
+    }
+
+    uno.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "1";
+    }
+    dos.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "2";
+    }
+    tres.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "3";
+    }
+    cuatro.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "4";
+    }
+    cinco.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "5";
+    }
+    seis.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "6";
+    }
+    siete.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "7";
+    }
+    ocho.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "8";
+    }
+    nueve.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "9";
+    }
+    cero.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "0";
+    }
+    numeral.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "#";
+    }
+
+    letraA.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "A";
+    }
+    letraB.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "B";
+    }
+    letraC.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "C";
+    }
+    letraD.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "D";
+    }
+    letraE.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "E";
+    }
+    letraF.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "F";
+    }
+    letraG.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "G";
+    }
+    letraH.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "H";
+    }
+    letraI.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "I";
+    }
+    letraJ.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "J";
+    }
+    letraK.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "K";
+    }
+    letraL.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "L";
+    }
+    letraM.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "M";
+    }
+    letraN.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "N";
+    }
+    letraEnie.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "Ñ";
+    }
+    letraO.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "O";
+    }
+    letraP.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "P";
+    }
+    letraQ.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "Q";
+    }
+    letraR.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "R";
+    }
+    letraS.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "S";
+    }
+    letraT.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "T";
+    }
+    letraU.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "U";
+    }
+    letraV.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "V";
+    }
+    letraW.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "W";
+    }
+    letraX.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "X";
+    }
+    letraY.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "Y";
+    }
+    letraZ.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "Z";
+    }
+    bis.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "BIS ";
+    }
+
+
+    administracion.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "Administración ";
+    }
+    agencia.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "Agencia ";
+    }
+    agrupacion.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "Agrupación ";
+    }
+    almacen.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "Almacen ";
+    }
+    altillo.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "Altillo ";
+    }
+    apartado.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "Apartado ";
+    }
+    apartamento.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "Apartamento ";
+    }
+    autopista.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "Autopista ";
+    }
+    avenida.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "Avenida ";
+    }
+    avenidaCarrera.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "Avenida Carrera ";
+    }
+    barrio.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "Barrio ";
+    }
+    bloque.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "Bloque ";
+    }
+    bodega.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "Bodega ";
+    }
+    boulevar.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "Boulevar ";
+    }
+    calle.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "Calle ";
+    }
+    camino.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "Camino ";
+    }
+    carrera.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "Carrera ";
+    }
+    carretera.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "Carretera ";
+    }
+    casa.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "Casa ";
+    }
+    celula.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "Celula ";
+    }
+    centroComercial.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "Centro Comercial ";
+    }
+    circular.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "Circular ";
+    }
+    circunvalar.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "Circunvalar ";
+    }
+    ciudadela.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "Ciudadela ";
+    }
+    conjunto.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "Conjunto ";
+    }
+    conjuntoRecidencial.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "Conjunto Recidencial ";
+    }
+    consultorio.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "Consultorio ";
+    }
+    corregimiento.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "Corregimiento ";
+    }
+    departamento.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "Departamento ";
+    }
+    deposito.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "Deposito ";
+    }
+    guionMedio.onclick = function(e) {
+        txtDireccion.textContent = txtDireccion.textContent + "-";
+    }
+
+    clear.onclick = function(e) {
+        txtDireccion.textContent = "";
+    }
+</script>

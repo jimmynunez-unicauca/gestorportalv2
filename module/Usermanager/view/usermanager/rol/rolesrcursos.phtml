@@ -1,0 +1,65 @@
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card-box table-responsive">
+            <div class="d-flex justify-content-between align-items-center w-100">
+                <strong class="text-gray-dark">Se listan los recursos registados al rol actual</strong>
+                <a type="button" class="btn btn-primary" href="javascript:addRecurso(<?= $this->idRol ?>);" title="REGISTRAR"><i class="fa fa-plus-circle fa-2x"></i></a>
+            </div>
+            <table id="myTable3" class="table table-striped table-bordered dt-responsive nowrap table-sm table-hover" cellspacing="0" width="100%">
+                <thead class="thead-dark">
+                    <tr>
+                        <th data-toggle="tooltip" title="ID" scope="col"><i class="fa fa-key"></i></th>
+                        <th data-toggle="tooltip" title="OPCIONES" scope="col"><i class="fa fa-cog fa-spin fa-lg"></i></th>
+                        <th scope="col"><i class="fas fa-id-card"></i> RECURSO</th>
+                        <th scope="col"><i class="fas fa-id-card"></i> METODO</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    foreach ($this->fetchAll as $rec) {
+                        $parte = explode("\\", $rec['recurso']);
+                        $parte2 = explode(".", $parte[2]);
+                        echo '<tr>';
+                        echo '<td>' . $rec['idRecurso'] . '</td>';
+                        echo '<td>';
+                        echo '<a href="javascript:eliminarRecursoRol(' . $this->idRol . ',' . $rec['idRecurso'] . ')" return false;" title="ELIMINAR"><i style ="color:red" class="fa fa-trash"></i></a>';
+                        echo '&nbsp;&nbsp;';
+                        echo '</td>';
+                        echo '<td><i style="color: green">' . $parte[0] . '\</i><i style="color: purple">' . $parte[1] . '\</i><i style="color: blue">' . $parte2[0] . '.</i><i>' . $parte2[1] . '</i></td>';
+                        echo '<td>' . $rec['metodo'] . '</td>';
+                        echo '</tr>';
+                    }
+                    ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    $("#myTable3").DataTable({
+        responsive: true,
+        "iDisplayLength": 25,
+        "sPaginationType": "full_numbers",
+        "oLanguage": {
+            "sLengthMenu": "Mostrar: _MENU_ registros por pagina",
+            "sZeroRecords": "NO SE HA ENCONTRADO INFORMACION",
+            "sInfo": "Mostrando <b>_START_</b> a <b>_END_</b> registros <br>TOTAL REGISTROS: <b>_TOTAL_</b> Registros</b>",
+            "sInfoEmpty": "Mostrando 0 A 0 registros",
+            "sInfoFiltered": "(Filtrados de un total de <b>_MAX_</b> registros)",
+            "sLoadingRecords": "CARGANDO...",
+            "sProcessing": "EN PROCESO...",
+            "sSearch": "Buscar:",
+            "sEmptyTable": "NO HAY INFORMACION DISPONIBLE PARA LA TABLA",
+            "oPaginate": {
+                "sFirst": "Inicio",
+                "sLast": "Fin",
+                "sNext": "Siguiente",
+                "sPrevious": "Anterior"
+            }
+        },
+        "aaSorting": [
+            [0, "desc"]
+        ]
+    });
+</script>

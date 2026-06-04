@@ -1,0 +1,27 @@
+<div class="modal-body">
+    <div class="alert alert-warning">
+        <strong>¡CONFIRMACIÓN!</strong> ¿Está seguro de DESACTIVAR este módulo?
+    </div>
+    <form method="post" action="<?= $this->url('administracion', ['controller' => 'pluginunicauca', 'action' => 'cambiarEstado']) ?>">
+        <input type="hidden" name="id" value="<?= $pluginunicauca->getId() ?>">
+        <input type="hidden" name="estado" value="0">
+        <table class="table table-bordered">
+            <tr>
+                <th width="30%">ID</th>
+                <td><?= $this->escapeHtml($pluginunicauca->getId()) ?></td>
+            </tr>
+            <tr>
+                <th>NOMBRE MÓDULO</th>
+                <td><?= $this->escapeHtml($pluginunicauca->getNombre_modulo()) ?></td>
+            </tr>
+            <tr>
+                <th>ESTADO ACTUAL</th>
+                <td><span class="badge badge-success">ACTIVO</span></td>
+            </tr>
+        </table>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCELAR</button>
+            <button type="submit" class="btn btn-warning" onclick="validarGuardar(event, this.form, 'DESACTIVAR')">DESACTIVAR</button>
+        </div>
+    </form>
+</div>

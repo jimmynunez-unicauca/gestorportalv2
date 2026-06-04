@@ -1,0 +1,241 @@
+<?php
+$form->prepare();
+echo $this->form()->openTag($form);
+?>
+<div class="modal-body ui-front">
+    <div style="padding: 10px" class="container-fluid">
+        <fieldset>
+            <legend>Registrar nuevo nodo en el organigrama</legend>
+
+            <!-- Mostrar ubicación actual en la jerarquía -->
+            <div class="alert alert-info alert-sm mb-3" id="ubicacionActual" style="display: none;">
+                <i class="fa fa-info-circle"></i>
+                <strong>Ubicación en el organigrama:</strong>
+                <span id="rutaPadre"></span>
+            </div>
+
+            <div class="row">
+                <div class="form-group col-md-12 col-sm-12">
+                    <?= $this->formLabel($form->get('nombre')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('nombre')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-tag"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <small class="form-text text-muted">Ej: Departamento de Sistemas, Oficina de Planeación, etc.</small>
+                </div>
+
+                <div class="form-group col-md-6 col-sm-12">
+                    <?= $this->formLabel($form->get('tipo')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('tipo')) ?>
+                       <!--  <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-sitemap"></i>
+                            </span>
+                        </div> -->
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6 col-sm-12">
+                    <?= $this->formLabel($form->get('padre_id')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('padre_id')) ?>
+                        <!-- <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-level-up"></i>
+                            </span>
+                        </div> -->
+                    </div>
+                    <small class="form-text text-muted">Selecciona a qué unidad superior pertenece este nodo</small>
+                </div>
+
+               
+
+                <div class="form-group col-md-6 col-sm-12">
+                    <?= $this->formLabel($form->get('orden')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('orden')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-sort-numeric-asc"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <small class="form-text text-muted">Define el orden de aparición entre hermanos</small>
+                </div>
+
+               
+
+                <div class="form-group col-md-12 col-sm-12">
+                    <?= $this->formLabel($form->get('descripcion')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('descripcion')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-align-left"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</div>
+
+<div class="modal-footer" style="padding: 20px">
+    <button type="submit" class="btn btn-success" title="REGISTRAR NODO" onclick="return validarGuardar(event, this.form, 'REGISTRAR')">
+        <i class="fas fa-save"></i> Registrar
+    </button>
+    <button type="button" class="btn btn-warning" data-dismiss="modal">
+        <i class="fas fa-times"></i> Cerrar
+    </button>
+</div>
+
+<?php
+echo $this->formHidden($form->get('id')->setValue(0));
+echo $this->form()->closeTag();
+?>
+
+<script>
+    $(document).ready(function() {
+        // Destruir select2 previo si existe
+        if ($('#padre_id').data('select2')) {
+            $('#padre_id').select2('destroy');
+        }
+        if ($('#tipo').data('select2')) {
+            $('#tipo').select2('destroy');
+        }
+        if ($('#icono').data('select2')) {
+            $('#icono').select2('destroy');
+        }
+
+        // Inicializar Select2 correctamente dentro del modal
+        $('#padre_id').select2({
+            allowClear: true,
+            placeholder: "-- Ninguno (Raíz) --",
+            width: '100%',
+            dropdownParent: $('#modalFormulario') // IMPORTANTE: para que funcione dentro del modal
+        });
+
+        $('#tipo').select2({
+            width: '100%',
+            dropdownParent: $('#modalFormulario')
+        });
+
+        $('#icono').select2({
+            width: '100%',
+            dropdownParent: $('#modalFormulario')
+        });
+
+        // Forzar que el input de búsqueda reciba foco al abrir
+        $('#padre_id').on('select2:open', function() {
+            setTimeout(function() {
+                document.querySelector('.select2-search__field').focus();
+            }, 100);
+        });
+
+        // Función para cargar la ruta del padre seleccionado
+        function cargarRutaPadre(padreId) {
+            if (padreId && padreId != '') {
+                $.ajax({
+                    url: '<?= $this->url('administracion/organigrama', ['action' => 'apiRuta']) ?>',
+                    type: 'GET',
+                    data: {
+                        id: padreId
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        if (data.ruta) {
+                            $('#ubicacionActual').show();
+                            $('#rutaPadre').html('<strong>' + data.ruta + '</strong> → <span class="text-primary">[NUEVO NODO]</span>');
+                        } else {
+                            $('#ubicacionActual').hide();
+                        }
+                    },
+                    error: function() {
+                        $('#ubicacionActual').hide();
+                    }
+                });
+            } else {
+                $('#ubicacionActual').hide();
+            }
+        }
+
+        // Cargar ruta cuando cambie la selección del padre
+        $('#padre_id').on('change', function() {
+            cargarRutaPadre($(this).val());
+        });
+
+        // Cargar ruta inicial si hay un padre preseleccionado
+        if ($('#padre_id').val()) {
+            cargarRutaPadre($('#padre_id').val());
+        }
+    });
+
+    function validarGuardar(event, form, tipo) {
+        event.preventDefault();
+
+        if (CKEDITOR.instances['descripcion']) {
+            CKEDITOR.instances['descripcion'].updateElement();
+        }
+
+        if ($('#nombre').val().trim() == '') {
+            Swal.fire('Error', 'El nombre del nodo es requerido', 'error');
+            return false;
+        }
+
+        Swal.fire({
+            title: "¿DESEA " + tipo + " EL NODO?",
+            html: "<strong>" + $('#nombre').val() + "</strong><br>" + ($('#rutaPadre').html() ? 'Ubicación: ' + $('#rutaPadre').html() : 'Ubicación: Raíz'),
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Si",
+            cancelButtonText: "No",
+            allowOutsideClick: false
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+                bloqueoAjax();
+            }
+        });
+        return false;
+    }
+
+    function bloqueoAjax() {
+        $.blockUI({
+            message: $('#msgBloqueo'),
+            css: {
+                border: 'none',
+                padding: '15px',
+                backgroundColor: '#000',
+                '-webkit-border-radius': '10px',
+                '-moz-border-radius': '10px',
+                opacity: .85,
+                color: '#fff',
+                'z-index': 10000000
+            }
+        });
+    }
+</script>
+<script>
+    $(document).ready(function() {
+        // Inicializar CKEditor en el campo descripcion
+        CKEDITOR.replace('descripcion', {
+            toolbar: [
+                ['Bold', 'Italic', 'Underline'],
+                ['NumberedList', 'BulletedList'],
+                ['JustifyLeft', 'JustifyCenter', 'JustifyRight'],
+                ['Link', 'Unlink'],
+                ['FontSize', 'FontColor'],
+                ['Undo', 'Redo']
+            ],
+            height: 200,
+            removeButtons: 'Source',
+            language: 'es'
+        });
+    });
+</script>
