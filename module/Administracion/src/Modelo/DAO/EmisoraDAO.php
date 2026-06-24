@@ -33,7 +33,7 @@ class EmisoraDAO extends AbstractTableGateway
         if ($filtro != '') {
             $select->where($filtro);
         } else {
-            $select->order("emisora.idPrograma DESC")->limit(25);
+            $select->order("emisora.idPrograma DESC");
         }
         //        echo $select->getSqlString();
         return $this->selectWith($select)->toArray();
@@ -46,7 +46,7 @@ class EmisoraDAO extends AbstractTableGateway
         if ($filtro != '') {
             $select->where($filtro);
         } else {
-            $select->order("podcast.idPodcast DESC")->limit(25);
+            $select->order("podcast.idPodcast DESC");
         }
         //        echo $select->getSqlString();
         return $this->selectWith($select)->toArray();
