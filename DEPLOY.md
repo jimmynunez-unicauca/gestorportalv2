@@ -1,17 +1,3 @@
-📝 Crear el manual directamente en GitHub (recomendado)
-Ve a tu repositorio: https://github.com/jimmynunez-unicauca/gestorportalv2
-
-Haz clic en "Add file" → "Create new file"
-
-Nombra el archivo, por ejemplo: DEPLOY.md
-
-Copia y pega el contenido del manual que te proporciono abajo.
-
-Al final de la página, escribe un mensaje de commit (ej: "Agrega manual de despliegue") y haz clic en "Commit new file".
-
-📋 Contenido del manual de despliegue
-Copia y pega esto en tu nuevo archivo DEPLOY.md:
-
 markdown
 # Manual de despliegue - GestorPortal v2
 
