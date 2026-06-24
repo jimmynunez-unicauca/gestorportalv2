@@ -144,32 +144,30 @@ class PfiformController extends AbstractActionController
             'A1' => 'ID',
             'B1' => 'TIPO IDENTIFICACIÓN',
             'C1' => 'IDENTIFICACIÓN',
-            'D1' => 'NOMBRES',
-            'E1' => 'APELLIDOS',
+            'D1' => 'APELLIDOS',
+            'E1' => 'NOMBRES',
             'F1' => 'CÓDIGO ESTUDIANTE',
-            'G1' => 'ID PROGRAMA',
-            'H1' => 'PERIODO INGRESO',
-            'I1' => 'SEMESTRE ACTUAL',
-            'J1' => 'CORREO',
-            'K1' => 'INSCRITO POR',
-            'L1' => 'INSCRIPCIÓN PSI',
+            'G1' => 'FACULTAD',
+            'H1' => 'PROGRAMA',
+            'I1' => 'PERIODO INGRESO',
+            'J1' => 'SEMESTRE ACTUAL',
+            'K1' => 'CORREO',
+            'L1' => 'INSCRITO POR',
             'M1' => 'TIPO PSI',
             'N1' => 'ID CONFIG',
             'O1' => 'ID CONVOCATORIA',
             'P1' => 'CONVOCATORIA',
             'Q1' => 'ESTADO',
             'R1' => 'REGISTRADO POR',
-            'S1' => 'MODIFICADO POR',
-            'T1' => 'FECHA HORA REG',
-            'U1' => 'FECHA INSCRIPCIÓN',
-            'V1' => 'FECHA HORA MOD'
+            'S1' => 'FECHA HORA REG',
+            'T1' => 'FECHA INSCRIPCIÓN'
         ];
 
         foreach ($headers as $celda => $titulo) {
             $sheet->setCellValue($celda, $titulo);
             $sheet->getStyle($celda)->getFont()->setBold(true);
             $sheet->getStyle($celda)->getFill()->setFillType(Fill::FILL_SOLID);
-            $sheet->getStyle($celda)->getFill()->getStartColor()->setRGB('4472C4');
+            $sheet->getStyle($celda)->getFill()->getStartColor()->setRGB('000066');
             $sheet->getStyle($celda)->getFont()->getColor()->setRGB('FFFFFF');
             $sheet->getStyle($celda)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
         }
@@ -182,34 +180,32 @@ class PfiformController extends AbstractActionController
             $sheet->setCellValue('A' . $fila, $row['idForm'] ?? '');
             $sheet->setCellValue('B' . $fila, $row['tipoIdentificacion'] ?? '');
             $sheet->setCellValue('C' . $fila, $row['identificacion'] ?? '');
-            $sheet->setCellValue('D' . $fila, $row['nombre'] ?? '');
-            $sheet->setCellValue('E' . $fila, $row['apellidos'] ?? '');
+            $sheet->setCellValue('D' . $fila, $row['apellidos'] ?? '');
+            $sheet->setCellValue('E' . $fila, $row['nombre'] ?? '');
             $sheet->setCellValue('F' . $fila, $row['codigo_estudiante'] ?? '');
-            $sheet->setCellValue('G' . $fila, $row['idPrograma'] ?? '');
-            $sheet->setCellValue('H' . $fila, $row['periodo_ingreso_universidad'] ?? '');
-            $sheet->setCellValue('I' . $fila, $row['semestre_actual'] ?? '');
-            $sheet->setCellValue('J' . $fila, $row['correo'] ?? '');
-            $sheet->setCellValue('K' . $fila, $row['inscrito_por'] ?? '');
-            $sheet->setCellValue('L' . $fila, $row['inscripcion_psi'] ?? '');
+            $sheet->setCellValue('G' . $fila, $row['facultad'] ?? '');
+            $sheet->setCellValue('H' . $fila, $row['programa'] ?? '');
+            $sheet->setCellValue('I' . $fila, $row['periodo_ingreso_universidad'] ?? '');
+            $sheet->setCellValue('J' . $fila, $row['semestre_actual'] ?? '');
+            $sheet->setCellValue('K' . $fila, $row['correo'] ?? '');
+            $sheet->setCellValue('L' . $fila, $row['inscrito_por'] ?? '');
             $sheet->setCellValue('M' . $fila, $row['tipo_psi'] ?? '');
             $sheet->setCellValue('N' . $fila, $row['id_config'] ?? '');
             $sheet->setCellValue('O' . $fila, $row['id_convocatoria'] ?? '');
             $sheet->setCellValue('P' . $fila, $nombreConvocatoria);
             $sheet->setCellValue('Q' . $fila, $row['estado'] ?? '');
             $sheet->setCellValue('R' . $fila, $row['registradopor'] ?? '');
-            $sheet->setCellValue('S' . $fila, $row['modificadopor'] ?? '');
-            $sheet->setCellValue('T' . $fila, $row['fechahorareg'] ?? '');
-            $sheet->setCellValue('U' . $fila, $row['fecha_inscripcion'] ?? '');
-            $sheet->setCellValue('V' . $fila, $row['fechahoramod'] ?? '');
+            $sheet->setCellValue('S' . $fila, $row['fechahorareg'] ?? '');
+            $sheet->setCellValue('T' . $fila, $row['fecha_inscripcion'] ?? '');
             $fila++;
         }
 
-        // Autoajustar columnas (ahora hasta la V)
-        foreach (range('A', 'V') as $col) {
+        // Autoajustar columnas (ahora hasta la T)
+        foreach (range('A', 'T') as $col) {
             $sheet->getColumnDimension($col)->setAutoSize(true);
         }
 
-        // Agregar bordes a todas las celdas con datos (ahora hasta V)
+        // Agregar bordes a todas las celdas con datos (ahora hasta T)
         $styleArray = [
             'borders' => [
                 'allBorders' => [
@@ -218,10 +214,10 @@ class PfiformController extends AbstractActionController
                 ]
             ]
         ];
-        $sheet->getStyle('A1:V' . ($fila - 1))->applyFromArray($styleArray);
+        $sheet->getStyle('A1:T' . ($fila - 1))->applyFromArray($styleArray);
 
         // Centrar contenido de las celdas de datos
-        $sheet->getStyle('A2:V' . ($fila - 1))->getAlignment()
+        $sheet->getStyle('A2:T' . ($fila - 1))->getAlignment()
             ->setHorizontal(Alignment::HORIZONTAL_CENTER)
             ->setVertical(Alignment::VERTICAL_CENTER);
 

@@ -138,7 +138,11 @@ class PfiformDAO extends AbstractTableGateway
     public function fetchAllForExport($filters = [])
     {
         $select = new Select('form_psi');
-        $select->columns(['*']);
+        $select->columns([
+            '*',
+            'programa' => new Expression("(SELECT programa FROM programas WHERE programas.idPrograma = form_psi.idPrograma)"),
+            'facultad' => new Expression("(SELECT facultad FROM facultades WHERE facultades.idFacultad = (SELECT idFacultad FROM programas WHERE programas.idPrograma = form_psi.idPrograma))"),
+        ]);
 
         $where = new Where();
 
