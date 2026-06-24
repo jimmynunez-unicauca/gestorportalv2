@@ -129,10 +129,29 @@ $this->headScript()->prependScript('
             <tbody>
                 <?php
                 foreach ($this->fetchAll as $qs) {
-                    echo '<tr>';
+                    $colorAsunto = '';
+                    $iconoColor = '';
+                    if ($qs['asunto'] == 'Petición') {
+                        $colorAsunto = 'style="background-color: #0284C7; color: #FFFFFF;"';
+                        $iconoColor = 'style="color: #FFFFFF;"';
+                    } else if ($qs['asunto'] == 'Queja') {
+                        $colorAsunto = 'style="background-color: #D97706; color: #FFFFFF;"';
+                        $iconoColor = 'style="color: #FFFFFF;"';
+                    } else if ($qs['asunto'] == 'Reclamo') {
+                        $colorAsunto = 'style="background-color: #DC2626; color: #FFFFFF;"';
+                        $iconoColor = 'style="color: #FFFFFF;"';
+                    } else if ($qs['asunto'] == 'Sugerencia') {
+                        $colorAsunto = 'style="background-color: #FACC15; color: #000000;"';
+                        $iconoColor = 'style="color: #000000;"';
+                    } else if ($qs['asunto'] == 'Felicitación') {
+                        $colorAsunto = 'style="background-color: #059669; color: #FFFFFF;"';
+                        $iconoColor = 'style="color: #FFFFFF;"';
+                    }
+
+                    echo '<tr ' . $colorAsunto . '>';
                     echo '<td>' . $qs['idForm_pqrsf']  . '</td>';
                     echo '<td>';
-                    echo '<a href="javascript:verDetalle(' . $qs['idForm_pqrsf']  . ')" title="VER"><i class="fa fa-eye"></i></a>';
+                    echo '<a ' . $iconoColor . 'href="javascript:verDetalle(' . $qs['idForm_pqrsf']  . ')" title="VER"><i class="fa fa-eye"></i></a>';
                     echo '</td>';
                     echo '<td>' . $qs['nombre']  . '</td>';
                     echo '<td>' . $qs['identificacion']  . '</td>';
