@@ -141,6 +141,14 @@ class Module implements ConfigProviderInterface
                     $dbAdapter = $container->get('gestorportal_bd');
                     return new Modelo\DAO\ConvocatoriaDAO($dbAdapter);
                 },
+                Modelo\DAO\ColoquioinscripcionDAO::class => function ($container) {
+                    $dbAdapter = $container->get('gestorportal_bd');
+                    return new Modelo\DAO\ColoquioinscripcionDAO($dbAdapter);
+                },
+                Modelo\DAO\ColoquioarticuloDAO::class => function ($container) {
+                    $dbAdapter = $container->get('gestorportal_bd');
+                    return new Modelo\DAO\ColoquioarticuloDAO($dbAdapter);
+                },
             ],
         ];
     }
@@ -244,6 +252,12 @@ class Module implements ConfigProviderInterface
                         $container->get(Modelo\DAO\ConvocatoriaDAO::class),
                         $container->get(Modelo\DAO\PfiDAO::class)
                     );
+                },
+                Controller\ColoquioinscripcionController::class => function ($container) {
+                    return new Controller\ColoquioinscripcionController($container->get(Modelo\DAO\ColoquioinscripcionDAO::class));
+                },
+                Controller\ColoquioarticuloController::class => function ($container) {
+                    return new Controller\ColoquioarticuloController($container->get(Modelo\DAO\ColoquioarticuloDAO::class));
                 },
             ],
         ];

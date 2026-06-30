@@ -25,10 +25,6 @@ class Pfi implements InputFilterAwareInterface
     private $id_config;
     private $nombre_formulario;
     private $slug;
-    private $cupo_maximo;
-    private $fecha_inicio;
-    private $fecha_fin;
-    private $hora_limite_diaria;
     private $activo;
     private $descripcion;
     private $instrucciones;
@@ -124,81 +120,6 @@ class Pfi implements InputFilterAwareInterface
                         'encoding' => 'UTF-8',
                         'min' => 1,
                         'max' => 255,
-                    ],
-                ],
-            ],
-        ]);
-
-        // 🔴 NUEVO: Campo cupo_maximo
-        $inputFilter->add([
-            'name' => 'cupo_maximo',
-            'required' => true,
-            'filters' => [
-                ['name' => ToInt::class],
-            ],
-            'validators' => [
-                [
-                    'name' => Digits::class,
-                ],
-                [
-                    'name' => GreaterThan::class,
-                    'options' => [
-                        'min' => 0,
-                        'inclusive' => true,
-                    ],
-                ],
-            ],
-        ]);
-
-        // 🔴 NUEVO: Campo fecha_inicio (IMPORTANTE)
-        $inputFilter->add([
-            'name' => 'fecha_inicio',
-            'required' => true,
-            'filters' => [
-                ['name' => StripTags::class],
-                ['name' => StringTrim::class],
-            ],
-            'validators' => [
-                [
-                    'name' => Date::class,
-                    'options' => [
-                        'format' => 'Y-m-d\TH:i', // Coincide con el formato de DateTimeLocal
-                    ],
-                ],
-            ],
-        ]);
-
-        // 🔴 NUEVO: Campo fecha_fin (IMPORTANTE)
-        $inputFilter->add([
-            'name' => 'fecha_fin',
-            'required' => true,
-            'filters' => [
-                ['name' => StripTags::class],
-                ['name' => StringTrim::class],
-            ],
-            'validators' => [
-                [
-                    'name' => Date::class,
-                    'options' => [
-                        'format' => 'Y-m-d\TH:i', // Coincide con el formato de DateTimeLocal
-                    ],
-                ],
-            ],
-        ]);
-
-        // 🔴 NUEVO: Campo hora_limite_diaria (el que te daba error)
-        $inputFilter->add([
-            'name' => 'hora_limite_diaria',
-            'required' => true,
-            'filters' => [
-                ['name' => StripTags::class],
-                ['name' => StringTrim::class],
-            ],
-            'validators' => [
-                [
-                    'name' => Date::class,
-                    'options' => [
-                        'format' => 'H:i',  // Usa H:i porque en el formulario está así
                     ],
                 ],
             ],
@@ -320,46 +241,6 @@ class Pfi implements InputFilterAwareInterface
     public function setSlug($value)
     {
         $this->slug = $value;
-    }
-
-    public function getCupoMaximo()
-    {
-        return $this->cupo_maximo;
-    }
-
-    public function setCupoMaximo($value)
-    {
-        $this->cupo_maximo = $value;
-    }
-
-    public function getFechaInicio()
-    {
-        return $this->fecha_inicio;
-    }
-
-    public function setFechaInicio($value)
-    {
-        $this->fecha_inicio = $value;
-    }
-
-    public function getFechaFin()
-    {
-        return $this->fecha_fin;
-    }
-
-    public function setFechaFin($value)
-    {
-        $this->fecha_fin = $value;
-    }
-
-    public function getHoraLimiteDiaria()
-    {
-        return $this->hora_limite_diaria;
-    }
-
-    public function setHoraLimiteDiaria($value)
-    {
-        $this->hora_limite_diaria = $value;
     }
 
     public function getActivo()

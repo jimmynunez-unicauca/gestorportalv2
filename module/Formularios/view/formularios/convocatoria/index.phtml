@@ -124,3 +124,28 @@ $this->headScript()->prependScript('
         </div>
     </div>
 </div>
+<style>
+    /* Cambia el color de fondo y el tamaño del texto del tooltip */
+    .tooltip-inner {
+        background-color: #ffc107 !important;
+        /* Color amarillo llamativo */
+        color: #000 !important;
+        /* Texto negro para contraste */
+        font-size: 1.1rem !important;
+        /* Texto más grande */
+        font-weight: bold !important;
+        /* Texto en negrita */
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        /* Sombra para dar relieve */
+    }
+
+    /* Cambia el color de la flecha del tooltip */
+    .bs-tooltip-top . some-arrow::before,
+    .bs-tooltip-auto[data-poppers-placement^="top"] .tooltip-arrow::before {
+        border-top-color: #ffc107 !important;
+    }
+
+    .iconoColor {
+        color: seagreen;
+    }
+</style>

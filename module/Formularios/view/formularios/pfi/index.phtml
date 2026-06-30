@@ -102,9 +102,7 @@ $this->headScript()->prependScript('
             });', 'text/javascript', array('noescape' => true))
     ->prependFile($this->basePath('js/sistema/pfi.js'))
     ->prependFile($this->basePath('js/ckeditor.js'))
-    ->prependFile($this->basePath('js/jquery.blockUI.js'))
-    ->prependFile($this->basePath('js/select2.min.js'))
-    ->prependFile($this->basePath('js/select2.es.js'));
+    ->prependFile($this->basePath('js/jquery.blockUI.js'));
 
 ?>
 <div class="col-md-12 col-sm-12">
@@ -124,10 +122,7 @@ $this->headScript()->prependScript('
                                     <th data-toggle="tooltip" title="ID" scope="col"><i class="fa fa-key"></i></th>
                                     <th data-toggle="tooltip" title="OPCIONES" scope="col"><i class="fa fa-cog fa-spin fa-lg"></i></th>
                                     <th scope="col"><i class="fas fa-id-card"></i> NOMBRE</th>
-                                    <th scope="col"><i class="fas fa-sort-numeric-asc"></i> CUPO</th>
-                                    <th scope="col"><i class="fas fa-calendar-check-o"></i> Fecha Inicio</th>
-                                    <th scope="col"><i class="fas fa-calendar-times-o"></i> Fecha FIN</th>
-                                    <th scope="col"><i class="fas fa-clock-o"></i> HORA LÍMITE</th>
+                                    <th scope="col"><i class="fas fa-id-card"></i> SLUG</th>
                                     <th scope="col"><i class="fas fa-calendar"></i> REGISTRADO</th>
                                 </tr>
                             </thead>
@@ -160,10 +155,7 @@ $this->headScript()->prependScript('
                                     echo '&nbsp;&nbsp;';
                                     echo '</td>';
                                     echo '<td>' . substr($pfi['nombre_formulario'], 0, 125)  . '</td>';
-                                    echo '<td>' . $pfi['cupo_maximo']  . '</td>';
-                                    echo '<td>' . $pfi['fecha_inicio']  . '</td>';
-                                    echo '<td>' . $pfi['fecha_fin']  . '</td>';
-                                    echo '<td>' . $pfi['hora_limite_diaria'] . '</td>';
+                                    echo '<td>' . $pfi['slug']  . '</td>';
                                     echo '<td style="background-color: ' . $color . ';">' . $pfi['created_at']  . '</td>';
                                     echo '</tr>';
                                 }
@@ -208,3 +200,28 @@ $this->headScript()->prependScript('
         </div>
     </div>
 </div>
+<style>
+    /* Cambia el color de fondo y el tamaño del texto del tooltip */
+    .tooltip-inner {
+        background-color: #ffc107 !important;
+        /* Color amarillo llamativo */
+        color: #000 !important;
+        /* Texto negro para contraste */
+        font-size: 1.1rem !important;
+        /* Texto más grande */
+        font-weight: bold !important;
+        /* Texto en negrita */
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        /* Sombra para dar relieve */
+    }
+
+    /* Cambia el color de la flecha del tooltip */
+    .bs-tooltip-top . some-arrow::before,
+    .bs-tooltip-auto[data-poppers-placement^="top"] .tooltip-arrow::before {
+        border-top-color: #ffc107 !important;
+    }
+
+    .iconoColor {
+        color: seagreen;
+    }
+</style>
