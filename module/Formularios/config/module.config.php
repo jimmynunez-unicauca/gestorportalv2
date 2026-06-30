@@ -450,6 +450,48 @@ return [
                             ],
                         ],
                     ],
+                    'convocatoria' => [
+                        'type' => \Laminas\Router\Http\Segment::class,
+                        'options' => [
+                            'route' => '/convocatoria/:action[/:id]',
+                            'constraints' => [
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id' => '[0-9]*',
+                            ],
+                            'defaults' => [
+                                'controller' => Controller\ConvocatoriaController::class,
+                                'action' => 'index',
+                            ],
+                        ],
+                    ],
+                    'coloquioinscripcion' => [
+                        'type' => \Laminas\Router\Http\Segment::class,
+                        'options' => [
+                            'route' => '/coloquioinscripcion/:action[/:id]',
+                            'constraints' => [
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id' => '[0-9]*',
+                            ],
+                            'defaults' => [
+                                'controller' => Controller\ColoquioinscripcionController::class,
+                                'action' => 'index',
+                            ],
+                        ],
+                    ],
+                    'coloquioarticulo' => [
+                        'type' => \Laminas\Router\Http\Segment::class,
+                        'options' => [
+                            'route' => '/coloquioarticulo/:action[/:id]',
+                            'constraints' => [
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id' => '[0-9]*',
+                            ],
+                            'defaults' => [
+                                'controller' => Controller\ColoquioarticuloController::class,
+                                'action' => 'index',
+                            ],
+                        ],
+                    ],
                 ],
             ],
         ],

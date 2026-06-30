@@ -119,14 +119,6 @@ class PfiController extends AbstractActionController
         if (!$request->isPost()) {
             $id = (int) $this->params()->fromQuery('id', 0);
             $infoPfi = $this->DAO->getFormPfi($id);
-            if ($infoPfi && !empty($infoPfi->getHoraLimiteDiaria())) {
-                $hora = $infoPfi->getHoraLimiteDiaria();
-                // Si tiene segundos (formato H:i:s), quitar los segundos
-                if (strlen($hora) == 8 && substr($hora, 2, 1) == ':' && substr($hora, 5, 1) == ':') {
-                    $hora = substr($hora, 0, 5); // Quitar :00
-                    $infoPfi->setHoraLimiteDiaria($hora);
-                }
-            }
             $form = new PfiForm('editar');
             $form->bind($infoPfi);
             $view = new ViewModel([
@@ -253,13 +245,6 @@ class PfiController extends AbstractActionController
         if (!$request->isPost()) {
             $id = (int) $this->params()->fromQuery('id', 0);
             $infoPfi = $this->DAO->getFormPfi($id);
-            if ($infoPfi && !empty($infoPfi->getHoraLimiteDiaria())) {
-                $hora = $infoPfi->getHoraLimiteDiaria();
-                if (strlen($hora) == 8 && substr($hora, 2, 1) == ':' && substr($hora, 5, 1) == ':') {
-                    $hora = substr($hora, 0, 5); // Quitar :00
-                    $infoPfi->setHoraLimiteDiaria($hora);
-                }
-            }
             $form = new PfiForm('eliminar');
             /*  $form->setData($infoPfi); */
             $form->bind($infoPfi);

@@ -9,36 +9,43 @@ echo $this->form()->openTag($form);
         <div class="row">
             <div class="form-group col-md-12">
                 <?= $this->formLabel($form->get('id_config')) ?>
+                <i class="fas fa-info-circle iconoColor" data-bs-toggle="tooltip" data-bs-placement="top" title="ID de la configuración"></i>
                 <?= $this->formElement($form->get('id_config')) ?>
                 <div class="text-danger"><?= $this->formElementErrors($form->get('id_config')) ?></div>
             </div>
             <div class="form-group col-md-12">
                 <?= $this->formLabel($form->get('nombre_convocatoria')) ?>
+                <i class="fas fa-info-circle iconoColor" data-bs-toggle="tooltip" data-bs-placement="top" title="Nombre de la convocatoria"></i>
                 <?= $this->formElement($form->get('nombre_convocatoria')) ?>
                 <div class="text-danger"><?= $this->formElementErrors($form->get('nombre_convocatoria')) ?></div>
             </div>
             <div class="form-group col-md-6">
                 <?= $this->formLabel($form->get('periodo')) ?>
+                <i class="fas fa-info-circle iconoColor" data-bs-toggle="tooltip" data-bs-placement="top" title="Período de la convocatoria"></i>
                 <?= $this->formElement($form->get('periodo')) ?>
                 <div class="text-danger"><?= $this->formElementErrors($form->get('periodo')) ?></div>
             </div>
             <div class="form-group col-md-6">
                 <?= $this->formLabel($form->get('cupo_maximo')) ?>
+                <i class="fas fa-info-circle iconoColor" data-bs-toggle="tooltip" data-bs-placement="top" title="Cupo máximo de la convocatoria"></i>
                 <?= $this->formElement($form->get('cupo_maximo')) ?>
                 <div class="text-danger"><?= $this->formElementErrors($form->get('cupo_maximo')) ?></div>
             </div>
             <div class="form-group col-md-6">
                 <?= $this->formLabel($form->get('fecha_inicio')) ?>
+                <i class="fas fa-info-circle iconoColor" data-bs-toggle="tooltip" data-bs-placement="top" title="Fecha de inicio de la convocatoria"></i>
                 <?= $this->formElement($form->get('fecha_inicio')) ?>
                 <div class="text-danger"><?= $this->formElementErrors($form->get('fecha_inicio')) ?></div>
             </div>
             <div class="form-group col-md-6">
                 <?= $this->formLabel($form->get('fecha_fin')) ?>
+                <i class="fas fa-info-circle iconoColor" data-bs-toggle="tooltip" data-bs-placement="top" title="Fecha de fin de la convocatoria"></i>
                 <?= $this->formElement($form->get('fecha_fin')) ?>
                 <div class="text-danger"><?= $this->formElementErrors($form->get('fecha_fin')) ?></div>
             </div>
             <div class="form-group col-md-6">
                 <?= $this->formLabel($form->get('hora_limite_diaria')) ?>
+                <i class="fas fa-info-circle iconoColor" data-bs-toggle="tooltip" data-bs-placement="top" title="Hora límite diaria para la convocatoria"></i>
                 <?= $this->formElement($form->get('hora_limite_diaria')) ?>
                 <div class="text-danger"><?= $this->formElementErrors($form->get('hora_limite_diaria')) ?></div>
             </div>
@@ -59,3 +66,8 @@ echo $this->form()->openTag($form);
 <?php
 echo $this->form()->closeTag();
 ?>
+<script>
+    // Inicializa todos los tooltips de la página
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+</script>

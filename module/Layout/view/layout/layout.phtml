@@ -164,9 +164,16 @@
                                             <li>
                                                 <a><i class="fa fa-language"></i> PFI<span class="fa fa-chevron-down"></span></a>
                                                 <ul class="nav child_menu">
-                                                    <li><a href="<?= $this->url('formularios/pfi', array('controller' => 'pfi', 'action' => 'index')) ?>">Configuración</a></li>
-                                                    <li><a href="<?= $this->url('formularios/convocatoria', array('controller' => 'convocatoria', 'action' => 'index')) ?>">Convocatorias</a></li>
-                                                    <li><a href="<?= $this->url('formularios/pfiform', array('controller' => 'pfiform', 'action' => 'index')) ?>">Inscripciones</a></li>
+                                                    <li><a href="<?= $this->url('formularios/pfi', array('controller' => 'pfi', 'action' => 'index')) ?>">Tipo de prueba</a></li>
+                                                    <li><a href="<?= $this->url('formularios/convocatoria', array('controller' => 'convocatoria', 'action' => 'index')) ?>">Inscripciones</a></li>
+                                                    <li><a href="<?= $this->url('formularios/pfiform', array('controller' => 'pfiform', 'action' => 'index')) ?>">Inscriptos</a></li>
+                                                </ul>
+                                            </li>
+                                            <li>
+                                                <a><i class="fa fa-graduation-cap"></i> Coloquio<span class="fa fa-chevron-down"></span></a>
+                                                <ul class="nav child_menu">
+                                                    <li><a href="<?= $this->url('formularios/coloquioinscripcion', array('controller' => 'coloquioinscripcion', 'action' => 'index')) ?>">Inscripciones</a></li>
+                                                    <li><a href="<?= $this->url('formularios/coloquioarticulo', array('controller' => 'coloquioarticulo', 'action' => 'index')) ?>">Artículos</a></li>
                                                 </ul>
                                             </li>
                                             <li><a href="<?= $this->url('formularios/daeempre', array('controller' => 'daeempre', 'action' => 'index')) ?>">Área de Emprendimiento</a></li>

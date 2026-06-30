@@ -85,65 +85,6 @@ class PfiForm extends Form
         ]);
 
         $this->add([
-            'type' => Element\Number::class,
-            'name' => 'cupo_maximo',
-            'options' => [
-                'label' => 'Cupo Máximo *',
-            ],
-            'attributes' => [
-                'readonly' => !$required,
-                'required' => $required,
-                'class' => 'form-control',
-                'id' => 'cupo_maximo',
-            ],
-        ]);
-
-        $this->add([
-            'type' => Element\DateTimeLocal::class,
-            'name' => 'fecha_inicio',
-            'options' => [
-                'label' => 'Fecha Inicio *',
-                'format' => 'Y-m-d\TH:i', // Formato para datetime-local
-            ],
-            'attributes' => [
-                'class' => 'form-control',
-                'readonly' => !$required,
-                'required' => $required,
-                'id' => 'fecha_inicio',
-            ],
-        ]);
-
-        $this->add([
-            'type' => Element\DateTimeLocal::class,
-            'name' => 'fecha_fin',
-            'options' => [
-                'label' => 'Fecha Fin *',
-                'format' => 'Y-m-d\TH:i', // Formato para datetime-local
-            ],
-            'attributes' => [
-                'class' => 'form-control',
-                'readonly' => !$required,
-                'required' => $required,
-                'id' => 'fecha_fin',
-            ],
-        ]);
-
-        $this->add([
-            'type' => Element\Time::class,
-            'name' => 'hora_limite_diaria',
-            'options' => [
-                'label' => 'Hora Límite Diaria *',
-                'format' => 'H:i', // Formato para time
-            ],
-            'attributes' => [
-                'readonly' => !$required,
-                'required' => $required,
-                'class' => 'form-control',
-                'id' => 'hora_limite_diaria',
-            ],
-        ]);
-
-        $this->add([
             'type' => Element\Textarea::class,
             'name' => 'descripcion',
             'options' => [
