@@ -142,12 +142,12 @@ class OrganigramaDAO extends AbstractTableGateway
     {
         $sql = "SELECT id, nombre, tipo FROM nodos WHERE activo = 1";
         if ($excluir_id) {
-            $sql .= " AND id != $excluir_id";
+            $sql .= " AND id != ?";
         }
         $sql .= " ORDER BY nombre ASC";
 
         $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
+        $result = $statement->execute($excluir_id ? [$excluir_id] : []);
         return $result->getResource()->fetchAll(\PDO::FETCH_ASSOC);
     }
 
@@ -180,13 +180,17 @@ class OrganigramaDAO extends AbstractTableGateway
             error_log("DAO REGISTRAR - Orden calculado: " . $orden);
 
             // Insertar en nodos
-            $sql = "INSERT INTO nodos (nombre, tipo, padre_id, orden, activo, registradopor) 
-                VALUES (?, ?, ?, ?, ?, ?)";
+            $sql = "INSERT INTO nodos (nombre, tipo, rol, encargado, correo, direccion, padre_id, orden, activo, registradopor) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             error_log("DAO REGISTRAR - SQL: " . $sql);
             error_log("DAO REGISTRAR - Valores: " . print_r([
                 $organigramaOBJ->getNombre(),
                 $organigramaOBJ->getTipo(),
+                $organigramaOBJ->getRol(),
+                $organigramaOBJ->getEncargado(),
+                $organigramaOBJ->getCorreo(),
+                $organigramaOBJ->getDireccion(),
                 $organigramaOBJ->getPadreId(),
                 $organigramaOBJ->getOrden(),
                 $organigramaOBJ->getActivo(),
@@ -197,6 +201,10 @@ class OrganigramaDAO extends AbstractTableGateway
             $result = $statement->execute([
                 $organigramaOBJ->getNombre(),
                 $organigramaOBJ->getTipo(),
+                $organigramaOBJ->getRol(),
+                $organigramaOBJ->getEncargado(),
+                $organigramaOBJ->getCorreo(),
+                $organigramaOBJ->getDireccion(),
                 $organigramaOBJ->getPadreId(),
                 $organigramaOBJ->getOrden(),
                 $organigramaOBJ->getActivo(),
@@ -241,6 +249,10 @@ class OrganigramaDAO extends AbstractTableGateway
             $sql = "UPDATE nodos SET 
                     nombre = ?,
                     tipo = ?,
+                    rol = ?,
+                    encargado = ?,
+                    correo = ?,
+                    direccion = ?,
                     padre_id = ?,
                     orden = ?
                 WHERE id = ?";
@@ -249,6 +261,10 @@ class OrganigramaDAO extends AbstractTableGateway
             $statement->execute([
                 $organigramaOBJ->getNombre(),
                 $organigramaOBJ->getTipo(),
+                $organigramaOBJ->getRol(),
+                $organigramaOBJ->getEncargado(),
+                $organigramaOBJ->getCorreo(),
+                $organigramaOBJ->getDireccion(),
                 $organigramaOBJ->getPadreId(),
                 $organigramaOBJ->getOrden(),
                 $organigramaOBJ->getId()

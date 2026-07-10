@@ -42,12 +42,20 @@ $colorMuestra = !empty($colorPersonalizado) ? $colorPersonalizado : ($colorPorTi
                     <td><?= $nodo['tipo'] ?? '' ?></td>
                 </tr>
                 <tr>
-                    <th><i class="fa fa-level-up"></i> Depende de:</th>
-                    <td><?= htmlspecialchars($nodo['nombre_padre'] ?? 'Ninguno (Raíz)') ?></td>
+                    <th><i class="fas fa-id-badge"></i> Cargo:</th>
+                    <td><?= $nodo['rol'] ?? '' ?></td>
                 </tr>
                 <tr>
-                    <th><i class="fa fa-sort-numeric-asc"></i> Orden:</th>
-                    <td><?= $nodo['orden'] ?? '' ?></td>
+                    <th><i class="fa fa-user"></i> Encargado:</th>
+                    <td><?= $nodo['encargado'] ?? '' ?></td>
+                </tr>
+                <tr>
+                    <th><i class="fa fa-envelope"></i> Correo:</th>
+                    <td><?= $nodo['correo'] ?? '' ?></td>
+                </tr>
+                <tr>
+                    <th><i class="fa fa-map-marker"></i> Dirección:</th>
+                    <td><?= $nodo['direccion'] ?? '' ?></td>
                 </tr>
                 <tr>
                     <th style="vertical-align: top; width: 120px;">

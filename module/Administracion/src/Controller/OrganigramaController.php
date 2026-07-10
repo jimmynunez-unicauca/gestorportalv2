@@ -133,6 +133,10 @@ class OrganigramaController extends AbstractActionController
                 /* $form->get('icono')->setValue($nodo['icono'] ?? ''); */
                 $form->get('orden')->setValue($nodo['orden']);
                 /* $form->get('color')->setValue($nodo['color'] ?? ''); */
+                $form->get('rol')->setValue($nodo['rol']);
+                $form->get('encargado')->setValue($nodo['encargado']);
+                $form->get('correo')->setValue($nodo['correo']);
+                $form->get('direccion')->setValue($nodo['direccion']);
                 $form->get('descripcion')->setValue($nodo['metadata_descripcion'] ?? $nodo['descripcion'] ?? '');
                 $form->get('estado')->setValue($nodo['activo'] == 1 ? 'Activo' : 'Inactivo');
                 $form->get('registradopor')->setValue($nodo['registradopor'] ?? 'Sistema');
@@ -165,6 +169,10 @@ class OrganigramaController extends AbstractActionController
         $nodo->setId($datos['id']);
         $nodo->setNombre($datos['nombre']);
         $nodo->setTipo($datos['tipo'] ?? 'oficina');
+        $nodo->setRol($datos['rol'] ?? 'Encargado');
+        $nodo->setEncargado($datos['encargado'] ?? '');
+        $nodo->setCorreo($datos['correo']);
+        $nodo->setDireccion($datos['direccion']);
         $nodo->setPadreId(!empty($datos['padre_id']) ? $datos['padre_id'] : null);
         $nodo->setIcono($datos['icono'] ?? '');
         $nodo->setDescripcion($datos['descripcion'] ?? '');
