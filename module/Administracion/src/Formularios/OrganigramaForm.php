@@ -119,6 +119,75 @@ class OrganigramaForm extends Form
             ],
         ]);
 
+        // Rol
+        $this->add([
+            'type' => Element\Select::class,
+            'name' => 'rol',
+            'options' => [
+                'label' => 'Cargo',
+                'empty_option' => 'Seleccione...',
+                'value_options' => [
+                    'Encargado' => 'Encargado',
+                    'Coordinador' => 'Coordinador',
+                    'Director' => 'Director',
+                    'Jefe' => 'Jefe',
+                    'Consejo Superior' => 'Consejo Superior',
+                    'Consejo Universitario' => 'Consejo Universitario',
+                    'Vicerrector' => 'Vicerrector',
+                    'Rector' => 'Rector',
+                    'Decano' => 'Decano',
+                    'Vicedecano' => 'Vicedecano',
+                    'Secretario(a)' => 'Secretario(a)',
+                ],
+            ],
+            'attributes' => [
+                'class' => 'form-control',
+                'id' => 'rol',
+            ],
+        ]);
+
+        // Encargado
+        $this->add([
+            'type' => Element\Text::class,
+            'name' => 'encargado',
+            'options' => [
+                'label' => 'Encargado',
+            ],
+            'attributes' => [
+                'class' => 'form-control',
+                'id' => 'encargado',
+                'placeholder' => 'Ej: Vicerrectoría Académica',
+            ],
+        ]);
+
+        // Correo
+        $this->add([
+            'type' => Element\Email::class,
+            'name' => 'correo',
+            'options' => [
+                'label' => 'Correo electrónico',
+            ],
+            'attributes' => [
+                'class' => 'form-control',
+                'id' => 'correo',
+                'placeholder' => 'Ej: vicerrectoria@universidad.edu.co',
+            ],
+        ]);
+
+        // Dirección
+        $this->add([
+            'type' => Element\Text::class,
+            'name' => 'direccion',
+            'options' => [
+                'label' => 'Dirección',
+            ],
+            'attributes' => [
+                'class' => 'form-control',
+                'id' => 'direccion',
+                'placeholder' => 'Ej: Calle 123 #45-67, Ciudad',
+            ],
+        ]);
+
         // Padre (dependencia)
         $optionsPadre = ['' => '-- Ninguno (Raíz) --'];
         foreach ($nodosPadre as $np) {

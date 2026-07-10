@@ -32,7 +32,7 @@ echo $this->form()->openTag($form);
                     <?= $this->formLabel($form->get('tipo')) ?>
                     <div class="input-group">
                         <?= $this->formElement($form->get('tipo')) ?>
-                       <!--  <div class="input-group-append">
+                        <!--  <div class="input-group-append">
                             <span class="input-group-text">
                                 <i class="fa fa-sitemap"></i>
                             </span>
@@ -53,7 +53,53 @@ echo $this->form()->openTag($form);
                     <small class="form-text text-muted">Selecciona a qué unidad superior pertenece este nodo</small>
                 </div>
 
-               
+                <div class="form-group col-md-6 col-sm-12">
+                    <?= $this->formLabel($form->get('rol')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('rol')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-id-badge"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <?= $this->formLabel($form->get('encargado')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('encargado')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-user"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <small class="form-text text-muted">Ej: Juan Pérez, María García, etc.</small>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <?= $this->formLabel($form->get('correo')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('correo')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-envelope"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <small class="form-text text-muted">Ej: juan.perez@universidad.edu.co, maria.garcia@universidad.edu.co, etc.</small>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <?= $this->formLabel($form->get('direccion')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('direccion')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-map-marker"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <small class="form-text text-muted">Ej: Calle 123 #45-67, Ciudad</small>
+                </div>
 
                 <div class="form-group col-md-6 col-sm-12">
                     <?= $this->formLabel($form->get('orden')) ?>
@@ -68,7 +114,7 @@ echo $this->form()->openTag($form);
                     <small class="form-text text-muted">Define el orden de aparición entre hermanos</small>
                 </div>
 
-               
+
 
                 <div class="form-group col-md-12 col-sm-12">
                     <?= $this->formLabel($form->get('descripcion')) ?>

@@ -68,7 +68,7 @@ echo $this->form()->openTag($form);
                     <small class="form-text text-muted">Cambiar la dependencia moverá este nodo a otra ubicación</small>
                 </div>
 
-                
+
 
                 <div class="form-group col-md-6 col-sm-12">
                     <label for="orden">Orden</label>
@@ -82,7 +82,53 @@ echo $this->form()->openTag($form);
                     </div>
                 </div>
 
-                
+                <div class="form-group col-md-6 col-sm-12">
+                    <?= $this->formLabel($form->get('rol')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('rol')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-id-badge"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <?= $this->formLabel($form->get('encargado')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('encargado')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-user"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <small class="form-text text-muted">Ej: Juan Pérez, María García, etc.</small>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <?= $this->formLabel($form->get('correo')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('correo')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-envelope"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <small class="form-text text-muted">Ej: juan.perez@universidad.edu.co, maria.garcia@universidad.edu.co, etc.</small>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <?= $this->formLabel($form->get('direccion')) ?>
+                    <div class="input-group">
+                        <?= $this->formElement($form->get('direccion')) ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa fa-map-marker"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <small class="form-text text-muted">Ej: Calle 123 #45-67, Ciudad</small>
+                </div>
 
                 <div class="form-group col-md-12 col-sm-12">
                     <label for="descripcion">Descripción</label>

@@ -18,6 +18,10 @@ class Organigrama implements InputFilterAwareInterface
     private $tipo;
     private $padre_id;
     private $orden;
+    private $rol;
+    private $encargado;
+    private $correo;
+    private $direccion;
     private $activo;
     private $created_at;
     private $updated_at;
@@ -47,6 +51,10 @@ class Organigrama implements InputFilterAwareInterface
         $this->padre_id = $data['padre_id'] ?? null;
         $this->orden = $data['orden'] ?? 0;
         $this->activo = $data['activo'] ?? 1;
+        $this->rol = $data['rol'] ?? null;
+        $this->encargado = $data['encargado'] ?? null;
+        $this->correo = $data['correo'] ?? null;
+        $this->direccion = $data['direccion'] ?? null;
         $this->created_at = $data['created_at'] ?? null;
         $this->updated_at = $data['updated_at'] ?? null;
         $this->icono = $data['icono'] ?? null;
@@ -65,6 +73,10 @@ class Organigrama implements InputFilterAwareInterface
             'tipo' => $this->tipo,
             'padre_id' => $this->padre_id,
             'orden' => $this->orden,
+            'rol' => $this->rol,
+            'encargado' => $this->encargado,
+            'correo' => $this->correo,
+            'direccion' => $this->direccion,
             'activo' => $this->activo,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
@@ -105,6 +117,85 @@ class Organigrama implements InputFilterAwareInterface
                         'encoding' => 'UTF-8',
                         'min' => 3,
                         'max' => 200,
+                    ],
+                ],
+            ],
+        ]);
+        $inputFilter->add([
+            'name' => 'rol',
+            'required' => false,
+            'allow_empty' => false,
+            'validators' => [
+                [
+                    'name' => InArray::class,
+                    'options' => [
+                        'haystack' => [
+                            'Encargado',
+                            'Coordinador',
+                            'Director',
+                            'Jefe',
+                            'Consejo Superior',
+                            'Consejo Universitario',
+                            'Vicerrector',
+                            'Rector',
+                            'Decano',
+                            'Vicedecano',
+                            'Secretario(a)',
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+        $inputFilter->add([
+            'name' => 'encargado',
+            'required' => false,
+            'filters' => [
+                ['name' => StripTags::class],
+                ['name' => StringTrim::class],
+            ],
+            'validators' => [
+                [
+                    'name' => StringLength::class,
+                    'options' => [
+                        'encoding' => 'UTF-8',
+                        'min' => 3,
+                        'max' => 100,
+                    ],
+                ],
+            ],
+        ]);
+        $inputFilter->add([
+            'name' => 'correo',
+            'required' => false,
+            'filters' => [
+                ['name' => StripTags::class],
+                ['name' => StringTrim::class],
+            ],
+            'validators' => [
+                [
+                    'name' => StringLength::class,
+                    'options' => [
+                        'encoding' => 'UTF-8',
+                        'min' => 3,
+                        'max' => 100,
+                    ],
+                ],
+            ],
+        ]);
+        $inputFilter->add([
+            'name' => 'direccion',
+            'required' => false,
+            'filters' => [
+                ['name' => StripTags::class],
+                ['name' => StringTrim::class],
+            ],
+            'validators' => [
+                [
+                    'name' => StringLength::class,
+                    'options' => [
+                        'encoding' => 'UTF-8',
+                        'min' => 3,
+                        'max' => 100,
                     ],
                 ],
             ],
@@ -219,6 +310,40 @@ class Organigrama implements InputFilterAwareInterface
     public function setTipo($value)
     {
         $this->tipo = $value;
+    }
+    public function getRol()
+    {
+        return $this->rol;
+    }
+    public function setRol($value)
+    {
+        $this->rol = $value;
+    }
+    public function getEncargado()
+    {
+        return $this->encargado;
+    }
+    public function setEncargado($value)
+    {
+        $this->encargado = $value;
+    }
+
+    public function getCorreo()
+    {
+        return $this->correo;
+    }
+    public function setCorreo($value)
+    {
+        $this->correo = $value;
+    }
+
+    public function getDireccion()
+    {
+        return $this->direccion;
+    }
+    public function setDireccion($value)
+    {
+        $this->direccion = $value;
     }
 
     public function getPadreId()
