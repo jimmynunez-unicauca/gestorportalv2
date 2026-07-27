@@ -100,6 +100,20 @@ return [
                             ],
                         ],
                     ],
+                    'eventoen' => [
+                        'type' => \Laminas\Router\Http\Segment::class,
+                        'options' => [
+                            'route' => '/eventoen/:action[/:id1]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id1' => '[a-zA-Z0-9_-]*',
+                            ),
+                            'defaults' => [
+                                'controller' => Controller\EventoenController::class,
+                                'action' => 'index',
+                            ],
+                        ],
+                    ],
                     'cultura' => [
                         'type' => \Laminas\Router\Http\Segment::class,
                         'options' => [

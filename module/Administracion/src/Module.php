@@ -41,6 +41,10 @@ class Module implements ConfigProviderInterface
                     $dbAdapter = $container->get('gestorportal_bd');
                     return new Modelo\DAO\EventoDAO($dbAdapter);
                 },
+                Modelo\DAO\EventoenDAO::class => function ($container) {
+                    $dbAdapter = $container->get('gestorportal_bd');
+                    return new Modelo\DAO\EventoenDAO($dbAdapter);
+                },
                 Modelo\DAO\CulturaDAO::class => function ($container) {
                     $dbAdapter = $container->get('gestorportal_bd');
                     return new Modelo\DAO\CulturaDAO($dbAdapter);
@@ -134,6 +138,9 @@ class Module implements ConfigProviderInterface
                 },
                 Controller\EventoController::class => function ($container) {
                     return new Controller\EventoController($container->get(Modelo\DAO\EventoDAO::class));
+                },
+                Controller\EventoenController::class => function ($container) {
+                    return new Controller\EventoenController($container->get(Modelo\DAO\EventoenDAO::class));
                 },
                 Controller\CulturaController::class => function ($container) {
                     return new Controller\CulturaController($container->get(Modelo\DAO\CulturaDAO::class));

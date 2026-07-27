@@ -1,4 +1,6 @@
 //------------------------------------------------------------------------------
+// BLOQUEO DE INTERFAZ
+//------------------------------------------------------------------------------
 function bloqueoAjax() {
     $.blockUI(
         {
@@ -19,7 +21,8 @@ function bloqueoAjax() {
 }
 
 //------------------------------------------------------------------------------
-
+// FUNCIONES PARA ABRIR MODALES
+//------------------------------------------------------------------------------
 function verRegistrar(event) {
     $.get('registrar', { fecha: new Date(event).toISOString() }, setFormulario);
     bloqueoAjax();
@@ -36,6 +39,14 @@ function verEliminar(idEvento) {
     $.get('eliminar', { idEvento: idEvento }, setFormulario);
     bloqueoAjax();
 }
+function setFormulario(datos) {
+    $("#divContenido").html(datos);
+    $('#modalFormulario').modal('show');
+}
+
+//------------------------------------------------------------------------------
+// FUNCIONES PARA MOVER Y ELIMINAR EVENTOS
+//------------------------------------------------------------------------------
 function moverEvento(event) {
     Swal.fire({
         title: '&#191;Est&aacute;s seguro de este cambio&#63;',
@@ -105,51 +116,145 @@ function setEventoAction(datos) {
         return false;
     }
 }
-function setFormulario(datos) {
-    $("#divContenido").html(datos);
-    $('#modalFormulario').modal('show');
+
+//------------------------------------------------------------------------------
+// VALIDACIÓN DE FECHAS (start y end) - NUEVA VERSIÓN
+//------------------------------------------------------------------------------
+/**
+ * Convierte un string en formato 'YYYY-MM-DDTHH:mm' a objeto Date
+ * (compatible con datetime-local)
+ */
+function stringToDate(str) {
+    if (!str) return null;
+    return new Date(str.replace('T', ' '));
 }
 
-function validarGuardar(evt, formulario, tipo) {
-    if ($("#start").val() == $("#end").val()) {
-        Swal.fire({
-            title: "ERROR",
-            text: "La hora no pueden ser iguales",
-            icon: "error"
-        });
-        return false;
-    } else {
-        var detalleContenido = editor.getData().trim();
-        if (detalleContenido === '') {
-            Swal.fire({
-                title: "ERROR",
-                text: "EL CAMPO DETALLE NO PUEDE ESTAR VACIO",
-                icon: "error"
-            });
-            return false;
-        } else {
-            evt.preventDefault();
-            Swal.fire({
-                title: "&#191;DESEA " + tipo + " EL EVENTO&#63;",
-                text: "",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Si",
-                cancelButtonText: "No",
-                allowOutsideClick: false
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    formulario.removeAttribute('onsubmit');
-                    formulario.submit();
-                    bloqueoAjax();
-                }
-            });
-        }
+/**
+ * Valida que start sea menor que end y que ambos no estén vacíos.
+ * Retorna true si es válido, false en caso contrario.
+ * Actualiza los estados visuales con clases de Bootstrap.
+ */
+function validarFechas() {
+    const startInput = document.getElementById('start');
+    const endInput = document.getElementById('end');
+    const startVal = startInput.value;
+    const endVal = endInput.value;
+
+    // Limpiar estados previos
+    startInput.classList.remove('is-valid', 'is-invalid');
+    endInput.classList.remove('is-valid', 'is-invalid');
+    document.getElementById('startFeedback')?.remove();
+    document.getElementById('endFeedback')?.remove();
+
+    // Si alguno está vacío, no validamos (el required se encargará)
+    if (!startVal || !endVal) {
+        return true;
     }
+
+    const startDate = stringToDate(startVal);
+    const endDate = stringToDate(endVal);
+
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+        mostrarError(startInput, 'Formato de fecha inválido.');
+        mostrarError(endInput, 'Formato de fecha inválido.');
+        return false;
+    }
+
+    if (startDate >= endDate) {
+        mostrarError(startInput, 'La fecha de inicio debe ser anterior a la de finalización.');
+        mostrarError(endInput, 'La fecha de finalización debe ser posterior a la de inicio.');
+        return false;
+    }
+
+    // Todo válido
+    startInput.classList.add('is-valid');
+    endInput.classList.add('is-valid');
+    return true;
+}
+
+/**
+ * Muestra un mensaje de error debajo del campo, con la clase is-invalid.
+ */
+function mostrarError(input, mensaje) {
+    input.classList.add('is-invalid');
+    const existing = input.parentNode.querySelector('.invalid-feedback');
+    if (existing) existing.remove();
+    const div = document.createElement('div');
+    div.className = 'invalid-feedback';
+    div.id = input.id + 'Feedback';
+    div.textContent = mensaje;
+    input.parentNode.appendChild(div);
 }
 
 //------------------------------------------------------------------------------
+// EVENTOS EN TIEMPO REAL PARA VALIDACIÓN DE FECHAS
+//------------------------------------------------------------------------------
+$(document).on('change', '#start, #end', function () {
+    validarFechas();
+});
 
+$(document).on('input', '#start, #end', function () {
+    const input = this;
+    if (input.value === '') {
+        input.classList.remove('is-valid', 'is-invalid');
+        const fb = input.parentNode.querySelector('.invalid-feedback');
+        if (fb) fb.remove();
+    } else {
+        validarFechas();
+    }
+});
+
+//------------------------------------------------------------------------------
+// VALIDACIÓN AL ENVIAR EL FORMULARIO (reemplaza la función antigua)
+//------------------------------------------------------------------------------
+function validarGuardar(evt, formulario, tipo) {
+    // 1. Validar fechas
+    if (!validarFechas()) {
+        Swal.fire({
+            title: 'Error en fechas',
+            text: 'Corrija los campos de fecha marcados en rojo.',
+            icon: 'error',
+            confirmButtonText: 'Aceptar'
+        });
+        evt.preventDefault();
+        return false;
+    }
+
+    // 2. Validar contenido del editor (CKEditor)
+    if (typeof editor !== 'undefined' && editor) {
+        var detalleContenido = editor.getData().trim();
+        if (detalleContenido === '') {
+            Swal.fire({
+                title: 'Error',
+                text: 'El campo Contenido no puede estar vacío.',
+                icon: 'error'
+            });
+            evt.preventDefault();
+            return false;
+        }
+    }
+
+    // 3. Confirmación de guardado
+    evt.preventDefault();
+    Swal.fire({
+        title: '¿Desea ' + tipo + ' el evento?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí',
+        cancelButtonText: 'No',
+        allowOutsideClick: false
+    }).then((result) => {
+        if (result.isConfirmed) {
+            formulario.removeAttribute('onsubmit');
+            formulario.submit();
+            bloqueoAjax();
+        }
+    });
+}
+
+//------------------------------------------------------------------------------
+// FUNCIONES AUXILIARES (para otros módulos, pero no se eliminan)
+//------------------------------------------------------------------------------
 function getMunicipios(idDepartamento) {
     if (idDepartamento !== '') {
         $.get('getselectmunicipios', { idDepartamento: idDepartamento }, setMunicipios);
@@ -162,7 +267,6 @@ function setMunicipios(html) {
     $("#idMunicipio").html(html);
 }
 
-//------------------------------------------------------------------------------
 function existeIdentificacion() {
     if ($("#identificacion").val() !== '') {
         $.get('existeidentificacion', { identificacion: $("#identificacion").val() }, setExisteIdentificacion, 'json');
@@ -185,7 +289,6 @@ function setExisteIdentificacion(datos) {
     }
 }
 
-//------------------------------------------------------------------------------
 function limpiarFormBusq() {
     let cont = 0;
     $("#formBusqueda input").each(function () {
@@ -193,7 +296,7 @@ function limpiarFormBusq() {
         cont++;
     });
 }
-//------------------------------------------------------------------------------
+
 function selectColor(tipo) {
     if (tipo == 'Periodo academico') {
         $("#textColor").val('#FFFFFF');
@@ -218,89 +321,27 @@ function selectColor(tipo) {
         $("#color").val('#000066');
     }
 }
-//------------------------------------------------------------------------------
+
 function actualizarImagen() {
     var idEvento = $("#idEvento").val();
-    $.get('actualizarimagen', { idEvento: idEvento }, setFormulario);
+    $.get('actualizarimagen', { idEvento: idEvento }, setFormularioAux);
     bloqueoAjax();
 }
 function setFormularioAux(datos) {
     $("#divContenidoAux").html(datos);
     $('#modalFormularioAux').modal('show');
 }
+
 //------------------------------------------------------------------------------
-function validarFecha() {
-    if ($("#start").val() != '' && $("#end").val() != '') {
-        if ($("#start").val() > $("#end").val()) {
-            Swal.fire({
-                title: "ERROR",
-                text: "La fecha final no puede ser menor a la inicial",
-                icon: "error"
-            });
-            $("#start").val('')
-            $("#end").val('')
-        }
-    }
-}
-function validarImagenOLD() {
-    $(document).on('change', 'input[type="file"]', function () {
-        // this.files[0].size recupera el tamaño del archivo
-        // alert(this.files[0].size);
-
-        var fileName = this.files[0].name;
-        var fileSize = this.files[0].size;
-
-        if (fileSize > 2000000) {
-            Swal.fire({
-                title: "El archivo no debe superar las 2MB",
-                text: "GestorPortal",
-                icon: "error",
-                confirmButtonColor: '#f0ad4e',
-                confirmButtonText: 'CERRAR',
-                allowOutsideClick: false
-            });
-            this.value = '';
-            this.files[0].name = '';
-        } else {
-            // recuperamos la extensión del archivo
-            var ext = fileName.split('.').pop();
-
-            // Convertimos en minúscula porque 
-            // la extensión del archivo puede estar en mayúscula
-            ext = ext.toLowerCase();
-
-            // console.log(ext);
-            switch (ext) {
-                case 'jpg':
-                case 'jpeg':
-                case 'png':
-                case 'gif':
-                case 'bmp':
-                case 'svg':
-                    break;
-                default:
-                    Swal.fire({
-                        title: "El archivo no tiene la extensión adecuada",
-                        text: "Archivos permitidos: jpg,jpeg,png,gif,bmp y svg",
-                        icon: "error",
-                        confirmButtonColor: '#f0ad4e',
-                        confirmButtonText: 'CERRAR',
-                        allowOutsideClick: false
-                    });
-                    this.value = ''; // reset del valor
-                    this.files[0].name = '';
-            }
-        }
-    });
-}
-
+// VALIDACIÓN DE IMAGEN (mantenida como estaba)
+//------------------------------------------------------------------------------
 function validarImagen() {
     var input = $('#imagen')[0];
     var file = input.files[0];
 
     if (file) {
         var ext = file.name.split('.').pop().toLowerCase();
-        var fileSize = file.size; // tamaño en bytes
+        var fileSize = file.size;
         var img = new Image();
         if (file.type.startsWith('image/')) {
             img.onload = function () {
@@ -314,7 +355,7 @@ function validarImagen() {
                         allowOutsideClick: false
                     });
                     $('#imagen').val('');
-                } else if (fileSize > 2000000) { // 2MB    
+                } else if (fileSize > 2000000) {
                     Swal.fire({
                         title: "La imagen no debe superar 2MB.",
                         text: "GestorPortalV2",
@@ -362,10 +403,17 @@ function validarImagen() {
 
 function verImagen(imagen) {
     Swal.fire({
-        html:
-            '<img src="./../../../archivos/eventos/' + imagen + '" width="100%" height="100%"/>',
+        html: '<img src="./../../../archivos/eventos/' + imagen + '" width="100%" height="100%"/>',
         confirmButtonColor: '#f0ad4e',
         confirmButtonText: 'CERRAR',
         allowOutsideClick: false
     });
 }
+
+//------------------------------------------------------------------------------
+// INICIALIZACIÓN (opcional)
+//------------------------------------------------------------------------------
+$(document).ready(function () {
+    // No es necesario agregar nada aquí, la validación de fechas ya está
+    // vinculada mediante los eventos 'change' e 'input'.
+});

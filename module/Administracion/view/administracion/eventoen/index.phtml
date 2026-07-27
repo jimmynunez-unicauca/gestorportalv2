@@ -152,51 +152,36 @@ $this->headScript()->prependScript('
 
                     <ul class="nav nav-tabs bar_tabs" id="myTab" role="tablist">
                         <li class="nav-item">
-                            <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true" title="CALENDARIO"><i class="fa fa-calendar"></i></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false" title="TABLA"><i class="fa fa-table"></i></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="<?= $this->url('administracion/eventoen', array('controller' => 'eventoen', 'action' => 'index')) ?>" title="CAMBIO DE IDIOMA"><i class="fa fa-language"></i></a>
+                            <a class="nav-link active" href="<?= $this->url('administracion/evento', array('controller' => 'eventoen', 'action' => 'index')) ?>" title="Registrar Evento"><i class="fa fa-calendar"></i></a>
                         </li>
                     </ul>
                     <div class="tab-content" id="myTabContent">
                         <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                            <div id='calendar'></div>
-                        </div>
-                        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                             <table id="myTable" class="table table-striped table-bordered dt-responsive nowrap table-sm table-hover" cellspacing="0" width="100%">
                                 <thead class="thead-dark">
                                     <tr>
                                         <th data-toggle="tooltip" title="ID" scope="col"><i class="fa fa-key"></i></th>
                                         <th data-toggle="tooltip" title="OPCIONES" scope="col"><i class="fa fa-cog fa-spin fa-lg"></i></th>
                                         <th scope="col"><i class="fas fa-id-card"></i> TITULO</th>
-                                        <th scope="col"><i class="fas fa-clock-o"></i> EMPIEZA</th>
-                                        <th scope="col"><i class="fas fa-clock-o"></i> TERMINA</th>
-                                        <th scope="col"><i class="fas fa-sun-o"></i> AllDay</th>
                                         <th scope="col"><i class="fas fa-list-alt"></i> ESTADO</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php
-                                    foreach ($this->tabla as $qs) {
+                                    foreach ($this->fetchAll as $qs) {
                                         if ($qs['estado'] == 'Eliminado') {
                                             $estadoColor = 'red';
                                         } else {
                                             $estadoColor = 'green';
                                         }
-                                        echo '<tr style="color: ' . $qs['textColor'] . '; background-color: ' . $qs['color'] . ';">';
+                                        echo '<tr>';
                                         echo '<td>' . $qs['idEvento']  . '</td>';
                                         echo '<td>';
-                                        echo '<a style="color: ' . $qs['textColor'] . ';" href="javascript:verEditar(' . $qs['idEvento']  . ')" title="EDITAR"><i class="fa fa-edit"></i></a>';
+                                        echo '<a href="javascript:verEditar(' . $qs['idEvento']  . ')" title="EDITAR"><i class="fa fa-edit"></i></a>';
                                         echo '&nbsp;&nbsp;';
-                                        echo '<a style="color: ' . $qs['textColor'] . ';" href="javascript:verDetalle(' . $qs['idEvento']  . ')" title="VER"><i class="fa fa-eye"></i></a>';
+                                        echo '<a href="javascript:verDetalle(' . $qs['idEvento']  . ')" title="VER"><i class="fa fa-eye"></i></a>';
                                         echo '</td>';
                                         echo '<td>' . substr($qs['titulo'], 0, 50)  . '</td>';
-                                        echo '<td>' . $qs['start']  . '</td>';
-                                        echo '<td>' . $qs['end'] . '</td>';
-                                        echo '<td>' . $qs['allDay']  . '</td>';
                                         echo '<td style="color: ' . $estadoColor . ';">' . $qs['estado']  . '</td>';
                                         echo '</tr>';
                                     }

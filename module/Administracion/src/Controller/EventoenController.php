@@ -8,11 +8,11 @@ use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\Authentication\AuthenticationService;
 use Laminas\View\Model\ViewModel;
 use Laminas\View\Model\JsonModel;
-use Administracion\Modelo\DAO\EventoDAO;
+use Administracion\Modelo\DAO\EventoenDAO;
 use Administracion\Formularios\EventoForm;
 use Administracion\Modelo\Entidades\Evento;
 
-class EventoController extends AbstractActionController
+class EventoenController extends AbstractActionController
 {
 
     private $DAO;
@@ -21,7 +21,7 @@ class EventoController extends AbstractActionController
     /* private $rutaArchivos = './../newportal/archivos/eventos/'; */
     //------------------------------------------------------------------------------
 
-    public function __construct(EventoDAO $dao)
+    public function __construct(EventoenDAO $dao)
     {
         $this->DAO = $dao;
     }
@@ -55,95 +55,12 @@ class EventoController extends AbstractActionController
     //------------------------------------------------------------------------------
     public function indexAction()
     {
+        $filtro = "";
         return new ViewModel([
-            'fetchAll' => $this->DAO->fetchAll(" evento.estado != 'Eliminado'"),
-            'tabla' => $this->DAO->fetchAll(""),
+            'fetchAll' => $this->DAO->fetchAll($filtro),
         ]);
     }
 
-    //------------------------------------------------------------------------------
-    public function registrarAction()
-    {
-        $fecha =  $this->params()->fromQuery('fecha', '2023-01-01T00:00:00');
-        $fecha = explode(".", $fecha);
-        $infosesion = $this->getInfoSesion();
-        $registradopor = $infosesion['login'];
-        //----------------------------------------------------------------------
-        $form = new EventoForm('registrar', $fecha[0]);
-        $request = $this->getRequest();
-        if (!$request->isPost()) {
-            $view = new ViewModel(['form' => $form]);
-            $view->setTerminal(true);
-            return $view;
-        }
-        //----------------------------------------------------------------------
-        $eventoOBJ = new Evento();
-        /* $form->setInputFilter($eventoOBJ->getInputFilter()); */
-        $form->setData($request->getPost());
-        if (!$form->isValid()) {
-            /*  print_r($form->getMessages());
-            return ['form' => $form]; */
-            $this->flashMessenger()->addErrorMessage('LA INFORMACION DE REGISTRO DEL EVENTO NO ES VALIDA');
-            return $this->redirect()->toUrl('index');
-        }
-        //----------------------------------------------------------------------
-        $files = $request->getFiles()->toArray();
-        //----------------------------------------------------------------------
-        $uploadOK = new \Laminas\Validator\File\UploadFile();
-        if (!$uploadOK->isValid($files['imagen'])) {
-            $this->flashMessenger()->addErrorMessage('EL ARCHIVO DE RESPALDO ADJUNTO PRESENTA ERRORES AL CARGAR AL SERVIDOR');
-            return $this->redirect()->toUrl('index');
-        }
-        if (array_key_exists('imagen', $files)) {
-            $ext = pathinfo($files['imagen']['name'], PATHINFO_EXTENSION);
-            $filesize = new \Laminas\Validator\File\Size([
-                'min' => '250B',
-                'max' => '2MB',
-            ]);
-            if (!$filesize->isValid($files['imagen'])) {
-                $this->flashMessenger()->addErrorMessage('EL ARCHIVO DE RESPALDO ADJUNTO NO ESTA EN LOS LIMITES PERMITIDOS. <br> MINIMO: 250B  <br> MAXIMO: <b>2MB</b>');
-                return $this->redirect()->toUrl('index');
-            }
-            $extensiones = new \Laminas\Validator\File\Extension(array('extension' => array('jpg,jpeg,png,gif,bmp,svg')));
-            if (!$extensiones->isValid($files['imagen'])) {
-                $this->flashMessenger()->addErrorMessage('EL ARCHIVO DE RESPALDO ADJUNTO NO ES PERMITIDO. <br> ARCHIVOS PERMITIDOS: <br> PDF');
-                return $this->redirect()->toUrl('index');
-            }
-            $filter = new \Laminas\Filter\File\RenameUpload([
-                'target' => $this->rutaArchivos . 'EVENTO' . '.' . $ext,
-                'randomize' => true,
-            ]);
-            //----------------------------------------------------------------------
-            $upload = $filter->filter($files['imagen']);
-            //----------------------------------------------------------------------
-            if ($upload['error'] != 0) {
-                $this->flashMessenger()->addErrorMessage('NO FUE POSIBLE SUBIR EL ARCHIVO DE RESPALDO ADJUNTO.');
-                return $this->redirect()->toUrl('index');
-            }
-            $respaldo = basename($upload['tmp_name']);
-            //----------------------------------------------------------------------
-        }
-        $eventoOBJ->exchangeArray($form->getData());
-        $eventoOBJ->setImagen($respaldo);
-        $eventoOBJ->setEstado('Activo');
-        $eventoOBJ->setRegistradopor($registradopor);
-        $eventoOBJ->setModificadopor('');
-        $eventoOBJ->setFechahorareg(date('Y-m-d H:i:s'));
-        $eventoOBJ->setFechahoramod('0000-00-00 00:00:00');
-        try {
-            $this->DAO->registrar($eventoOBJ);
-            $this->flashMessenger()->addSuccessMessage('EL EVENTO FUE REGISTRADO EN PORTALWEBV2');
-        } catch (\Exception $ex) {
-            $msgLog = "\n" . date('Y-m-d H:i:s') . " REGISTRAR EVENTO - EventoController->registrar \n"
-                . $ex->getMessage()
-                . "\n----------------------------------------------------------------------- \n";
-            $file = fopen($this->rutaLog . 'gestorportal.log', 'a');
-            fwrite($file, $msgLog);
-            fclose($file);
-            $this->flashMessenger()->addErrorMessage('SE HA PRESENTADO UN INCONVENIENTE! EL EVENTO NO FUE REGISTRADO EN PORTALWEBV2.');
-        }
-        return $this->redirect()->toUrl('index');
-    }
     //------------------------------------------------------------------------------  
     public function editarAction()
     {
@@ -155,6 +72,7 @@ class EventoController extends AbstractActionController
             if ($form->isValid()) {
                 $session = $this->getInfoSesion();
                 $eventoOBJ = new Evento($form->getData());
+                $eventoOBJ->setEstado('Activo');
                 $eventoOBJ->setModificadopor($session['login']);
                 $eventoOBJ->setFechahoramod(date('Y-m-d H:i:s'));
                 try {
@@ -183,15 +101,6 @@ class EventoController extends AbstractActionController
         return $view;
     }
     //------------------------------------------------------------------------------  
-    public function detalleAction()
-    {
-        $idEvento = (int) $this->params()->fromQuery('idEvento', 0);
-        $infoEvento = $this->DAO->getEventoDetalle($idEvento);
-        $view = new ViewModel(['form' => $infoEvento]);
-        $view->setTerminal(true);
-        return $view;
-    }
-    //------------------------------------------------------------------------------
     public function eliminarAction()
     {
         $idEvento = (int) $this->params()->fromQuery('idEvento', 0);
@@ -216,30 +125,13 @@ class EventoController extends AbstractActionController
         ));
     }
     //------------------------------------------------------------------------------  
-    public function movereventoAction()
+    public function detalleAction()
     {
         $idEvento = (int) $this->params()->fromQuery('idEvento', 0);
-        $start =  $this->params()->fromQuery('start', '');
-        $end =  $this->params()->fromQuery('end', '');
-        $infosesion = $this->getInfoSesion();
-        $registradopor = $infosesion['login'];
-        $successOK = 0;
-        try {
-            $this->DAO->moverevento($idEvento, $start, $end, $registradopor);
-            $successOK = 1;
-            $this->flashMessenger()->addSuccessMessage('EL EVENTO FUE MOVIDO: de <b>' . $start . '</b> a <b>' . $end . '</b> en PORTALWEBV2');
-        } catch (\Exception $ex) {
-            $msgLog = "\n" . date('Y-m-d H:i:s') . " MOVER EVENTO - EventoController->moverevento \n"
-                . $ex->getMessage()
-                . "\n----------------------------------------------------------------------- \n";
-            $file = fopen($this->rutaLog . 'gestorportal.log', 'a');
-            fwrite($file, $msgLog);
-            fclose($file);
-            $this->flashMessenger()->addErrorMessage('SE HA PRESENTADO UN INCONVENIENTE! EN PORTALWEBV2.');
-        }
-        return new JsonModel(array(
-            'successOK' => $successOK,
-        ));
+        $infoEvento = $this->DAO->getEventoDetalle($idEvento);
+        $view = new ViewModel(['form' => $infoEvento]);
+        $view->setTerminal(true);
+        return $view;
     }
     //------------------------------------------------------------------------------   
     public function actualizarimagenAction()
