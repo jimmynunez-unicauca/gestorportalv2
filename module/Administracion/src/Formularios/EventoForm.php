@@ -154,31 +154,29 @@ class EventoForm extends Form
         $this->add([
             'type' => Element\DateTimeLocal::class,
             'name' => 'start',
-            'options' => [
-                'label' => 'Empieza *',
-            ],
+            'options' => ['label' => 'Empieza *'],
             'attributes' => [
-                'onchange' => 'validarFecha()',
                 'readonly' => !$required,
                 'required' => $required,
                 'class' => 'form-control',
                 'value' => $fecha,
                 'id' => 'start',
+                'placeholder' => 'Seleccione fecha y hora de inicio',
+                /* 'min' => date('Y-m-d\TH:i'), */
             ],
         ]);
         $this->add([
             'type' => Element\DateTimeLocal::class,
             'name' => 'end',
-            'options' => [
-                'label' => 'Termina *',
-            ],
+            'options' => ['label' => 'Termina *'],
             'attributes' => [
-                'onchange' => 'validarFecha()',
                 'readonly' => !$required,
                 'required' => $required,
                 'class' => 'form-control',
                 'value' => $fecha,
                 'id' => 'end',
+                'placeholder' => 'Seleccione fecha y hora de finalización',
+                /* 'min' => date('Y-m-d\TH:i'), */
             ],
         ]);
         $this->add([

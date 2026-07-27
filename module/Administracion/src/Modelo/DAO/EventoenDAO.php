@@ -10,10 +10,10 @@ use Laminas\Db\Sql\Insert;
 use Laminas\Db\Sql\Update;
 use Administracion\Modelo\Entidades\Evento;
 
-class EventoDAO extends AbstractTableGateway
+class EventoenDAO extends AbstractTableGateway
 {
 
-    protected $table = 'evento';
+    protected $table = 'evento_en';
 
     //------------------------------------------------------------------------------
 
@@ -25,21 +25,21 @@ class EventoDAO extends AbstractTableGateway
     //------------------------------------------------------------------------------
     public function fetchAll($filtro = '')
     {
-        $this->table = 'evento';
+        $this->table = 'evento_en';
         $select = new Select($this->table);
         $select->columns(['*']);
         if ($filtro != '') {
             $select->where($filtro);
         } else {
-            $select->order("evento.idEvento DESC");
+            $select->order("evento_en.idEvento DESC");
         }
         //        echo $select->getSqlString();
         return $this->selectWith($select)->toArray();
     }
     public function getEventoDetalle($idEvento = 0)
     {
-        $select = new Select('evento');
-        $select->columns(['*'])->where("evento.idEvento = $idEvento")->limit(1);
+        $select = new Select('evento_en');
+        $select->columns(['*'])->where("evento_en.idEvento = $idEvento")->limit(1);
         //        echo $select->getSqlString();
         $datos = $this->selectWith($select)->toArray();
         if (count($datos) > 0) {
@@ -53,83 +53,35 @@ class EventoDAO extends AbstractTableGateway
         return new Evento($this->select(array('idEvento' => $idEvento))->current()->getArrayCopy());
     }
     //------------------------------------------------------------------------------
-
-    public function registrar(Evento $CalendarioOBJ = null)
-    {
-        $connection = $this->getAdapter()->getDriver()->getConnection();
-        $connection->beginTransaction();
-        try {
-            // 1. Insertar en 'evento'
-            $this->table = 'evento';
-            $insert = new Insert($this->table);
-            $datos = $CalendarioOBJ->getArrayCopy();
-            unset($datos['idEvento']);
-            $insert->values($datos);
-            $this->insertWith($insert);
-            $idEvento = $this->getLastInsertValue();
-
-            // 2. Insertar en 'archivos_en' (sin idEvento, ya que es autoincremental)
-            $this->table = 'evento_en';
-            $insertEn = new Insert($this->table);
-            $datosEn = $datos; // Copia los mismos datos
-            unset($datosEn['idEvento']); // Aseguramos que no se inserte manualmente
-            $datosEn['estado'] = 'Eliminado'; // Forzar estado
-            $insertEn->values($datosEn);
-            $this->insertWith($insertEn);
-            $connection->commit();
-        } catch (\Exception $e) {
-            $connection->rollback();
-            throw new \Exception($e);
-        }
-    }
     public function editar(Evento $CalendarioOBJ = null)
     {
         try {
-            $this->table = 'evento';
+            $this->table = 'evento_en';
             $idEvento = (int) $CalendarioOBJ->getIdEvento();
             $update = new Update($this->table);
             $datos = $CalendarioOBJ->getArrayCopy();
             $update->set($datos);
-            $update->where("evento.idEvento =  $idEvento");
+            $update->where("evento_en.idEvento =  $idEvento");
             //echo $update->getSqlString();
             return $this->updateWith($update);
         } catch (\Exception $e) {
             throw new \Exception($e);
         }
     }
+    //------------------------------------------------------------------------------
     public function eliminar($idEvento = 0, $registradopor = '')
     {
         try {
-            $this->table = "evento";
+            $this->table = "evento_en";
             $update = new Update($this->table);
             $update->set([
                 'estado' => 'Eliminado',
                 'modificadopor' => $registradopor,
                 'fechahoramod' => date('Y-m-d H:i:s'),
             ]);
-            $update->where("evento.idEvento = $idEvento");
+            $update->where("evento_en.idEvento = $idEvento");
             //echo $update->getSqlString();
             $this->updateWith($update);
-        } catch (\Exception $e) {
-            throw new \Exception($e);
-        }
-    }
-
-    //------------------------------------------------------------------------------
-    public function moverevento($idEvento = 0, $start = '', $end = '', $registradopor = '')
-    {
-        try {
-            $this->table = 'evento';
-            $update = new Update($this->table);
-            $update->set([
-                'start' => $start,
-                'end' => $end,
-                'modificadopor' => $registradopor,
-                'fechahoramod' => date('Y-m-d H:i:s'),
-            ]);
-            $update->where("evento.idEvento =  $idEvento");
-            //echo $update->getSqlString();
-            return $this->updateWith($update);
         } catch (\Exception $e) {
             throw new \Exception($e);
         }
