@@ -55,5 +55,23 @@ class ContablesController extends AbstractActionController
         $view->setTerminal(true);
         return $view;
     }
+    //------------------------------------------------------------------------------
+    public function indexferiaAction()
+    {
+        $filtro = "";
+        return new ViewModel([
+            'fetchAll' => $this->DAO->fetchAllFeria($filtro),
+        ]);
+    }
+
+    //------------------------------------------------------------------------------  
+    public function detalleferiaAction()
+    {
+        $id = (int) $this->params()->fromQuery('id', 0);
+        $infoEmpleado = $this->DAO->getFormDetalleFeria($id);
+        $view = new ViewModel(['form' => $infoEmpleado]);
+        $view->setTerminal(true);
+        return $view;
+    }
     //------------------------------------------------------------------------------   
 }

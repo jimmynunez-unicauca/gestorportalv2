@@ -48,5 +48,31 @@ class ContablesDAO extends AbstractTableGateway
         }
     }
     //------------------------------------------------------------------------------
+    public function fetchAllFeria($filtro = '')
+    {
+        $this->table = 'form_contables_feria';
+        $select = new Select($this->table);
+        $select->columns(['*']);
+        if ($filtro != '') {
+            $select->where($filtro);
+        } else {
+            $select->order("form_contables_feria.idForm DESC");
+        }
+        //        echo $select->getSqlString();
+        return $this->selectWith($select)->toArray();
+    }
+    public function getFormDetalleFeria($id = 0)
+    {
+        $select = new Select('form_contables_feria');
+        $select->columns(['*'])->where("form_contables_feria.idForm = $id")->limit(1);
+        //        echo $select->getSqlString();
+        $datos = $this->selectWith($select)->toArray();
+        if (count($datos) > 0) {
+            return $datos[0];
+        } else {
+            return null;
+        }
+    }
+    //------------------------------------------------------------------------------
 
 }
