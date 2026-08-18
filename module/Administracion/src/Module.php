@@ -113,6 +113,10 @@ class Module implements ConfigProviderInterface
                     $dbAdapter = $container->get('gestorportal_bd');
                     return new Modelo\DAO\OrganigramaDAO($dbAdapter);
                 },
+                Modelo\DAO\VriemprendimientosDAO::class => function ($container) {
+                    $dbAdapter = $container->get('gestorportal_bd');
+                    return new Modelo\DAO\VriemprendimientosDAO($dbAdapter);
+                },
             ],
         ];
     }
@@ -192,6 +196,9 @@ class Module implements ConfigProviderInterface
                 },
                 Controller\OrganigramaController::class => function ($container) {
                     return new Controller\OrganigramaController($container->get(Modelo\DAO\OrganigramaDAO::class));
+                },
+                Controller\VriemprendimientosController::class => function ($container) {
+                    return new Controller\VriemprendimientosController($container->get(Modelo\DAO\VriemprendimientosDAO::class));
                 },
             ],
         ];

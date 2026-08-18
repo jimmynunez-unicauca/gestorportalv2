@@ -352,6 +352,20 @@ return [
                             ],
                         ],
                     ],
+                    'vriemprendimientos' => [
+                        'type' => \Laminas\Router\Http\Segment::class,
+                        'options' => [
+                            'route' => '/vriemprendimientos/:action[/:id1]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id1' => '[a-zA-Z0-9_-]*',
+                            ),
+                            'defaults' => [
+                                'controller' => Controller\VriemprendimientosController::class,
+                                'action' => 'index',
+                            ],
+                        ],
+                    ],
                 ],
             ],
         ],
