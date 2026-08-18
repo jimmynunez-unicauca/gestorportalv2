@@ -140,3 +140,12 @@ function validarImagen() {
 }
 
 //------------------------------------------------------------------------------
+function verImagen(imagen) {
+    Swal.fire({
+        html: '<img src="./../../../archivos/vri_emprendimientos/' + imagen + '" width="100%" height="100%"/>',
+        confirmButtonColor: '#f0ad4e',
+        confirmButtonText: 'CERRAR',
+        allowOutsideClick: false
+    });
+}
+//------------------------------------------------------------------------------
