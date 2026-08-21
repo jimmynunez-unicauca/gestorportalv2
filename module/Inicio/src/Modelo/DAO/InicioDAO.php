@@ -42,6 +42,7 @@ class InicioDAO extends AbstractTableGateway
         'form_secretariageneral',
         'form_unisalud',
         'form_unisalud_rendicion_cuentas',
+        'form_cegeco',
     ];
 
     //------------------------------------------------------------------------------
@@ -238,6 +239,7 @@ class InicioDAO extends AbstractTableGateway
             'form_fsalud' => 'Fac. Salud',
             'form_comarca' => 'CoMarca',
             'form_secretariageneral' => 'Secretaría General',
+            'form_cegeco' => 'CEGECO',
         ];
         return $nombres[$tabla] ?? $tabla;
     }
@@ -272,6 +274,7 @@ class InicioDAO extends AbstractTableGateway
             'form_fsalud' => 'fa-heartbeat',
             'form_comarca' => 'fa-broadcast-tower',
             'form_secretariageneral' => 'fa-landmark',
+            'form_cegeco' => 'fa-headset',
         ];
         return $iconos[$tabla] ?? 'fa-file';
     }
@@ -306,6 +309,7 @@ class InicioDAO extends AbstractTableGateway
             'form_fsalud' => '#d62828',
             'form_comarca' => '#003049',
             'form_secretariageneral' => '#fcbf49',
+            'form_cegeco' => '#4361ee',
         ];
         return $colores[$tabla] ?? '#6c757d';
     }

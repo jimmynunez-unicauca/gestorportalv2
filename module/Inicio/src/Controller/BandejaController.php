@@ -78,6 +78,7 @@ class BandejaController extends AbstractActionController
             'form_secretariageneral',
             'form_unisalud',
             'form_unisalud_rendicion_cuentas',
+            'form_cegeco',
         ];
         // Inicializar arrays para almacenar los contadores y los datos adicionales por mes
         $formCounts = [];
