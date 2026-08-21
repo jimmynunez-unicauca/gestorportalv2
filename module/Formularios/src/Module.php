@@ -149,6 +149,14 @@ class Module implements ConfigProviderInterface
                     $dbAdapter = $container->get('gestorportal_bd');
                     return new Modelo\DAO\ColoquioarticuloDAO($dbAdapter);
                 },
+                Modelo\DAO\CegecoDAO::class => function ($container) {
+                    $dbAdapter = $container->get('gestorportal_bd');
+                    return new Modelo\DAO\CegecoDAO($dbAdapter);
+                },
+                Modelo\DAO\ContablesferiaDAO::class => function ($container) {
+                    $dbAdapter = $container->get('gestorportal_bd');
+                    return new Modelo\DAO\ContablesferiaDAO($dbAdapter);
+                },
             ],
         ];
     }
@@ -258,6 +266,12 @@ class Module implements ConfigProviderInterface
                 },
                 Controller\ColoquioarticuloController::class => function ($container) {
                     return new Controller\ColoquioarticuloController($container->get(Modelo\DAO\ColoquioarticuloDAO::class));
+                },
+                Controller\CegecoController::class => function ($container) {
+                    return new Controller\CegecoController($container->get(Modelo\DAO\CegecoDAO::class));
+                },
+                Controller\ContablesferiaController::class => function ($container) {
+                    return new Controller\ContablesferiaController($container->get(Modelo\DAO\ContablesferiaDAO::class));
                 },
             ],
         ];

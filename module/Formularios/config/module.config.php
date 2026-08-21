@@ -492,6 +492,34 @@ return [
                             ],
                         ],
                     ],
+                    'cegeco' => [
+                        'type' => \Laminas\Router\Http\Segment::class,
+                        'options' => [
+                            'route' => '/cegeco/:action[/:id]',
+                            'constraints' => [
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id' => '[0-9]*',
+                            ],
+                            'defaults' => [
+                                'controller' => Controller\CegecoController::class,
+                                'action' => 'index',
+                            ],
+                        ],
+                    ],
+                    'contablesferia' => [
+                        'type' => \Laminas\Router\Http\Segment::class,
+                        'options' => [
+                            'route' => '/contablesferia/:action[/:id]',
+                            'constraints' => [
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id' => '[0-9]*',
+                            ],
+                            'defaults' => [
+                                'controller' => Controller\ContablesferiaController::class,
+                                'action' => 'index',
+                            ],
+                        ],
+                    ],
                 ],
             ],
         ],

@@ -111,6 +111,7 @@ $numeros = [
     'CoMarca' => $this->form_comarca,
     'Unisalud' => $this->form_unisalud,
     'Unisalud RC' => $this->form_unisalud_rendicion_cuentas,
+    'CEGECO' => $this->form_cegeco,
 ];
 
 // Sumar todos los valores
@@ -1401,6 +1402,13 @@ foreach ($numeros as $nombre => $numero) {
                     'descripcion' => 'Rendición de Cuentas',
                     'color' => '#6a057f'
                 ],
+                [
+                    'valor' => $this->form_cegeco,
+                    'icono' => 'fa-headset',
+                    'titulo' => 'CEGECO',
+                    'descripcion' => 'Centro de Gestión de las Comunicaciones',
+                    'color' => '#6a057f'
+                ],
             ];
 
             // Ordenar de mayor a menor
@@ -1861,7 +1869,7 @@ foreach ($numeros as $nombre => $numero) {
 
         <?php
         $categorias = [
-            'Rectoría' => ['Rectoría', 'OCDI', 'ORII', 'S. General', 'Unisalud', 'Unisalud RC'],
+            'Rectoría' => ['Rectoría', 'OCDI', 'ORII', 'S. General', 'Unisalud', 'Unisalud RC', 'CEGECO'],
             'Vicerrectorías' => ['Académica', 'V. Admin', 'V. Invest', 'Cultura'],
             'Facultades' => ['Agrarias', 'Artes', 'Contables', 'F. Derecho', 'FACNED', 'FIC', 'FIET', 'FCHS', 'F. Salud'],
             'Oficinas' => ['Emprendimiento', 'Egresados', 'Propiedad Intelectual', 'CECAV', 'Posgrados', 'PQRSF', 'R. Cuentas', 'C. Interés', 'Emisora', 'CoMarca']
@@ -1957,6 +1965,7 @@ foreach ($numeros as $nombre => $numero) {
             'S. General' => 'form_secretariageneral',
             'Unisalud' => 'form_unisalud',
             'Unisalud RC' => 'form_unisalud_rendicion_cuentas',
+            'CEGECO' => 'form_cegeco',
         ];
         ?>
 
