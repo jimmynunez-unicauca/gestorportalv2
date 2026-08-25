@@ -157,6 +157,10 @@ class Module implements ConfigProviderInterface
                     $dbAdapter = $container->get('gestorportal_bd');
                     return new Modelo\DAO\ContablesferiaDAO($dbAdapter);
                 },
+                Modelo\DAO\UnicaucavirtualDAO::class => function ($container) {
+                    $dbAdapter = $container->get('gestorportal_bd');
+                    return new Modelo\DAO\UnicaucavirtualDAO($dbAdapter);
+                },
             ],
         ];
     }
@@ -272,6 +276,9 @@ class Module implements ConfigProviderInterface
                 },
                 Controller\ContablesferiaController::class => function ($container) {
                     return new Controller\ContablesferiaController($container->get(Modelo\DAO\ContablesferiaDAO::class));
+                },
+                Controller\UnicaucavirtualController::class => function ($container) {
+                    return new Controller\UnicaucavirtualController($container->get(Modelo\DAO\UnicaucavirtualDAO::class));
                 },
             ],
         ];
