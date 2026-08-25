@@ -534,6 +534,20 @@ return [
                             ],
                         ],
                     ],
+                    'unisaludafiliacion' => [
+                        'type' => \Laminas\Router\Http\Segment::class,
+                        'options' => [
+                            'route' => '/unisaludafiliacion/:action[/:id]',
+                            'constraints' => [
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id' => '[0-9]*',
+                            ],
+                            'defaults' => [
+                                'controller' => Controller\UnisaludafiliacionController::class,
+                                'action' => 'index',
+                            ],
+                        ],
+                    ],
                 ],
             ],
         ],
