@@ -87,31 +87,38 @@ $numeros = [
     'Agrarias' => $this->form_agraria,
     'Artes' => $this->form_artes,
     'CECAV' => $this->form_cecav,
-    'C. Interés' => $this->form_conflicto_interes,
+    'CEGECO' => $this->form_cegeco,
+    'Coloquio Artículo' => $this->form_coloquio_articulo,
+    'Coloquio Inscripción' => $this->form_coloquio_inscripcion,
+    'CoMarca' => $this->form_comarca,
+    'Conflicto de Interés' => $this->form_conflicto_interes,
     'Contables' => $this->form_contables,
+    'Contables Feria' => $this->form_contables_feria,
     'Posgrados' => $this->form_cp,
     'Cultura' => $this->form_cultura,
-    'Emprendim' => $this->form_dae_empre,
-    'Intelectu' => $this->form_dae_propiedad,
+    'Emprendimiento' => $this->form_dae_empre,
+    'Propiedad Intelectual' => $this->form_dae_propiedad,
     'Egresados' => $this->form_egresados,
     'Emisora' => $this->form_emisora,
+    'FACNED' => $this->form_facned,
     'FCHS' => $this->form_fchs,
+    'Fac. Derecho' => $this->form_fderecho,
     'FIC' => $this->form_fic,
     'FIET' => $this->form_fiet,
+    'Fac. Salud' => $this->form_fsalud,
     'OCDI' => $this->form_ocdi,
     'ORII' => $this->form_orii,
     'PQRSF' => $this->form_pqrsf,
+    'PSI' => $this->form_psi,
     'Rectoría' => $this->form_rectoria,
-    'R. Cuentas' => $this->form_rendicion_cuentas,
-    'V. Admin' => $this->form_viceadmin,
-    'V. Invest' => $this->form_viceinvest,
-    'FACNED' => $this->form_facned,
-    'F. Derecho' => $this->form_fderecho,
-    'F. Salud' => $this->form_fsalud,
-    'CoMarca' => $this->form_comarca,
+    'Rendición de Cuentas' => $this->form_rendicion_cuentas,
+    'Secretaría General' => $this->form_secretariageneral,
+    'Unicauca Virtual' => $this->form_unicauca_virtual,
     'Unisalud' => $this->form_unisalud,
+    'Unisalud Afiliación' => $this->form_unisalud_afiliacion,
     'Unisalud RC' => $this->form_unisalud_rendicion_cuentas,
-    'CEGECO' => $this->form_cegeco,
+    'Vic. Administrativa' => $this->form_viceadmin,
+    'Vic. Investigaciones' => $this->form_viceinvest,
 ];
 
 // Sumar todos los valores
@@ -1228,6 +1235,34 @@ foreach ($numeros as $nombre => $numero) {
                     'color' => '#7209b7'
                 ],
                 [
+                    'valor' => $this->form_cegeco,
+                    'icono' => 'fa-headset',
+                    'titulo' => 'CEGECO',
+                    'descripcion' => 'Centro de Gestión de las Comunicaciones',
+                    'color' => '#4361ee'
+                ],
+                [
+                    'valor' => $this->form_coloquio_articulo,
+                    'icono' => 'fa-file-alt',
+                    'titulo' => 'Coloquio Artículo',
+                    'descripcion' => 'Gestión de Artículos',
+                    'color' => '#6a4c93'
+                ],
+                [
+                    'valor' => $this->form_coloquio_inscripcion,
+                    'icono' => 'fa-pencil-alt',
+                    'titulo' => 'Coloquio Inscripción',
+                    'descripcion' => 'Inscripciones a Coloquios',
+                    'color' => '#1982c4'
+                ],
+                [
+                    'valor' => $this->form_comarca,
+                    'icono' => 'fa-broadcast-tower',
+                    'titulo' => 'CoMarca',
+                    'descripcion' => 'Comunicación y Marca',
+                    'color' => '#003049'
+                ],
+                [
                     'valor' => $this->form_conflicto_interes,
                     'icono' => 'fa-balance-scale',
                     'titulo' => 'Conflicto de Interés',
@@ -1240,6 +1275,13 @@ foreach ($numeros as $nombre => $numero) {
                     'titulo' => 'Contables',
                     'descripcion' => 'Ciencias Contables',
                     'color' => '#43aa8b'
+                ],
+                [
+                    'valor' => $this->form_contables_feria,
+                    'icono' => 'fa-chart-bar',
+                    'titulo' => 'Contables Feria',
+                    'descripcion' => 'Feria Contable',
+                    'color' => '#ff9f1c'
                 ],
                 [
                     'valor' => $this->form_cp,
@@ -1284,11 +1326,25 @@ foreach ($numeros as $nombre => $numero) {
                     'color' => '#277da1'
                 ],
                 [
+                    'valor' => $this->form_facned,
+                    'icono' => 'fa-square-root-alt',
+                    'titulo' => 'FACNED',
+                    'descripcion' => 'Ciencias Naturales',
+                    'color' => '#6c757d'
+                ],
+                [
                     'valor' => $this->form_fchs,
                     'icono' => 'fa-brain',
                     'titulo' => 'FCHS',
                     'descripcion' => 'Ciencias Humanas',
                     'color' => '#b5838d'
+                ],
+                [
+                    'valor' => $this->form_fderecho,
+                    'icono' => 'fa-gavel',
+                    'titulo' => 'Fac. Derecho',
+                    'descripcion' => 'Ciencias Políticas',
+                    'color' => '#adb5bd'
                 ],
                 [
                     'valor' => $this->form_fic,
@@ -1303,6 +1359,13 @@ foreach ($numeros as $nombre => $numero) {
                     'titulo' => 'FIET',
                     'descripcion' => 'Ingeniería Electrónica',
                     'color' => '#2a9d8f'
+                ],
+                [
+                    'valor' => $this->form_fsalud,
+                    'icono' => 'fa-heartbeat',
+                    'titulo' => 'Fac. Salud',
+                    'descripcion' => 'Ciencias de la Salud',
+                    'color' => '#d62828'
                 ],
                 [
                     'valor' => $this->form_ocdi,
@@ -1326,6 +1389,13 @@ foreach ($numeros as $nombre => $numero) {
                     'color' => '#e63946'
                 ],
                 [
+                    'valor' => $this->form_psi,
+                    'icono' => 'fa-brain',
+                    'titulo' => 'PSI',
+                    'descripcion' => 'Psicología',
+                    'color' => '#2ec4b6'
+                ],
+                [
                     'valor' => $this->form_rectoria,
                     'icono' => 'fa-landmark',
                     'titulo' => 'Rectoría',
@@ -1340,6 +1410,41 @@ foreach ($numeros as $nombre => $numero) {
                     'color' => '#76c893'
                 ],
                 [
+                    'valor' => $this->form_secretariageneral,
+                    'icono' => 'fa-landmark',
+                    'titulo' => 'Secretaría General',
+                    'descripcion' => 'Gestión Administrativa',
+                    'color' => '#fcbf49'
+                ],
+                [
+                    'valor' => $this->form_unicauca_virtual,
+                    'icono' => 'fa-laptop',
+                    'titulo' => 'Unicauca Virtual',
+                    'descripcion' => 'Campus Virtual',
+                    'color' => '#f72585'
+                ],
+                [
+                    'valor' => $this->form_unisalud,
+                    'icono' => 'fa-hospital-alt',
+                    'titulo' => 'Unisalud',
+                    'descripcion' => 'Unidad de Salud',
+                    'color' => '#9d4edd'
+                ],
+                [
+                    'valor' => $this->form_unisalud_afiliacion,
+                    'icono' => 'fa-user-md',
+                    'titulo' => 'Unisalud Afiliación',
+                    'descripcion' => 'Afiliaciones a Unisalud',
+                    'color' => '#e71d36'
+                ],
+                [
+                    'valor' => $this->form_unisalud_rendicion_cuentas,
+                    'icono' => 'fa-hospital',
+                    'titulo' => 'Unisalud RC',
+                    'descripcion' => 'Rendición de Cuentas Unisalud',
+                    'color' => '#6a057f'
+                ],
+                [
                     'valor' => $this->form_viceadmin,
                     'icono' => 'fa-clipboard-list',
                     'titulo' => 'Vic. Administrativa',
@@ -1352,62 +1457,6 @@ foreach ($numeros as $nombre => $numero) {
                     'titulo' => 'Vic. Investigaciones',
                     'descripcion' => 'Investigación',
                     'color' => '#b56576'
-                ],
-                [
-                    'valor' => $this->form_facned,
-                    'icono' => 'fa-square-root-alt',
-                    'titulo' => 'FACNED',
-                    'descripcion' => 'Ciencias Naturales',
-                    'color' => '#6c757d'
-                ],
-                [
-                    'valor' => $this->form_fderecho,
-                    'icono' => 'fa-gavel',
-                    'titulo' => 'Fac. Derecho',
-                    'descripcion' => 'Ciencias Políticas',
-                    'color' => '#adb5bd'
-                ],
-                [
-                    'valor' => $this->form_fsalud,
-                    'icono' => 'fa-heartbeat',
-                    'titulo' => 'Fac. Salud',
-                    'descripcion' => 'Ciencias de la Salud',
-                    'color' => '#d62828'
-                ],
-                [
-                    'valor' => $this->form_comarca,
-                    'icono' => 'fa-broadcast-tower',
-                    'titulo' => 'CoMarca',
-                    'descripcion' => 'Comunicación y Marca',
-                    'color' => '#003049'
-                ],
-                [
-                    'valor' => $this->form_secretariageneral,
-                    'icono' => 'fa-landmark',
-                    'titulo' => 'Secretaría General',
-                    'descripcion' => 'Gestión Administrativa',
-                    'color' => '#fcbf49'
-                ],
-                [
-                    'valor' => $this->form_unisalud,
-                    'icono' => 'fa-hospital-alt',
-                    'titulo' => 'Unisalud',
-                    'descripcion' => 'Unidad de Salud',
-                    'color' => '#9d4edd'
-                ],
-                [
-                    'valor' => $this->form_unisalud_rendicion_cuentas,
-                    'icono' => 'fa-hospital',
-                    'titulo' => 'Unisalud RC',
-                    'descripcion' => 'Rendición de Cuentas',
-                    'color' => '#6a057f'
-                ],
-                [
-                    'valor' => $this->form_cegeco,
-                    'icono' => 'fa-headset',
-                    'titulo' => 'CEGECO',
-                    'descripcion' => 'Centro de Gestión de las Comunicaciones',
-                    'color' => '#6a057f'
                 ],
             ];
 
@@ -1869,10 +1918,12 @@ foreach ($numeros as $nombre => $numero) {
 
         <?php
         $categorias = [
-            'Rectoría' => ['Rectoría', 'OCDI', 'ORII', 'S. General', 'Unisalud', 'Unisalud RC', 'CEGECO'],
-            'Vicerrectorías' => ['Académica', 'V. Admin', 'V. Invest', 'Cultura'],
-            'Facultades' => ['Agrarias', 'Artes', 'Contables', 'F. Derecho', 'FACNED', 'FIC', 'FIET', 'FCHS', 'F. Salud'],
-            'Oficinas' => ['Emprendimiento', 'Egresados', 'Propiedad Intelectual', 'CECAV', 'Posgrados', 'PQRSF', 'R. Cuentas', 'C. Interés', 'Emisora', 'CoMarca']
+            'Rectoría' => ['Rectoría', 'OCDI', 'ORII', 'Secretaría General', 'CEGECO'],
+            'Vicerrectorías' => ['Académica', 'Vic. Administrativa', 'Vic. Investigaciones', 'Cultura'],
+            'Facultades' => ['Agrarias', 'Artes', 'Contables', 'Fac. Derecho', 'FACNED', 'FIC', 'FIET', 'FCHS', 'Fac. Salud', 'PSI'],
+            'Salud' => ['Unisalud', 'Unisalud RC', 'Unisalud Afiliación'],
+            'Oficinas' => ['Emprendimiento', 'Propiedad Intelectual', 'Egresados', 'CECAV', 'Posgrados', 'PQRSF', 'Rendición de Cuentas', 'Conflicto de Interés', 'Emisora', 'CoMarca', 'Unicauca Virtual'],
+            'Eventos' => ['Coloquio Artículo', 'Coloquio Inscripción', 'Contables Feria']
         ];
 
         $catValues = [];
@@ -1940,32 +1991,38 @@ foreach ($numeros as $nombre => $numero) {
             'Agrarias' => 'form_agraria',
             'Artes' => 'form_artes',
             'CECAV' => 'form_cecav',
-            'C. Interés' => 'form_conflicto_interes',
+            'CEGECO' => 'form_cegeco',
+            'Coloquio Artículo' => 'form_coloquio_articulo',
+            'Coloquio Inscripción' => 'form_coloquio_inscripcion',
+            'CoMarca' => 'form_comarca',
+            'Conflicto de Interés' => 'form_conflicto_interes',
             'Contables' => 'form_contables',
+            'Contables Feria' => 'form_contables_feria',
             'Posgrados' => 'form_cp',
             'Cultura' => 'form_cultura',
             'Emprendimiento' => 'form_dae_empre',
             'Propiedad Intelectual' => 'form_dae_propiedad',
             'Egresados' => 'form_egresados',
             'Emisora' => 'form_emisora',
+            'FACNED' => 'form_facned',
             'FCHS' => 'form_fchs',
+            'Fac. Derecho' => 'form_fderecho',
             'FIC' => 'form_fic',
             'FIET' => 'form_fiet',
+            'Fac. Salud' => 'form_fsalud',
             'OCDI' => 'form_ocdi',
             'ORII' => 'form_orii',
             'PQRSF' => 'form_pqrsf',
+            'PSI' => 'form_psi',
             'Rectoría' => 'form_rectoria',
-            'R. Cuentas' => 'form_rendicion_cuentas',
-            'V. Admin' => 'form_viceadmin',
-            'V. Invest' => 'form_viceinvest',
-            'FACNED' => 'form_facned',
-            'F. Derecho' => 'form_fderecho',
-            'F. Salud' => 'form_fsalud',
-            'CoMarca' => 'form_comarca',
-            'S. General' => 'form_secretariageneral',
+            'Rendición de Cuentas' => 'form_rendicion_cuentas',
+            'Secretaría General' => 'form_secretariageneral',
+            'Unicauca Virtual' => 'form_unicauca_virtual',
             'Unisalud' => 'form_unisalud',
+            'Unisalud Afiliación' => 'form_unisalud_afiliacion',
             'Unisalud RC' => 'form_unisalud_rendicion_cuentas',
-            'CEGECO' => 'form_cegeco',
+            'Vic. Administrativa' => 'form_viceadmin',
+            'Vic. Investigaciones' => 'form_viceinvest',
         ];
         ?>
 
