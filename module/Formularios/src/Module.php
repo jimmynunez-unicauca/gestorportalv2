@@ -161,6 +161,10 @@ class Module implements ConfigProviderInterface
                     $dbAdapter = $container->get('gestorportal_bd');
                     return new Modelo\DAO\UnicaucavirtualDAO($dbAdapter);
                 },
+                Modelo\DAO\UnisaludafiliacionDAO::class => function ($container) {
+                    $dbAdapter = $container->get('gestorportal_bd');
+                    return new Modelo\DAO\UnisaludafiliacionDAO($dbAdapter);
+                },
             ],
         ];
     }
@@ -279,6 +283,9 @@ class Module implements ConfigProviderInterface
                 },
                 Controller\UnicaucavirtualController::class => function ($container) {
                     return new Controller\UnicaucavirtualController($container->get(Modelo\DAO\UnicaucavirtualDAO::class));
+                },
+                Controller\UnisaludafiliacionController::class => function ($container) {
+                    return new Controller\UnisaludafiliacionController($container->get(Modelo\DAO\UnisaludafiliacionDAO::class));
                 },
             ],
         ];
