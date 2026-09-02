@@ -140,6 +140,7 @@ $this->headScript()->prependScript('
                                 <th data-toggle="tooltip" title="OPCIONES" scope="col"><i class="fa fa-cog fa-spin fa-lg"></i></th>
                                 <th scope="col"><i class="fas fa-id-card"></i> NOMBRE</th>
                                 <th scope="col"><i class="fas fa-id-card"></i> TIPO</th>
+                                <th scope="col"><i class="fas fa-calendar"></i> AÑO</th>
                                 <th scope="col"><i class="fas fa-calendar"></i> REGISTRADO</th>
                             </tr>
                         </thead>
@@ -190,6 +191,7 @@ $this->headScript()->prependScript('
                                 echo '</td>';
                                 echo '<td>' . substr($us['titulo'], 0, 125)  . '</td>';
                                 echo '<td>' . $us['tipo_documento']  . '</td>';
+                                echo '<td>' . date('Y', strtotime($us['fecha_publicacion']))  . '</td>';
                                 echo '<td>' . $us['creado_el']  . '</td>';
                                 echo '</tr>';
                             }
