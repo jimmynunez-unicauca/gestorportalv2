@@ -366,6 +366,20 @@ return [
                             ],
                         ],
                     ],
+                    'unisaludconsultaafiliados' => [
+                        'type' => \Laminas\Router\Http\Segment::class,
+                        'options' => [
+                            'route' => '/unisaludconsultaafiliados/:action[/:id1]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id1' => '[a-zA-Z0-9_-]*',
+                            ),
+                            'defaults' => [
+                                'controller' => Controller\UnisaludconsultaafiliadosController::class,
+                                'action' => 'index',
+                            ],
+                        ],
+                    ],
                 ],
             ],
         ],

@@ -92,6 +92,7 @@ $numeros = [
     'Coloquio Inscripción' => $this->form_coloquio_inscripcion,
     'CoMarca' => $this->form_comarca,
     'Conflicto de Interés' => $this->form_conflicto_interes,
+    'Consultorio Jurídico' => $this->form_consultorio_juridico,
     'Contables' => $this->form_contables,
     'Contables Feria' => $this->form_contables_feria,
     'Posgrados' => $this->form_cp,
@@ -1270,6 +1271,13 @@ foreach ($numeros as $nombre => $numero) {
                     'color' => '#f8961e'
                 ],
                 [
+                    'valor' => $this->form_consultorio_juridico,
+                    'icono' => 'fa-gavel',
+                    'titulo' => 'Consultorio Jurídico',
+                    'descripcion' => 'Servicio de Consultoría Jurídica',
+                    'color' => '#1a73e8'
+                ],
+                [
                     'valor' => $this->form_contables,
                     'icono' => 'fa-calculator',
                     'titulo' => 'Contables',
@@ -1390,9 +1398,9 @@ foreach ($numeros as $nombre => $numero) {
                 ],
                 [
                     'valor' => $this->form_psi,
-                    'icono' => 'fa-brain',
-                    'titulo' => 'PSI',
-                    'descripcion' => 'Psicología',
+                    'icono' => 'fa-language',
+                    'titulo' => 'Prueba PSI',
+                    'descripcion' => 'Inscripciones',
                     'color' => '#2ec4b6'
                 ],
                 [
@@ -1920,7 +1928,7 @@ foreach ($numeros as $nombre => $numero) {
         $categorias = [
             'Rectoría' => ['Rectoría', 'OCDI', 'ORII', 'Secretaría General', 'CEGECO'],
             'Vicerrectorías' => ['Académica', 'Vic. Administrativa', 'Vic. Investigaciones', 'Cultura'],
-            'Facultades' => ['Agrarias', 'Artes', 'Contables', 'Fac. Derecho', 'FACNED', 'FIC', 'FIET', 'FCHS', 'Fac. Salud', 'PSI'],
+            'Facultades' => ['Agrarias', 'Artes', 'Contables', 'Fac. Derecho', 'FACNED', 'FIC', 'FIET', 'FCHS', 'Fac. Salud', 'PSI', 'Consultorio Jurídico'],
             'Salud' => ['Unisalud', 'Unisalud RC', 'Unisalud Afiliación'],
             'Oficinas' => ['Emprendimiento', 'Propiedad Intelectual', 'Egresados', 'CECAV', 'Posgrados', 'PQRSF', 'Rendición de Cuentas', 'Conflicto de Interés', 'Emisora', 'CoMarca', 'Unicauca Virtual'],
             'Eventos' => ['Coloquio Artículo', 'Coloquio Inscripción', 'Contables Feria']
@@ -1996,6 +2004,7 @@ foreach ($numeros as $nombre => $numero) {
             'Coloquio Inscripción' => 'form_coloquio_inscripcion',
             'CoMarca' => 'form_comarca',
             'Conflicto de Interés' => 'form_conflicto_interes',
+            'Consultorio Jurídico' => 'form_consultorio_juridico',
             'Contables' => 'form_contables',
             'Contables Feria' => 'form_contables_feria',
             'Posgrados' => 'form_cp',
