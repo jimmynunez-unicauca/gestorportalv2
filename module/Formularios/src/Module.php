@@ -165,6 +165,10 @@ class Module implements ConfigProviderInterface
                     $dbAdapter = $container->get('gestorportal_bd');
                     return new Modelo\DAO\UnisaludafiliacionDAO($dbAdapter);
                 },
+                Modelo\DAO\ConsultoriojuridicoDAO::class => function ($container) {
+                    $dbAdapter = $container->get('gestorportal_bd');
+                    return new Modelo\DAO\ConsultoriojuridicoDAO($dbAdapter);
+                },
             ],
         ];
     }
@@ -286,6 +290,9 @@ class Module implements ConfigProviderInterface
                 },
                 Controller\UnisaludafiliacionController::class => function ($container) {
                     return new Controller\UnisaludafiliacionController($container->get(Modelo\DAO\UnisaludafiliacionDAO::class));
+                },
+                Controller\ConsultoriojuridicoController::class => function ($container) {
+                    return new Controller\ConsultoriojuridicoController($container->get(Modelo\DAO\ConsultoriojuridicoDAO::class));
                 },
             ],
         ];

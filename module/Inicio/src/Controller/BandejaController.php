@@ -58,6 +58,7 @@ class BandejaController extends AbstractActionController
             'form_coloquio_inscripcion',
             'form_comarca',
             'form_conflicto_interes',
+            'form_consultorio_juridico',
             'form_contables',
             'form_contables_feria',
             'form_cp',

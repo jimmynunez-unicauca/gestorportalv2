@@ -1,0 +1,310 @@
+<?php
+$urlBase = $this->url('administracion/unisaludconsultaafiliados', ['action' => 'index']);
+?>
+<link href="<?= $this->basePath('css/all_fontawesome.min.css'); ?>" rel="stylesheet">
+<link href="<?= $this->basePath('css/v4-shims.min.css'); ?>" rel="stylesheet">
+<link rel="stylesheet" href="<?= $this->basePath('css/unisalud.css'); ?>">
+
+<div class="row">
+    <div class="col-md-12 col-sm-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2><i class="fa fa-heartbeat text-danger"></i> Unisalud · Auditoría de Consultas de Afiliados
+                    <small>Panel de control y estadísticas</small>
+                </h2>
+                <ul class="nav navbar-right panel_toolbox">
+                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                    <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <p class="text-muted">Monitoreo de consultas realizadas por prestadores externos sobre afiliados
+                    (Cotizantes y Beneficiarios) de la Unidad de Salud de la Universidad del Cauca.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ======================= KPIs ======================= -->
+<div class="row" id="kpisContainer">
+    <div class="col-md-3 col-sm-6">
+        <div class="kpi-card kpi-primary">
+            <div class="kpi-icon"><i class="fa fa-search"></i></div>
+            <div class="kpi-info">
+                <span class="kpi-label">Total Consultas</span>
+                <h3 class="kpi-value" id="kpi-consultas">—</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="kpi-card kpi-success">
+            <div class="kpi-icon"><i class="fa fa-users"></i></div>
+            <div class="kpi-info">
+                <span class="kpi-label">Prestadores</span>
+                <h3 class="kpi-value" id="kpi-prestadores">—</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="kpi-card kpi-info">
+            <div class="kpi-icon"><i class="fa fa-id-card"></i></div>
+            <div class="kpi-info">
+                <span class="kpi-label">Afiliados Únicos</span>
+                <h3 class="kpi-value" id="kpi-afiliados">—</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="kpi-card kpi-warning">
+            <div class="kpi-icon"><i class="fa fa-calendar-day"></i></div>
+            <div class="kpi-info">
+                <span class="kpi-label">Consultas Hoy</span>
+                <h3 class="kpi-value" id="kpi-hoy">—</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6">
+        <div class="kpi-card kpi-purple">
+            <div class="kpi-icon"><i class="fa fa-user-check"></i></div>
+            <div class="kpi-info">
+                <span class="kpi-label">Cotizantes</span>
+                <h3 class="kpi-value" id="kpi-cotizantes">—</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="kpi-card kpi-pink">
+            <div class="kpi-icon"><i class="fa fa-child"></i></div>
+            <div class="kpi-info">
+                <span class="kpi-label">Beneficiarios</span>
+                <h3 class="kpi-value" id="kpi-beneficiarios">—</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="kpi-card kpi-dark">
+            <div class="kpi-icon"><i class="fa fa-sign-in-alt"></i></div>
+            <div class="kpi-info">
+                <span class="kpi-label">Logins OK</span>
+                <h3 class="kpi-value" id="kpi-logins">—</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="kpi-card kpi-danger">
+            <div class="kpi-icon"><i class="fa fa-exclamation-triangle"></i></div>
+            <div class="kpi-info">
+                <span class="kpi-label">Fallos / Bloqueos</span>
+                <h3 class="kpi-value" id="kpi-fallos">—</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ======================= GRÁFICAS ======================= -->
+<div class="row">
+    <div class="col-md-8 col-sm-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2><i class="fa fa-line-chart"></i> Consultas por Día</h2>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content"><canvas id="chartPorDia" height="110"></canvas></div>
+        </div>
+    </div>
+    <div class="col-md-4 col-sm-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2><i class="fa fa-pie-chart"></i> Tipo de Afiliado</h2>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content"><canvas id="chartPorTipo" height="220"></canvas></div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 col-sm-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2><i class="fa fa-trophy"></i> Top 10 Prestadores</h2>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content"><canvas id="chartTopPrestadores" height="180"></canvas></div>
+        </div>
+    </div>
+    <div class="col-md-6 col-sm-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2><i class="fa fa-fire"></i> Top 10 Afiliados más consultados</h2>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content"><canvas id="chartTopAfiliados" height="180"></canvas></div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 col-sm-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2><i class="fa fa-clock-o"></i> Consultas por Hora</h2>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content"><canvas id="chartPorHora" height="180"></canvas></div>
+        </div>
+    </div>
+    <div class="col-md-6 col-sm-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2><i class="fa fa-shield"></i> Acciones de Auditoría OTP</h2>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content"><canvas id="chartAuditoria" height="180"></canvas></div>
+        </div>
+    </div>
+</div>
+
+<!-- ======================= FILTROS + TABS ======================= -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2><i class="fa fa-table"></i> Detalle de Datos</h2>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+
+                <!-- Filtros -->
+                <form id="formFiltros" class="form-inline" onsubmit="return false;">
+                    <div class="form-group mr-2 mb-2">
+                        <label class="sr-only">Fecha desde</label>
+                        <input type="date" class="form-control form-control-sm" id="filtroFechaDesde">
+                    </div>
+                    <div class="form-group mr-2 mb-2">
+                        <label class="sr-only">Fecha hasta</label>
+                        <input type="date" class="form-control form-control-sm" id="filtroFechaHasta">
+                    </div>
+                    <div class="form-group mr-2 mb-2">
+                        <select id="filtroTipo" class="form-control form-control-sm">
+                            <option value="">Todos los tipos</option>
+                            <option value="COTIZANTE">Cotizante</option>
+                            <option value="BENEFICIARIO">Beneficiario</option>
+                        </select>
+                    </div>
+                    <div class="form-group mr-2 mb-2">
+                        <input type="text" class="form-control form-control-sm" id="filtroEmail"
+                            placeholder="Email prestador...">
+                    </div>
+                    <div class="form-group mr-2 mb-2">
+                        <input type="text" class="form-control form-control-sm" id="filtroIdentificacion"
+                            placeholder="Identificación...">
+                    </div>
+                    <button class="btn btn-sm btn-primary mb-2" id="btnFiltrar"><i class="fa fa-filter"></i>
+                        Filtrar</button>
+                    <button class="btn btn-sm btn-secondary mb-2" id="btnLimpiar"><i class="fa fa-eraser"></i>
+                        Limpiar</button>
+                </form>
+
+                <hr>
+
+                <!-- Tabs -->
+                <ul class="nav nav-tabs bar_tabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" href="#tabConsultas">
+                            <i class="fa fa-search"></i> Consultas
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#tabPrestadores">
+                            <i class="fa fa-user-md"></i> Prestadores
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#tabAfiliados">
+                            <i class="fa fa-id-badge"></i> Afiliados
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#tabAuditoria">
+                            <i class="fa fa-shield-alt"></i> Auditoría OTP
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="tab-content mt-3">
+                    <div id="tabConsultas" class="tab-pane fade show active">
+                        <table id="tablaConsultas" class="table table-striped table-bordered nowrap"
+                            style="width:100%"></table>
+                    </div>
+                    <div id="tabPrestadores" class="tab-pane fade">
+                        <table id="tablaPrestadores" class="table table-striped table-bordered nowrap"
+                            style="width:100%"></table>
+                    </div>
+                    <div id="tabAfiliados" class="tab-pane fade">
+                        <table id="tablaAfiliados" class="table table-striped table-bordered nowrap"
+                            style="width:100%"></table>
+                    </div>
+                    <div id="tabAuditoria" class="tab-pane fade">
+                        <table id="tablaAuditoria" class="table table-striped table-bordered nowrap"
+                            style="width:100%"></table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ======================= MODAL: DETALLE PRESTADOR ======================= -->
+<div class="modal fade" id="modalPrestador" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title"><i class="fa fa-user-md"></i> Detalle del Prestador</h5>
+                <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" id="modalPrestadorBody">
+                <div class="text-center p-4"><i class="fa fa-spinner fa-spin fa-2x"></i></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ======================= MODAL: DETALLE AFILIADO ======================= -->
+<div class="modal fade" id="modalAfiliado" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title"><i class="fa fa-id-badge"></i> Detalle del Afiliado</h5>
+                <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" id="modalAfiliadoBody">
+                <div class="text-center p-4"><i class="fa fa-spinner fa-spin fa-2x"></i></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.UNISALUD_URLS = {
+        base: '<?= $urlBase ?>',
+        kpis: '<?= $this->url('administracion/unisaludconsultaafiliados', ['action' => 'kpis']) ?>',
+        consultas: '<?= $this->url('administracion/unisaludconsultaafiliados', ['action' => 'listarConsultas']) ?>',
+        usuarios: '<?= $this->url('administracion/unisaludconsultaafiliados', ['action' => 'listarUsuarios']) ?>',
+        afiliados: '<?= $this->url('administracion/unisaludconsultaafiliados', ['action' => 'listarAfiliados']) ?>',
+        auditoria: '<?= $this->url('administracion/unisaludconsultaafiliados', ['action' => 'listarAuditoria']) ?>',
+        estadisticas: '<?= $this->url('administracion/unisaludconsultaafiliados', ['action' => 'estadisticas']) ?>',
+        detalleUsuario: '<?= $this->url('administracion/unisaludconsultaafiliados', ['action' => 'detalleUsuario', 'id1' => 'ID']) ?>',
+        detalleAfiliado: '<?= $this->url('administracion/unisaludconsultaafiliados', ['action' => 'detalleAfiliado', 'id1' => 'ID']) ?>'
+    };
+</script>
+<script src="<?= $this->basePath('js/sistema/unisaludconsultaafiliados.js'); ?>"></script>
