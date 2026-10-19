@@ -1,0 +1,25 @@
+<?php $form->prepare();
+echo $this->form()->openTag($form); ?>
+<div class="modal-body">
+    <?php if ($this->totalAsociados > 0): ?>
+        <div class="alert alert-danger">
+            <b>NO SE PUEDE ELIMINAR</b> la convocatoria <b><?= $form->get('nombre')->getValue() ?></b>.
+            <br>Tiene <b><?= $this->totalAsociados ?></b> proyecto(s) asociado(s). Se sugiere <b>DESACTIVARLA</b>.
+        </div>
+    <?php else: ?>
+        <div class="alert alert-danger">
+            ¿Desea <b>ELIMINAR FÍSICAMENTE</b> la convocatoria <b><?= $form->get('nombre')->getValue() ?></b>?<br>
+            <small>Esta acción no se puede deshacer.</small>
+        </div>
+    <?php endif; ?>
+</div>
+<div class="modal-footer">
+    <?php if ($this->totalAsociados > 0): ?>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
+    <?php else: ?>
+        <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i> Eliminar</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
+    <?php endif; ?>
+</div>
+<?php echo $this->formHidden($form->get('id'));
+echo $this->form()->closeTag(); ?>

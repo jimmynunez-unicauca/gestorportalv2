@@ -1,0 +1,13 @@
+<?php $form->prepare();
+echo $this->form()->openTag($form); ?>
+<div class="modal-body">
+    <div class="alert alert-info">
+        ¿Desea <b>ACTIVAR</b> el proyecto <b><?= $form->get('titulo')->getValue() ?></b>?
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="submit" class="btn btn-success"><i class="fas fa-check"></i> Activar</button>
+    <button type="button" class="btn btn-warning" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
+</div>
+<?php echo $this->formHidden($form->get('id'));
+echo $this->form()->closeTag(); ?>

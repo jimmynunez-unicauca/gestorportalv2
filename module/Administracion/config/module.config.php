@@ -380,6 +380,34 @@ return [
                             ],
                         ],
                     ],
+                    'vriconvocatorias' => [
+                        'type' => \Laminas\Router\Http\Segment::class,
+                        'options' => [
+                            'route' => '/vriconvocatorias/:action[/:id1]',
+                            'constraints' => [
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id1'    => '[a-zA-Z0-9_-]*',
+                            ],
+                            'defaults' => [
+                                'controller' => Controller\VriconvocatoriasController::class,
+                                'action'     => 'index',
+                            ],
+                        ],
+                    ],
+                    'vriproyectos' => [
+                        'type' => \Laminas\Router\Http\Segment::class,
+                        'options' => [
+                            'route' => '/vriproyectos/:action[/:id1]',
+                            'constraints' => [
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id1'    => '[a-zA-Z0-9_-]*',
+                            ],
+                            'defaults' => [
+                                'controller' => Controller\VriproyectosController::class,
+                                'action'     => 'index',
+                            ],
+                        ],
+                    ],
                 ],
             ],
         ],

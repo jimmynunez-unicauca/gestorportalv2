@@ -121,6 +121,14 @@ class Module implements ConfigProviderInterface
                     $dbAdapter = $container->get('gestorportal_bd');
                     return new Modelo\DAO\UnisaludconsultaafiliadosDAO($dbAdapter);
                 },
+                Modelo\DAO\VriconvocatoriasDAO::class => function ($container) {
+                    $dbAdapter = $container->get('gestorportal_bd');
+                    return new Modelo\DAO\VriconvocatoriasDAO($dbAdapter);
+                },
+                Modelo\DAO\VriproyectosDAO::class => function ($container) {
+                    $dbAdapter = $container->get('gestorportal_bd');
+                    return new Modelo\DAO\VriproyectosDAO($dbAdapter);
+                },
             ],
         ];
     }
@@ -206,6 +214,12 @@ class Module implements ConfigProviderInterface
                 },
                 Controller\UnisaludconsultaafiliadosController::class => function ($container) {
                     return new Controller\UnisaludconsultaafiliadosController($container->get(Modelo\DAO\UnisaludconsultaafiliadosDAO::class));
+                },
+                Controller\VriconvocatoriasController::class => function ($container) {
+                    return new Controller\VriconvocatoriasController($container->get(Modelo\DAO\VriconvocatoriasDAO::class));
+                },
+                Controller\VriproyectosController::class => function ($container) {
+                    return new Controller\VriproyectosController($container->get(Modelo\DAO\VriproyectosDAO::class));
                 },
             ],
         ];

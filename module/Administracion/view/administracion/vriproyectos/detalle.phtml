@@ -1,0 +1,71 @@
+<?php if (!$this->detalle): ?>
+    <div class="modal-body">
+        <div class="alert alert-danger">PROYECTO NO ENCONTRADO</div>
+    </div>
+    <div class="modal-footer"><button type="button" class="btn btn-warning" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button></div>
+<?php else: $d = $this->detalle; ?>
+    <div class="modal-body ui-front">
+        <div style="padding: 10px" class="container-fluid">
+            <h5><?= $d['titulo'] ?></h5>
+            <p class="text-muted"><?= nl2br($d['descripcion']) ?></p>
+            <table class="table table-sm table-bordered">
+                <tr>
+                    <th style="width:30%">ID</th>
+                    <td><?= $d['id'] ?></td>
+                </tr>
+                <tr>
+                    <th>Código asignado</th>
+                    <td><?= $d['id_asignado'] ?></td>
+                </tr>
+                <tr>
+                    <th>Estado proyecto</th>
+                    <td><?= $d['estado_proyecto'] ?></td>
+                </tr>
+                <tr>
+                    <th>Tipo proyecto</th>
+                    <td><?= $d['tipo_proyecto'] ?></td>
+                </tr>
+                <tr>
+                    <th>Grupo investigación</th>
+                    <td><?= $d['grupo_investigacion'] ?></td>
+                </tr>
+                <tr>
+                    <th>Director</th>
+                    <td><?= $d['director'] ?> &lt;<?= $d['correo'] ?>&gt;</td>
+                </tr>
+                <tr>
+                    <th>Fecha</th>
+                    <td><?= $d['fecha'] ?></td>
+                </tr>
+                <tr>
+                    <th>Enlace</th>
+                    <td><?= $d['enlace'] ? '<a href="' . $d['enlace'] . '" target="_blank">' . $d['enlace'] . '</a>' : '—' ?></td>
+                </tr>
+                <tr>
+                    <th>Estado registro</th>
+                    <td><span class="badge <?= $d['estado'] == 'Activo' ? 'badge-success' : 'badge-secondary' ?>"><?= $d['estado'] ?></span></td>
+                </tr>
+                <tr>
+                    <th>Registrado por</th>
+                    <td><?= $d['registradopor'] ?> (<?= $d['fechahorareg'] ?>)</td>
+                </tr>
+                <tr>
+                    <th>Modificado por</th>
+                    <td><?= $d['modificadopor'] ?: '—' ?> (<?= $d['fechahoramod'] ?>)</td>
+                </tr>
+            </table>
+            <hr>
+            <h6>Convocatorias asociadas</h6>
+            <?php if (count($this->convocatoriasAsociadas) > 0): ?>
+                <?php foreach ($this->convocatoriasAsociadas as $c): ?>
+                    <span class="badge badge-info mr-1 mb-1" style="font-size:0.9em; padding:6px 10px;">
+                        <?= $c['nombre'] ?> <small>(<?= $c['fecha'] ?>)</small>
+                    </span>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <span class="badge badge-secondary">Sin convocatoria asociada</span>
+            <?php endif; ?>
+        </div>
+    </div>
+    <div class="modal-footer"><button type="button" class="btn btn-warning" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button></div>
+<?php endif; ?>

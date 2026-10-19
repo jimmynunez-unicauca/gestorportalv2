@@ -1,0 +1,160 @@
+<?php
+$flash = $this->flashMessenger();
+$notificaciones = [
+    'success' => array_merge($flash->getSuccessMessages(), $flash->getCurrentSuccessMessages()),
+    'error' => array_merge($flash->getErrorMessages(), $flash->getCurrentErrorMessages()),
+    'alert' => array_merge($flash->getMessages(), $flash->getCurrentMessages()),
+    'information' => array_merge($flash->getInfoMessages(), $flash->getCurrentInfoMessages()),
+    'warning' => array_merge($flash->getWarningMessages(), $flash->getCurrentWarningMessages()),
+];
+$flash->clearCurrentMessages('default');
+$flash->clearCurrentMessages('info');
+$flash->clearCurrentMessages('success');
+$flash->clearCurrentMessages('warning');
+$flash->clearCurrentMessages('error');
+$mostrarMensajes = '';
+foreach (array_filter($notificaciones) as $tipo => $mensajes) {
+    $tipoToastr = 'info';
+    $titulo = '<p><b><i><i class="fa fa-paw"></i> GestorPortal</i></b></p>';
+    switch ($tipo) {
+        case 'success':
+            $tipoToastr = 'success';
+            break;
+        case 'error':
+            $tipoToastr = 'error';
+            break;
+        case 'alert':
+            $tipoToastr = 'warning';
+            break;
+        case 'information':
+            $tipoToastr = 'info';
+            break;
+        case 'warning':
+            $tipoToastr = 'warning';
+            break;
+    }
+    foreach ($mensajes as $mensaje) {
+        $mostrarMensajes .= "new PNotify({ title: '$titulo', text: '$mensaje', type: '$tipoToastr', styling: 'bootstrap3' });";
+    }
+}
+
+$title = 'VRI CONVOCATORIAS - GESTORPORTAL';
+$this->headTitle($title);
+$this->headScript()->prependScript('
+    $(document).ajaxStop($.unblockUI);
+    $(document).ready(function() {
+        $("#myTable").DataTable({
+            responsive: true, iDisplayLength: 25,
+            sPaginationType: "full_numbers",
+            oLanguage: {
+                sLengthMenu: "Mostrar: _MENU_ registros por pagina",
+                sZeroRecords: "NO SE HA ENCONTRADO INFORMACION",
+                sInfo: "Mostrando <b>_START_</b> a <b>_END_</b> registros <br>TOTAL REGISTROS: <b>_TOTAL_</b></b>",
+                sInfoEmpty: "Mostrando 0 A 0 registros",
+                sInfoFiltered: "(Filtrados de un total de <b>_MAX_</b> registros)",
+                sLoadingRecords: "CARGANDO...", sProcessing: "EN PROCESO...", sSearch: "Buscar:",
+                sEmptyTable: "NO HAY INFORMACION DISPONIBLE PARA LA TABLA",
+                oPaginate: {
+                    sFirst: "<i class=\'fa fa-fast-backward\'></i>",
+                    sPrevious: "<i class=\'fa fa-step-backward\'></i>",
+                    sNext: "<i class=\'fa fa-step-forward\'></i>",
+                    sLast: "<i class=\'fa fa-fast-forward\'></i>",
+                }
+            },
+            aaSorting: [[0, "desc"]]
+        });
+        $("#modalFormulario").on("hide.bs.modal", function (e) {
+            Swal.fire({
+                title: "&iquest;DESEA CERRAR EL FORMULARIO?", icon: "question",
+                showCancelButton: true, confirmButtonText: "Si", cancelButtonText: "No",
+                allowOutsideClick: false
+            }).then((result) => { if (!result.isConfirmed) { $(this).modal("show"); } });
+        });
+        ' . $mostrarMensajes . '
+    });', 'text/javascript', ['noescape' => true])
+    ->prependFile($this->basePath('js/sistema/vriconvocatorias.js'))
+    ->prependFile($this->basePath('js/jquery.blockUI.js'));
+?>
+<div class="col-md-12 col-sm-12">
+    <div class="x_panel">
+        <div class="x_title">
+            <h2><span data-feather="book-open"></span> VRI CONVOCATORIAS<small><i><b><i class="fa fa-paw"></i> GestorPortalV2</small></b></i></h2>
+            <ul class="nav navbar-right panel_toolbox">
+                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="card-box table-responsive">
+                        <div class="d-flex justify-content-between align-items-center w-100">
+                            <strong class="text-gray-dark">Convocatorias registradas en el sistema</strong>
+                            <a type="button" class="btn btn-primary" href="javascript:verRegistrar();" title="REGISTRAR"><span data-feather="file-plus"></span></a>
+                        </div>
+                        <table id="myTable" class="table table-striped table-bordered dt-responsive nowrap table-sm table-hover" cellspacing="0" width="100%">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th title="ID"><i class="fa fa-key"></i></th>
+                                    <th title="OPCIONES"><i class="fa fa-cog fa-spin fa-lg"></i></th>
+                                    <th><i class="fas fa-id-card"></i> NOMBRE</th>
+                                    <th><i class="fas fa-calendar"></i> FECHA</th>
+                                    <th><i class="fas fa-link"></i> PROYECTOS</th>
+                                    <th><i class="fas fa-list-alt"></i> ESTADO</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($this->fetchAll as $qs):
+                                    $color = ($qs['estado'] == 'Activo') ? '#AFA' : '#FAA';
+                                    $botonActivar   = ($qs['estado'] == 'Activo') ? 'hidden' : '';
+                                    $botonDesactivar = ($qs['estado'] == 'Activo') ? '' : 'hidden';
+                                ?>
+                                    <tr>
+                                        <td><?= $qs['id'] ?></td>
+                                        <td>
+                                            <a href="javascript:verDetalle(<?= $qs['id'] ?>)" title="VER"><i class="fas fa-eye"></i></a>
+                                            &nbsp;&nbsp;
+                                            <a href="javascript:verEditar(<?= $qs['id'] ?>)" title="EDITAR"><i class="fa fa-edit"></i></a>
+                                            &nbsp;&nbsp;
+                                            <a href="javascript:verActivar(<?= $qs['id'] ?>)" title="ACTIVAR" <?= $botonActivar ?>><i class="fa fa-check-circle" style="color:green;"></i></a>
+                                            <a href="javascript:verDesactivar(<?= $qs['id'] ?>)" title="DESACTIVAR" <?= $botonDesactivar ?>><i class="fa fa-ban" style="color:orange;"></i></a>
+                                            &nbsp;&nbsp;
+                                            <a href="javascript:verEliminar(<?= $qs['id'] ?>)" title="ELIMINAR"><i class="fa fa-trash" style="color:red;"></i></a>
+                                        </td>
+                                        <td><?= substr($qs['nombre'], 0, 100) ?></td>
+                                        <td><?= $qs['fecha'] ?></td>
+                                        <td class="text-center">
+                                            <?php if ((int)$qs['proyectos_asociados'] > 0): ?>
+                                                <span class="badge badge-info"><?= $qs['proyectos_asociados'] ?></span>
+                                            <?php else: ?>
+                                                <span class="badge badge-secondary">0</span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td style="background-color: <?= $color ?>;"><?= $qs['estado'] ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="msgBloqueo" style="display: none;">
+    <i class="fa fa-spinner fa-spin"></i> SU SOLICITUD ESTA SIENDO PROCESADA...
+</div>
+
+<div class="modal fade" id="modalFormulario" data-backdrop="static" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Formulario Convocatoria</h5>
+                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+            </div>
+            <div id="divContenido"></div>
+        </div>
+    </div>
+</div>
