@@ -15,8 +15,8 @@ class VriconvocatoriasController extends AbstractActionController
 {
     private $DAO;
     private $rutaLog = './public/log/';
-    //private $rutaArchivos = '/var/www/html/newportal/archivos/vri_proyectos/';
-    private $rutaArchivos = './../newportal/archivos/vri_proyectos/';
+    private $rutaArchivos = '/var/www/html/newportal/archivos/vri_proyectos/';
+    //private $rutaArchivos = './../newportal/archivos/vri_proyectos/';
 
     public function __construct(VriconvocatoriasDAO $dao)
     {
