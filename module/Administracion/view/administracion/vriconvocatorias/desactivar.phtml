@@ -1,0 +1,14 @@
+<?php $form->prepare();
+echo $this->form()->openTag($form); ?>
+<div class="modal-body">
+    <div class="alert alert-warning">
+        ¿Desea <b>DESACTIVAR</b> la convocatoria <b><?= $form->get('nombre')->getValue() ?></b>?
+        <br><small>El registro quedará en estado <b>Eliminado</b> pero podrá reactivarlo.</small>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="submit" class="btn btn-warning"><i class="fas fa-ban"></i> Desactivar</button>
+    <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
+</div>
+<?php echo $this->formHidden($form->get('id'));
+echo $this->form()->closeTag(); ?>

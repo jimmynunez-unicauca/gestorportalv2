@@ -1,0 +1,44 @@
+<?php if (!$this->detalle): ?>
+    <div class="modal-body">
+        <div class="alert alert-danger">CONVOCATORIA NO ENCONTRADA</div>
+    </div>
+    <div class="modal-footer"><button type="button" class="btn btn-warning" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button></div>
+<?php else: $d = $this->detalle; ?>
+    <div class="modal-body ui-front">
+        <div style="padding: 10px" class="container-fluid">
+            <h5><?= $d['nombre'] ?></h5>
+            <p class="text-muted"><?= $d['titulo'] ?></p>
+            <table class="table table-sm table-bordered">
+                <tr>
+                    <th style="width:30%">ID</th>
+                    <td><?= $d['id'] ?></td>
+                </tr>
+                <tr>
+                    <th>Fecha</th>
+                    <td><?= $d['fecha'] ?></td>
+                </tr>
+                <tr>
+                    <th>Documento</th>
+                    <td><?= $d['documento'] ? '<a href="/newportal/archivos/vri_proyectos/' . $d['documento'] . '" target="_blank">' . $d['documento'] . '</a>' : '—' ?></td>
+                </tr>
+                <tr>
+                    <th>Enlace</th>
+                    <td><?= $d['enlace'] ? '<a href="' . $d['enlace'] . '" target="_blank">' . $d['enlace'] . '</a>' : '—' ?></td>
+                </tr>
+                <tr>
+                    <th>Estado</th>
+                    <td><span class="badge <?= $d['estado'] == 'Activo' ? 'badge-success' : 'badge-secondary' ?>"><?= $d['estado'] ?></span></td>
+                </tr>
+                <tr>
+                    <th>Registrado por</th>
+                    <td><?= $d['registradopor'] ?> (<?= $d['fechahorareg'] ?>)</td>
+                </tr>
+                <tr>
+                    <th>Modificado por</th>
+                    <td><?= $d['modificadopor'] ?: '—' ?> (<?= $d['fechahoramod'] ?>)</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="modal-footer"><button type="button" class="btn btn-warning" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button></div>
+<?php endif; ?>

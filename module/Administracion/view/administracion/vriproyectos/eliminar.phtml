@@ -1,0 +1,14 @@
+<?php $form->prepare();
+echo $this->form()->openTag($form); ?>
+<div class="modal-body">
+    <div class="alert alert-danger">
+        ¿Desea <b>ELIMINAR FÍSICAMENTE</b> el proyecto <b><?= $form->get('titulo')->getValue() ?></b>?<br>
+        <small>Se eliminarán también sus relaciones con convocatorias. Esta acción no se puede deshacer.</small>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i> Eliminar</button>
+    <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
+</div>
+<?php echo $this->formHidden($form->get('id'));
+echo $this->form()->closeTag(); ?>
