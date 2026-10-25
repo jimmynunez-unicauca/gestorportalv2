@@ -258,14 +258,36 @@ return [
                         'type' => \Laminas\Router\Http\Segment::class,
                         'options' => [
                             'route' => '/emisora/:action[/:id1]',
-                            'constraints' => array(
+                            'constraints' => [
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'id1' => '[a-zA-Z0-9_-]*',
-                            ),
+                                'id1'    => '[a-zA-Z0-9_-]*',
+                            ],
                             'defaults' => [
                                 'controller' => Controller\EmisoraController::class,
-                                'action' => 'index',
+                                'action'     => 'index',
                             ],
+                        ],
+                    ],
+                    'emisora-programacion' => [
+                        'type' => \Laminas\Router\Http\Segment::class,
+                        'options' => [
+                            'route' => '/emisora-programacion/:action[/:id1]',
+                            'constraints' => [
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id1'    => '[a-zA-Z0-9_-]*',
+                            ],
+                            'defaults' => [
+                                'controller' => Controller\EmisoraProgramacionController::class,
+                                'action'     => 'index',
+                            ],
+                        ],
+                    ],
+                    'emisora-excepcion' => [
+                        'type' => \Laminas\Router\Http\Segment::class,
+                        'options' => [
+                            'route' => '/emisora-excepcion/:action[/:id1]',
+                            'constraints' => ['action' => '[a-zA-Z][a-zA-Z0-9_-]*', 'id1' => '[a-zA-Z0-9_-]*'],
+                            'defaults' => ['controller' => Controller\EmisoraExcepcionController::class, 'action' => 'index'],
                         ],
                     ],
                     'directorio' => [

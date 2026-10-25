@@ -191,6 +191,12 @@ class Module implements ConfigProviderInterface
                 Controller\EmisoraController::class => function ($container) {
                     return new Controller\EmisoraController($container->get(Modelo\DAO\EmisoraDAO::class));
                 },
+                Controller\EmisoraProgramacionController::class => function ($container) {
+                    return new Controller\EmisoraProgramacionController($container->get(Modelo\DAO\EmisoraDAO::class));
+                },
+                Controller\EmisoraExcepcionController::class => function ($container) {
+                    return new Controller\EmisoraExcepcionController($container->get(Modelo\DAO\EmisoraDAO::class));
+                },
                 Controller\DirectorioController::class => function ($container) {
                     return new Controller\DirectorioController($container->get(Modelo\DAO\DirectorioDAO::class));
                 },

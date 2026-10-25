@@ -1,0 +1,49 @@
+<?php
+$form->prepare();
+echo $this->form()->openTag($form);
+?>
+<div class="modal-body">
+    <?php if ($this->tieneExcepciones): ?>
+        <div class="alert alert-danger">
+            <i class="fas fa-exclamation-triangle"></i>
+            <strong>NO SE PUEDE ELIMINAR ESTA PROGRAMACIÓN.</strong><br>
+            Tiene excepciones asociadas. Elimine primero las excepciones.
+        </div>
+    <?php else: ?>
+        <div class="alert alert-danger">
+            <i class="fas fa-times-circle"></i>
+            <strong>¡ATENCIÓN!</strong> Esta acción <strong>BORRA DEFINITIVAMENTE</strong>
+            la programación de la base de datos. <strong>No se puede deshacer.</strong>
+        </div>
+    <?php endif; ?>
+    <div class="container-fluid">
+        <table class="table table-bordered table-sm">
+            <tr>
+                <th style="width:35%">ID</th>
+                <td><?= $form->get('idProgramacion')->getValue() ?></td>
+            </tr>
+            <tr>
+                <th>Segmento</th>
+                <td><?= ucfirst($form->get('segmento')->getValue()) ?></td>
+            </tr>
+            <tr>
+                <th>Horario</th>
+                <td><?= substr($form->get('hora_inicio')->getValue(), 0, 5) ?> - <?= substr($form->get('hora_fin')->getValue(), 0, 5) ?></td>
+            </tr>
+            <tr>
+                <th>Días</th>
+                <td><?= htmlspecialchars($this->info['dias_semana']) ?></td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="modal-footer">
+    <?php if (!$this->tieneExcepciones): ?>
+        <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i> Eliminar definitivamente</button>
+    <?php endif; ?>
+    <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
+</div>
+<?php
+echo $this->formHidden($form->get('idProgramacion'));
+echo $this->form()->closeTag();
+?>

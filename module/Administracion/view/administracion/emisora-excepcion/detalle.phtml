@@ -1,0 +1,31 @@
+<div class="modal-body">
+    <table class="table table-bordered table-sm">
+        <tr>
+            <th>ID</th>
+            <td><?= $this->form['idExcepcion'] ?></td>
+        </tr>
+        <tr>
+            <th>Fecha</th>
+            <td><?= $this->form['fecha'] ?></td>
+        </tr>
+        <tr>
+            <th>Tipo</th>
+            <td><?= ucfirst(str_replace('_', ' ', $this->form['tipo'])) ?></td>
+        </tr>
+        <tr>
+            <th>Motivo</th>
+            <td><?= htmlspecialchars($this->form['motivo']) ?></td>
+        </tr>
+        <tr>
+            <th>Registrado por</th>
+            <td><?= $this->form['registradopor'] ?></td>
+        </tr>
+        <tr>
+            <th>Fecha registro</th>
+            <td><?= $this->form['fechahorareg'] ?></td>
+        </tr>
+    </table>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-warning" data-dismiss="modal">Cerrar</button>
+</div>

@@ -1,0 +1,39 @@
+<?php
+$form->prepare();
+echo $this->form()->openTag($form);
+?>
+<div class="modal-body">
+    <div class="alert alert-success">
+        <i class="fas fa-play-circle"></i>
+        ¿Está seguro de <strong>ACTIVAR</strong> esta programación?
+        El registro volverá a estar disponible en el calendario.
+    </div>
+    <div class="container-fluid">
+        <table class="table table-bordered table-sm">
+            <tr>
+                <th style="width:35%">ID</th>
+                <td><?= $form->get('idProgramacion')->getValue() ?></td>
+            </tr>
+            <tr>
+                <th>Segmento</th>
+                <td><?= ucfirst($form->get('segmento')->getValue()) ?></td>
+            </tr>
+            <tr>
+                <th>Horario</th>
+                <td><?= substr($form->get('hora_inicio')->getValue(), 0, 5) ?> - <?= substr($form->get('hora_fin')->getValue(), 0, 5) ?></td>
+            </tr>
+            <tr>
+                <th>Días</th>
+                <td><?= htmlspecialchars($this->info['dias_semana']) ?></td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="submit" class="btn btn-success"><i class="fas fa-play-circle"></i> Activar</button>
+    <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
+</div>
+<?php
+echo $this->formHidden($form->get('idProgramacion'));
+echo $this->form()->closeTag();
+?>

@@ -1,0 +1,37 @@
+<?php
+$form->prepare();
+echo $this->form()->openTag($form);
+?>
+<div class="modal-body">
+    <div class="alert alert-warning">
+        <i class="fas fa-pause-circle"></i>
+        ¿Está seguro de <strong>DESACTIVAR</strong> el programa
+        <strong><?= htmlspecialchars($form->get('nombre_programa')->getValue()) ?></strong>?
+        El registro quedará con estado "Eliminado" pero seguirá en la base de datos
+        y podrá reactivarse más adelante.
+    </div>
+    <div class="container-fluid">
+        <table class="table table-bordered table-sm">
+            <tr>
+                <th style="width:35%">ID</th>
+                <td><?= $form->get('idPrograma')->getValue() ?></td>
+            </tr>
+            <tr>
+                <th>Nombre</th>
+                <td><?= htmlspecialchars($form->get('nombre_programa')->getValue()) ?></td>
+            </tr>
+            <tr>
+                <th>Estado actual</th>
+                <td><?= $form->get('estado')->getValue() ?></td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="submit" class="btn btn-warning"><i class="fas fa-pause-circle"></i> Desactivar</button>
+    <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
+</div>
+<?php
+echo $this->formHidden($form->get('idPrograma'));
+echo $this->form()->closeTag();
+?>

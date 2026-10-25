@@ -222,7 +222,8 @@
                                     <li><a><img src="<?= $this->basePath('img/iconos/emisora.png') ?>"> EMISORA <span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">
                                             <li><a href="<?= $this->url('administracion/emisora', array('controller' => 'grupo', 'action' => 'index')) ?>">Programas</a></li>
-                                            <li><a href="<?= $this->url('administracion/emisora', array('controller' => 'semillero', 'action' => 'index-podcast')) ?>">Podcast</a></li>
+                                            <li><a href="<?= $this->url('administracion/emisora-programacion', ['action' => 'index']) ?>">Programación</a></li>
+                                            <li><a href="<?= $this->url('administracion/emisora-excepcion', ['action' => 'index']) ?>">Excepciones</a></li>
                                             <li><a href="<?= $this->url('formularios/emisora', array('controller' => 'emisora', 'action' => 'index')) ?>">Formulario</a></li>
                                         </ul>
                                     </li>
