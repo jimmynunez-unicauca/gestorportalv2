@@ -10,7 +10,7 @@ $programa = $this->form; // array con los datos
             </tr>
             <tr>
                 <th>Programa</th>
-                <td><?= htmlspecialchars($programa['nombre_programa'] ?? '-') ?></td>
+                <td><a href="javascript:verDetalle(<?= $programa['idPrograma'] ?>)" title="VER PROGRAMA"><?= htmlspecialchars($programa['nombre_programa'] ?? '-') ?></a></td>
             </tr>
             <tr>
                 <th>Segmento</th>
@@ -57,8 +57,14 @@ $programa = $this->form; // array con los datos
                 <td><?= $programa['fechahoramod'] ?: '-' ?></td>
             </tr>
             <tr>
-                <th>Editar</th>
-                <td><a href="javascript:verEditarProgramacion(<?= $programa['idProgramacion'] ?>)" title="EDITAR"><i class="fa fa-edit"></i></a></td>
+                <th><i class="fa fa-cog fa-spin fa-lg"></i></th>
+                <td>
+                    <a href="javascript:verDetalle(<?= $programa['idPrograma'] ?>)" title="VER PROGRAMA"><i class="fa fa-eye"></i></a>
+                    &nbsp;
+                    <a href="javascript:verEditarProgramacion(<?= $programa['idProgramacion'] ?>)" title="EDITAR PROGRAMACIÓN"><i class="fa fa-edit"></i></a>
+                    &nbsp;
+                    <a href="javascript:verDesactivarProgramacion(<?= $programa['idProgramacion'] ?>)" title="DESACTIVAR PROGRAMACIÓN"><i class="fa fa-pause-circle" style="color:#f0ad4e;"></i></a>
+                </td>
             </tr>
         </table>
     </div>

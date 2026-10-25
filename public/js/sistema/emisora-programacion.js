@@ -35,6 +35,10 @@ function verEliminarProgramacion(id) {
     $.get('eliminar', { idProgramacion: id }, setFormulario);
     bloqueoAjax();
 }
+function verDetalle(idPrograma) {
+    $.get('../emisora/detalle', { idPrograma: idPrograma }, setFormulario);
+    bloqueoAjax();
+}
 function setFormulario(datos) {
     $("#divContenido").html(datos);
     $('#modalFormulario').modal('show');
