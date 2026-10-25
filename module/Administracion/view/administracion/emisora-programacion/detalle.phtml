@@ -1,0 +1,70 @@
+<?php
+$programa = $this->form; // array con los datos
+?>
+<div class="modal-body">
+    <div class="container-fluid">
+        <table class="table table-bordered table-sm">
+            <tr>
+                <th style="width:35%">ID</th>
+                <td><?= $programa['idProgramacion'] ?></td>
+            </tr>
+            <tr>
+                <th>Programa</th>
+                <td><?= htmlspecialchars($programa['nombre_programa'] ?? '-') ?></td>
+            </tr>
+            <tr>
+                <th>Segmento</th>
+                <td><?= ucfirst($programa['segmento']) ?></td>
+            </tr>
+            <tr>
+                <th>Horario</th>
+                <td><?= substr($programa['hora_inicio'], 0, 5) ?> - <?= substr($programa['hora_fin'], 0, 5) ?></td>
+            </tr>
+            <tr>
+                <th>Días</th>
+                <td><?= htmlspecialchars($programa['dias_semana']) ?></td>
+            </tr>
+            <tr>
+                <th>Vigente desde</th>
+                <td><?= $programa['vigente_desde'] ?></td>
+            </tr>
+            <tr>
+                <th>Vigente hasta</th>
+                <td><?= $programa['vigente_hasta'] ?: 'Indefinido' ?></td>
+            </tr>
+            <tr>
+                <th>Estado</th>
+                <td>
+                    <span class="badge <?= $programa['estado'] === 'Activo' ? 'badge-success' : 'badge-danger' ?>">
+                        <?= $programa['estado'] ?>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <th>Registrado por</th>
+                <td><?= $programa['registradopor'] ?></td>
+            </tr>
+            <tr>
+                <th>Fecha registro</th>
+                <td><?= $programa['fechahorareg'] ?></td>
+            </tr>
+            <tr>
+                <th>Modificado por</th>
+                <td><?= $programa['modificadopor'] ?: '-' ?></td>
+            </tr>
+            <tr>
+                <th>Fecha actualización</th>
+                <td><?= $programa['fechahoramod'] ?: '-' ?></td>
+            </tr>
+            <tr>
+                <th>Editar</th>
+                <td><a href="javascript:verEditarProgramacion(<?= $programa['idProgramacion'] ?>)" title="EDITAR"><i class="fa fa-edit"></i></a></td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-warning" data-dismiss="modal">
+        <i class="fas fa-times"></i> Cerrar
+    </button>
+</div>

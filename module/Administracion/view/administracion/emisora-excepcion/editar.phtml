@@ -1,0 +1,51 @@
+<?php
+$form->setAttribute('action', $this->url('administracion/emisora-excepcion', ['action' => 'editar']));
+$form->prepare();
+echo $this->form()->openTag($form);
+?>
+<div class="modal-body">
+    <div class="row">
+        <div class="form-group col-md-6">
+            <?= $this->formLabel($form->get('fecha')) ?>
+            <?= $this->formElement($form->get('fecha')) ?>
+        </div>
+        <div class="form-group col-md-6">
+            <?= $this->formLabel($form->get('tipo')) ?>
+            <?= $this->formElement($form->get('tipo')) ?>
+        </div>
+
+        <!-- Campos dinámicos -->
+        <div class="form-group col-md-12" id="grupo_programacion_original" style="display:none;">
+            <?= $this->formLabel($form->get('idProgramacion_original')) ?>
+            <?= $this->formElement($form->get('idProgramacion_original')) ?>
+        </div>
+
+        <div class="form-group col-md-12" id="grupo_programa_reemplazo" style="display:none;">
+            <?= $this->formLabel($form->get('idPrograma_reemplazo')) ?>
+            <?= $this->formElement($form->get('idPrograma_reemplazo')) ?>
+        </div>
+
+        <div class="form-group col-md-6" id="grupo_hora_inicio" style="display:none;">
+            <?= $this->formLabel($form->get('hora_inicio')) ?>
+            <?= $this->formElement($form->get('hora_inicio')) ?>
+        </div>
+
+        <div class="form-group col-md-6" id="grupo_hora_fin" style="display:none;">
+            <?= $this->formLabel($form->get('hora_fin')) ?>
+            <?= $this->formElement($form->get('hora_fin')) ?>
+        </div>
+
+        <div class="form-group col-md-12">
+            <?= $this->formLabel($form->get('motivo')) ?>
+            <?= $this->formElement($form->get('motivo')) ?>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Guardar</button>
+    <button type="button" class="btn btn-warning" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
+</div>
+<?php
+echo $this->formHidden($form->get('idExcepcion'));
+echo $this->form()->closeTag();
+?>

@@ -1,0 +1,32 @@
+<?php
+$form->prepare();
+echo $this->form()->openTag($form);
+?>
+<div class="modal-body">
+    <div class="alert alert-danger">
+        <i class="fas fa-times-circle"></i>
+        <strong>¡ATENCIÓN!</strong> Esta acción <strong>BORRA DEFINITIVAMENTE</strong> el registro de la base de datos.
+        No se puede deshacer.
+    </div>
+    <div class="container-fluid">
+        <table class="table table-bordered table-sm">
+            <tr>
+                <th>ID</th>
+                <td><?= $form->get('idProgramacion')->getValue() ?></td>
+            </tr>
+            <tr>
+                <th>Segmento</th>
+                <td><?= ucfirst($form->get('segmento')->getValue()) ?></td>
+            </tr>
+            <tr>
+                <th>Horario</th>
+                <td><?= substr($form->get('hora_inicio')->getValue(), 0, 5) ?> - <?= substr($form->get('hora_fin')->getValue(), 0, 5) ?></td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="submit" class="btn btn-danger"><i class="fas fa-times-circle"></i> Borrar definitivamente</button>
+    <button type="button" class="btn btn-warning" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
+</div>
+<?php echo $this->form()->closeTag(); ?>

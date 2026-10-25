@@ -1,0 +1,56 @@
+<?php
+$form->prepare();
+echo $this->form()->openTag($form);
+?>
+<div class="modal-body ui-front">
+    <div style="padding: 10px" class="container-fluid">
+        <fieldset>
+            <legend>Datos de la programación</legend>
+            <div class="row">
+                <div class="form-group col-md-12 col-sm-12">
+                    <?= $this->formLabel($form->get('idPrograma')) ?>
+                    <?= $this->formElement($form->get('idPrograma')) ?>
+                </div>
+                <div class="form-group col-md-4 col-sm-12">
+                    <?= $this->formLabel($form->get('segmento')) ?>
+                    <?= $this->formElement($form->get('segmento')) ?>
+                </div>
+                <div class="form-group col-md-4 col-sm-12">
+                    <?= $this->formLabel($form->get('hora_inicio')) ?>
+                    <?= $this->formElement($form->get('hora_inicio')) ?>
+                </div>
+                <div class="form-group col-md-4 col-sm-12">
+                    <?= $this->formLabel($form->get('hora_fin')) ?>
+                    <?= $this->formElement($form->get('hora_fin')) ?>
+                </div>
+                <div class="form-group col-md-12 col-sm-12">
+                    <?= $this->formLabel($form->get('dias')) ?>
+                    <div class="d-flex flex-wrap gap-2">
+                        <?php foreach ($form->get('dias')->getValueOptions() as $val => $label): ?>
+                            <div class="form-check form-check-inline mr-3">
+                                <input type="checkbox" class="form-check-input" name="dias[]" id="dia_<?= $val ?>" value="<?= $val ?>">
+                                <label class="form-check-label" for="dia_<?= $val ?>"><?= $label ?></label>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <?= $this->formLabel($form->get('vigente_desde')) ?>
+                    <?= $this->formElement($form->get('vigente_desde')->setValue(date('Y-m-d'))) ?>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <?= $this->formLabel($form->get('vigente_hasta')) ?>
+                    <?= $this->formElement($form->get('vigente_hasta')) ?>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</div>
+<div class="modal-footer" style="padding: 20px">
+    <button type="submit" class="btn btn-success" title="REGISTRAR"><i class="fas fa-save"></i> Registrar</button>
+    <button type="button" class="btn btn-warning" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
+</div>
+<?php
+echo $this->formHidden($form->get('idProgramacion')->setValue(0));
+echo $this->form()->closeTag();
+?>

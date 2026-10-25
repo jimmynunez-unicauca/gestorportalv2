@@ -5,27 +5,14 @@ namespace Administracion\Modelo\Entidades;
 use DomainException;
 use Laminas\Filter\StringTrim;
 use Laminas\Filter\StripTags;
-use Laminas\Filter\ToInt;
-use Laminas\Filter\StringToUpper;
-use Laminas\Filter\StringToLower;
-use Laminas\Form\Element\DateTimeLocal;
 use Laminas\InputFilter\InputFilter;
 use Laminas\InputFilter\InputFilterAwareInterface;
 use Laminas\InputFilter\InputFilterInterface;
 use Laminas\Validator\StringLength;
-use Laminas\Validator\EmailAddress;
-use Laminas\Validator\Date;
-use Laminas\Validator\Digits;
-use Laminas\Validator\GreaterThan;
-use Laminas\Validator\LessThan;
 
 class Programa implements InputFilterAwareInterface
 {
-
     private $idPrograma;
-    private $segmento;
-    private $hora_inicio;
-    private $hora_fin;
     private $nombre_programa;
     private $detalle_programa;
     private $color_programa;
@@ -35,32 +22,21 @@ class Programa implements InputFilterAwareInterface
     private $modificadopor;
     private $fechahorareg;
     private $fechahoramod;
-    //------------------------------------------------------------------------------
     private $inputFilter;
-
-    //------------------------------------------------------------------------------
 
     public function __construct(array $datos = null)
     {
-        if (is_array($datos)) {
-            $this->exchangeArray($datos);
-        }
+        if (is_array($datos)) $this->exchangeArray($datos);
     }
-
-    //------------------------------------------------------------------------------
 
     public function exchangeArray($data)
     {
         $metodos = get_class_methods($this);
         foreach ($data as $key => $value) {
             $metodo = 'set' . ucfirst($key);
-            if (in_array($metodo, $metodos)) {
-                $this->$metodo($value);
-            }
+            if (in_array($metodo, $metodos)) $this->$metodo($value);
         }
     }
-
-    //------------------------------------------------------------------------------
 
     public function getArrayCopy()
     {
@@ -69,191 +45,121 @@ class Programa implements InputFilterAwareInterface
         return $datos;
     }
 
-    //------------------------------------------------------------------------------
-
     public function setInputFilter(InputFilterInterface $inputFilter)
     {
-        throw new DomainException(sprintf('%s does not allow injection of an alternate input filter', __CLASS__));
+        throw new DomainException('No permite inyección de filtro alterno');
     }
-
-    //------------------------------------------------------------------------------
 
     public function getInputFilter()
     {
-        if ($this->inputFilter) {
-            return $this->inputFilter;
-        }
-
+        if ($this->inputFilter) return $this->inputFilter;
         $inputFilter = new InputFilter();
 
         $inputFilter->add([
             'name' => 'nombre_programa',
             'required' => true,
-            'filters' => [
-                ['name' => StripTags::class],
-                ['name' => StringTrim::class],
-                /* ['name' => StringToUpper::class], */
-            ],
-            'validators' => [
-                [
-                    'name' => StringLength::class,
-                    'options' => [
-                        'encoding' => 'UTF-8',
-                        'max' => 100,
-                    ],
-                ],
-            ],
+            'filters' => [['name' => StripTags::class], ['name' => StringTrim::class]],
+            'validators' => [['name' => StringLength::class, 'options' => ['encoding' => 'UTF-8', 'max' => 100]]],
         ]);
+
         $inputFilter->add([
             'name' => 'detalle_programa',
             'required' => true,
-            'filters' => [
-                ['name' => StripTags::class],
-                ['name' => StringTrim::class],
-            ],
-            'validators' => [
-                [
-                    'name' => StringLength::class,
-                    'options' => [
-                        'encoding' => 'UTF-8',
-                    ],
-                ],
-            ],
+            'filters' => [['name' => StripTags::class], ['name' => StringTrim::class]],
         ]);
 
         $this->inputFilter = $inputFilter;
         return $this->inputFilter;
     }
 
-    //------------------------------------------------------------------------------
-
+    // getters y setters ...
     public function getIdPrograma()
     {
         return $this->idPrograma;
     }
-
-    public function setIdPrograma($value)
+    public function setIdPrograma($v)
     {
-        $this->idPrograma = $value;
-    }
-
-    public function getSegmento()
-    {
-        return $this->segmento;
-    }
-
-    public function setSegmento($value)
-    {
-        $this->segmento = $value;
-    }
-
-    public function getHora_inicio()
-    {
-        return $this->hora_inicio;
-    }
-
-    public function setHora_inicio($value)
-    {
-        $this->hora_inicio = $value;
-    }
-
-    public function getHora_fin()
-    {
-        return $this->hora_fin;
-    }
-
-    public function setHora_fin($value)
-    {
-        $this->hora_fin = $value;
+        $this->idPrograma = $v;
     }
 
     public function getNombre_programa()
     {
         return $this->nombre_programa;
     }
-
-    public function setNombre_programa($value)
+    public function setNombre_programa($v)
     {
-        $this->nombre_programa = $value;
+        $this->nombre_programa = $v;
     }
 
     public function getDetalle_programa()
     {
         return $this->detalle_programa;
     }
-
-    public function setDetalle_programa($value)
+    public function setDetalle_programa($v)
     {
-        $this->detalle_programa = $value;
+        $this->detalle_programa = $v;
     }
 
     public function getColor_programa()
     {
         return $this->color_programa;
     }
-
-    public function setColor_programa($value)
+    public function setColor_programa($v)
     {
-        $this->color_programa = $value;
+        $this->color_programa = $v;
     }
 
     public function getImagen()
     {
         return $this->imagen;
     }
-
-    public function setImagen($value)
+    public function setImagen($v)
     {
-        $this->imagen = $value;
+        $this->imagen = $v;
     }
 
     public function getEstado()
     {
         return $this->estado;
     }
-
-    public function setEstado($value)
+    public function setEstado($v)
     {
-        $this->estado = $value;
+        $this->estado = $v;
     }
 
     public function getRegistradopor()
     {
         return $this->registradopor;
     }
-
-    public function setRegistradopor($value)
+    public function setRegistradopor($v)
     {
-        $this->registradopor = $value;
+        $this->registradopor = $v;
     }
 
     public function getModificadopor()
     {
         return $this->modificadopor;
     }
-
-    public function setModificadopor($value)
+    public function setModificadopor($v)
     {
-        $this->modificadopor = $value;
+        $this->modificadopor = $v;
     }
 
     public function getFechahorareg()
     {
         return $this->fechahorareg;
     }
-
-    public function setFechahorareg($value)
+    public function setFechahorareg($v)
     {
-        $this->fechahorareg = $value;
+        $this->fechahorareg = $v;
     }
 
     public function getFechahoramod()
     {
         return $this->fechahoramod;
     }
-
-    public function setFechahoramod($value)
+    public function setFechahoramod($v)
     {
-        $this->fechahoramod = $value;
+        $this->fechahoramod = $v;
     }
 }
