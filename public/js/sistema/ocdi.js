@@ -32,6 +32,16 @@ function verDetalle(idOcdi) {
     $.get('detalle', { idOcdi: idOcdi }, setFormulario);
     bloqueoAjax();
 }
+function actualizarDocumento() {
+    var id = $("#idRevistasOcdi").val();
+    $.get('subirdocumento', { idRevistasOcdi: id }, setFormulario);
+    bloqueoAjax();
+}
+function actualizarImagen() {
+    var id = $("#idRevistasOcdi").val();
+    $.get('subirimagen', { idRevistasOcdi: id }, setFormulario);
+    bloqueoAjax();
+}
 //------------------------------------------------------------------------------
 function verImagen(imagen) {
     Swal.fire({

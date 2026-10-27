@@ -25,6 +25,7 @@ class Ocdi implements InputFilterAwareInterface
     private $idRevistasOcdi;
     private $titulo;
     private $fecha;
+    private $asuntos_interes;
     private $imagen;
     private $documento;
     private $estado;
@@ -136,6 +137,15 @@ class Ocdi implements InputFilterAwareInterface
     public function setFecha($value)
     {
         $this->fecha = $value;
+    }
+    public function getAsuntos_interes()
+    {
+        return $this->asuntos_interes;
+    }
+
+    public function setAsuntos_interes($value)
+    {
+        $this->asuntos_interes = $value;
     }
 
     public function getImagen()
