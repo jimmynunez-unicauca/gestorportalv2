@@ -26,17 +26,12 @@ class OcdiForm extends Form
                 $required = false;
                 $disabled = true;
                 break;
-            case 'eliminar':
-                $onsubmit = 'return validarGuardar(event, this,"ELIMINAR")';
+            case 'subirdocumento':
+                $onsubmit = 'return validarGuardar(event, this,"EDITAR")';
                 $required = false;
                 $disabled = true;
                 break;
-            case 'activar':
-                $onsubmit = 'return validarGuardar(event, this,"ACTIVAR")';
-                $required = false;
-                $disabled = true;
-                break;
-            case 'actualizararchivo':
+            case 'subirimagen':
                 $onsubmit = 'return validarGuardar(event, this,"EDITAR")';
                 $required = false;
                 $disabled = true;
@@ -82,6 +77,28 @@ class OcdiForm extends Form
                 'readonly' => !$required,
                 'required' => $required,
                 'id' => 'fecha',
+            ],
+        ]);
+        $this->add([
+            'type' => Element\Select::class,
+            'name' => 'asuntos_interes',
+            'options' => [
+                'label' => 'Asunto de Interés *',
+                'empty_option' => 'Seleccione...',
+                'value_options' => [
+                    'Boletines' => 'Boletines',
+                    'Informes de gestión' => 'Informes de gestión',
+                    'Circulares' => 'Circulares',
+                    'Asuntos de género' => 'Asuntos de género',
+                    'Rutas de atención' => 'Rutas de atención',
+                ],
+                'disable_inarray_validator' => true,
+            ],
+            'attributes' => [
+                'readonly' => !$required,
+                'required' => $required,
+                'class' => 'form-control',
+                'id' => 'asuntos_interes',
             ],
         ]);
         $this->add([
