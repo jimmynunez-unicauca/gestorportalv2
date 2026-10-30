@@ -1,7 +1,7 @@
 <?php
 
 // Credenciales por ambiente
-$host = '10.220.1.100';  # ← IP para desarrollo/preproducción
+$host = '10.220.1.100';
 $nombre_bd = 'test_gestor';
 $nombre_bd2 = 'test_portal';
 $username = 'portal_test_user';
@@ -15,7 +15,6 @@ return [
             'gestorportal_bd' => [
                 'username' => $username,
                 'password' => $password,
-                // Reemplazar el marcador %HOST% con el valor real
                 'dsn' => "mysql:dbname=test_gestor;host=$host",
             ],
             'portal_db' => [
@@ -24,5 +23,13 @@ return [
                 'dsn' => "mysql:dbname=test_portal;host=$host",
             ],
         ],
-    ]
+    ],
+
+    // ================================================================
+    // Módulo Podcast — configuración de subida
+    // ================================================================
+    'podcast_upload' => [
+        'endpoint' => 'http://192.168.52.158/upload_podcast.php',
+        'token'    => 'token_de_prueba_123',
+    ],
 ];

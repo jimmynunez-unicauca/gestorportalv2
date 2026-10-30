@@ -1,0 +1,35 @@
+<?php
+$form->prepare();
+echo $this->form()->openTag($form);
+?>
+<div class="modal-body">
+    <div class="alert alert-warning">
+        <i class="fas fa-pause-circle"></i>
+        ¿Está seguro de <strong>DESACTIVAR</strong> el podcast
+        <strong><?= htmlspecialchars($form->get('titulo')->getValue()) ?></strong>?
+        Quedará con estado "Eliminado" pero podrá reactivarse más adelante.
+    </div>
+    <div class="container-fluid">
+        <table class="table table-bordered table-sm">
+            <tr>
+                <th style="width:35%">ID</th>
+                <td><?= $form->get('idPodcast')->getValue() ?></td>
+            </tr>
+            <tr>
+                <th>Título</th>
+                <td><?= htmlspecialchars($form->get('titulo')->getValue()) ?></td>
+            </tr>
+            <tr>
+                <th>Estado actual</th>
+                <td><?= $form->get('estado')->getValue() ?></td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="submit" class="btn btn-warning"><i class="fas fa-pause-circle"></i> Desactivar</button>
+    <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
+</div>
+<?php
+echo $this->formHidden($form->get('idPodcast'));
+echo $this->form()->closeTag();

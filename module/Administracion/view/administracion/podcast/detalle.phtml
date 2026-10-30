@@ -1,0 +1,86 @@
+<?php $p = $this->info; ?>
+<div class="modal-body">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-4 text-center">
+                <img src="http://192.168.52.158/audios/podcast/imagenes/<?= htmlspecialchars($p['imagen'] ?: 'sinImagen.png') ?>"
+                    class="img-fluid rounded shadow-sm" style="max-width:220px;">
+            </div>
+            <div class="col-md-8">
+                <table class="table table-bordered table-sm">
+                    <tr>
+                        <th style="width:35%">ID</th>
+                        <td><?= $p['idPodcast'] ?></td>
+                    </tr>
+                    <tr>
+                        <th>Título</th>
+                        <td><?= htmlspecialchars($p['titulo']) ?></td>
+                    </tr>
+                    <tr>
+                        <th>Descripción</th>
+                        <td><?= nl2br(htmlspecialchars($p['descripcion'])) ?></td>
+                    </tr>
+                    <tr>
+                        <th>Programa</th>
+                        <td><?= htmlspecialchars($p['nombre_programa'] ?? '—') ?></td>
+                    </tr>
+                    <tr>
+                        <th>Categoría</th>
+                        <td><?= htmlspecialchars($p['categoria'] ?: '—') ?></td>
+                    </tr>
+                    <tr>
+                        <th>Transmisión</th>
+                        <td><?= $p['transmision'] ?></td>
+                    </tr>
+                    <tr>
+                        <th>Estado</th>
+                        <td><?= $p['estado'] ?></td>
+                    </tr>
+                    <tr>
+                        <th>Audio</th>
+                        <td>
+                            <?php if (!empty($p['audio_url'])): ?>
+                                <audio controls preload="none" style="width:100%">
+                                    <source src="<?= htmlspecialchars($p['audio_url']) ?>" type="audio/mpeg">
+                                    Tu navegador no soporta audio.
+                                </audio>
+                                <a href="<?= htmlspecialchars($p['audio_url']) ?>" target="_blank" class="small">
+                                    Abrir en nueva pestaña
+                                </a>
+                            <?php else: ?>
+                                <span class="text-muted">Sin audio registrado.</span>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Archivo de audio</th>
+                        <td><?= htmlspecialchars(basename(parse_url($p['audio_url'], PHP_URL_PATH))) ?></td>
+                    </tr>
+                    <tr>
+                        <th>Archivo de imagen</th>
+                        <td><?= htmlspecialchars(basename($p['imagen'])) ?></td>
+                    </tr>
+                    <tr>
+                        <th>Registrado por</th>
+                        <td><?= $p['registradopor'] ?></td>
+                    </tr>
+                    <tr>
+                        <th>Fecha registro</th>
+                        <td><?= $p['fechahorareg'] ?></td>
+                    </tr>
+                    <tr>
+                        <th>Modificado por</th>
+                        <td><?= $p['modificadopor'] ?: '-' ?></td>
+                    </tr>
+                    <tr>
+                        <th>Fecha actualización</th>
+                        <td><?= $p['fechahoramod'] ?: '-' ?></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-warning" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
+</div>
