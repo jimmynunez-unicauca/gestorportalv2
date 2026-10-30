@@ -1,0 +1,98 @@
+<?php
+$form->prepare();
+// La URL del audio no se edita manualmente
+$form->get('audio_url')->setAttribute('readonly', true);
+echo $this->form()->openTag($form);
+?>
+<div class="modal-body ui-front">
+    <div style="padding: 10px" class="container-fluid">
+        <fieldset>
+            <legend>Datos del podcast</legend>
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <?= $this->formLabel($form->get('titulo')) ?>
+                    <?= $this->formElement($form->get('titulo')) ?>
+                </div>
+                <div class="form-group col-md-12">
+                    <?= $this->formLabel($form->get('descripcion')) ?>
+                    <?= $this->formElement($form->get('descripcion')) ?>
+                </div>
+                <div class="form-group col-md-6">
+                    <?= $this->formLabel($form->get('idPrograma')) ?>
+                    <?= $this->formElement($form->get('idPrograma')) ?>
+                </div>
+                <div class="form-group col-md-3">
+                    <?= $this->formLabel($form->get('transmision')) ?>
+                    <?= $this->formElement($form->get('transmision')) ?>
+                </div>
+                <div class="form-group col-md-3">
+                    <?= $this->formLabel($form->get('categoria')) ?>
+                    <?= $this->formElement($form->get('categoria')) ?>
+                </div>
+
+                <div class="form-group col-md-12">
+                    <label>Audio actual</label><br>
+                    <?php if (!empty($audioActual)): ?>
+                        <audio controls preload="none" style="width:100%">
+                            <source src="<?= htmlspecialchars($audioActual) ?>" type="audio/mpeg">
+                            Tu navegador no soporta audio.
+                        </audio>
+                        <a href="<?= htmlspecialchars($audioActual) ?>" target="_blank" class="small">Abrir en nueva pestaña</a>
+                    <?php else: ?>
+                        <span class="text-muted">Sin audio registrado.</span>
+                    <?php endif; ?>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <?= $this->formLabel($form->get('audio')) ?>
+                    <?= $this->formElement($form->get('audio')) ?>
+                    <small class="text-muted">Deje vacío para conservar el audio actual.</small>
+                </div>
+                <div class="form-group col-md-6">
+                    <label>Imagen de portada</label>
+                    <input type="file" id="imagen_file" accept="image/*" class="form-control" onchange="validarImagenPodcast()">
+                    <?= $this->formHidden($form->get('imagen')) ?>
+                    <small class="text-muted">JPG/PNG/WEBP, máximo 2 MB.</small>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Información del registro</legend>
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    <label>ID</label>
+                    <?= $this->formElement($form->get('idPodcast')) ?>
+                </div>
+                <div class="form-group col-md-3">
+                    <label>Estado</label>
+                    <?= $this->formElement($form->get('estado')) ?>
+                </div>
+                <div class="form-group col-md-3">
+                    <label>Registrado por</label>
+                    <?= $this->formElement($form->get('registradopor')) ?>
+                </div>
+                <div class="form-group col-md-3">
+                    <label>Fecha registro</label>
+                    <?= $this->formElement($form->get('fechahorareg')) ?>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</div>
+<div class="modal-footer" style="padding: 20px">
+    <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Editar</button>
+    <button type="button" class="btn btn-warning" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
+</div>
+<?php
+// Ya viene bindeado con el audio_url actual, pero nos aseguramos:
+echo $this->formHidden($form->get('audio_url')->setValue($audioActual));
+echo $this->form()->closeTag();
+?>
+<script>
+    window.PODCAST_UPLOAD = {
+        endpoint: '<?= $this->escapeJs($uploadEndpoint) ?>',
+        token: '<?= $this->escapeJs($uploadToken) ?>',
+        mock: <?= $uploadMock ? 'true' : 'false' ?>
+    };
+</script>

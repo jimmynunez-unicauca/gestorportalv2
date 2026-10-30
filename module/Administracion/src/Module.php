@@ -89,6 +89,10 @@ class Module implements ConfigProviderInterface
                     $dbAdapter = $container->get('gestorportal_bd');
                     return new Modelo\DAO\EmisoraDAO($dbAdapter);
                 },
+                Modelo\DAO\PodcastDAO::class => function ($container) {
+                    $dbAdapter = $container->get('gestorportal_bd');
+                    return new Modelo\DAO\PodcastDAO($dbAdapter);
+                },
                 Modelo\DAO\DirectorioDAO::class => function ($container) {
                     $dbAdapter = $container->get('gestorportal_bd');
                     return new Modelo\DAO\DirectorioDAO($dbAdapter);
@@ -196,6 +200,12 @@ class Module implements ConfigProviderInterface
                 },
                 Controller\EmisoraExcepcionController::class => function ($container) {
                     return new Controller\EmisoraExcepcionController($container->get(Modelo\DAO\EmisoraDAO::class));
+                },
+                Controller\PodcastController::class => function ($container) {
+                    return new Controller\PodcastController(
+                        $container->get(Modelo\DAO\PodcastDAO::class),
+                        $container->get('config')['podcast_upload']
+                    );
                 },
                 Controller\DirectorioController::class => function ($container) {
                     return new Controller\DirectorioController($container->get(Modelo\DAO\DirectorioDAO::class));

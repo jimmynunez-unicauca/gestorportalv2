@@ -1,0 +1,67 @@
+<?php
+$form->prepare();
+echo $this->form()->openTag($form);
+?>
+<div class="modal-body ui-front">
+    <div style="padding: 10px" class="container-fluid">
+        <fieldset>
+            <legend>Datos del podcast</legend>
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <?= $this->formLabel($form->get('titulo')) ?>
+                    <?= $this->formElement($form->get('titulo')) ?>
+                    <?= $this->formElementErrors($form->get('titulo'), ['class' => 'text-danger']) ?>
+                </div>
+                <div class="form-group col-md-12">
+                    <?= $this->formLabel($form->get('descripcion')) ?>
+                    <?= $this->formElement($form->get('descripcion')) ?>
+                    <?= $this->formElementErrors($form->get('descripcion'), ['class' => 'text-danger']) ?>
+                </div>
+                <div class="form-group col-md-6">
+                    <?= $this->formLabel($form->get('idPrograma')) ?>
+                    <?= $this->formElement($form->get('idPrograma')) ?>
+                    <?= $this->formElementErrors($form->get('idPrograma'), ['class' => 'text-danger']) ?>
+                </div>
+                <div class="form-group col-md-3">
+                    <?= $this->formLabel($form->get('transmision')) ?>
+                    <?= $this->formElement($form->get('transmision')) ?>
+                </div>
+                <div class="form-group col-md-3">
+                    <?= $this->formLabel($form->get('categoria')) ?>
+                    <?= $this->formElement($form->get('categoria')) ?>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <?= $this->formLabel($form->get('audio')) ?>
+                    <?= $this->formElement($form->get('audio')) ?>
+                    <small class="text-muted">
+                        <b>Aviso:</b> el archivo MP3 se sube directamente al servidor de la emisora.
+                        El formulario se enviará automáticamente al terminar la subida.
+                    </small>
+                </div>
+                <div class="form-group col-md-6">
+                    <label>Imagen de portada</label>
+                    <input type="file" id="imagen_file" accept="image/*" class="form-control" onchange="validarImagenPodcast()">
+                    <?= $this->formHidden($form->get('imagen')) ?>
+                    <small class="text-muted">JPG/PNG/WEBP, máximo 2 MB.</small>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</div>
+<div class="modal-footer" style="padding: 20px">
+    <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Registrar</button>
+    <button type="button" class="btn btn-warning" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
+</div>
+<?php
+echo $this->formHidden($form->get('idPodcast')->setValue(0));
+echo $this->formHidden($form->get('audio_url')->setValue(''));
+echo $this->form()->closeTag();
+?>
+<script>
+    window.PODCAST_UPLOAD = {
+        endpoint: '<?= $this->escapeJs($uploadEndpoint) ?>',
+        token: '<?= $this->escapeJs($uploadToken) ?>',
+        mock: <?= $uploadMock ? 'true' : 'false' ?>
+    };
+</script>

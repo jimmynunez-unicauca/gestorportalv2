@@ -5,23 +5,13 @@ namespace Administracion\Modelo\Entidades;
 use DomainException;
 use Laminas\Filter\StringTrim;
 use Laminas\Filter\StripTags;
-use Laminas\Filter\ToInt;
-use Laminas\Filter\StringToUpper;
-use Laminas\Filter\StringToLower;
-use Laminas\Form\Element\DateTimeLocal;
 use Laminas\InputFilter\InputFilter;
 use Laminas\InputFilter\InputFilterAwareInterface;
 use Laminas\InputFilter\InputFilterInterface;
 use Laminas\Validator\StringLength;
-use Laminas\Validator\EmailAddress;
-use Laminas\Validator\Date;
-use Laminas\Validator\Digits;
-use Laminas\Validator\GreaterThan;
-use Laminas\Validator\LessThan;
 
 class Podcast implements InputFilterAwareInterface
 {
-
     private $idPodcast;
     private $titulo;
     private $descripcion;
@@ -29,37 +19,27 @@ class Podcast implements InputFilterAwareInterface
     private $audio_url;
     private $categoria;
     private $transmision;
+    private $idPrograma;
     private $estado;
     private $registradopor;
     private $modificadopor;
     private $fechahorareg;
     private $fechahoramod;
-    //------------------------------------------------------------------------------
     private $inputFilter;
-
-    //------------------------------------------------------------------------------
 
     public function __construct(array $datos = null)
     {
-        if (is_array($datos)) {
-            $this->exchangeArray($datos);
-        }
+        if (is_array($datos)) $this->exchangeArray($datos);
     }
-
-    //------------------------------------------------------------------------------
 
     public function exchangeArray($data)
     {
         $metodos = get_class_methods($this);
         foreach ($data as $key => $value) {
             $metodo = 'set' . ucfirst($key);
-            if (in_array($metodo, $metodos)) {
-                $this->$metodo($value);
-            }
+            if (in_array($metodo, $metodos)) $this->$metodo($value);
         }
     }
-
-    //------------------------------------------------------------------------------
 
     public function getArrayCopy()
     {
@@ -68,181 +48,154 @@ class Podcast implements InputFilterAwareInterface
         return $datos;
     }
 
-    //------------------------------------------------------------------------------
-
     public function setInputFilter(InputFilterInterface $inputFilter)
     {
-        throw new DomainException(sprintf('%s does not allow injection of an alternate input filter', __CLASS__));
+        throw new DomainException('No permite inyección de filtro alterno');
     }
-
-    //------------------------------------------------------------------------------
 
     public function getInputFilter()
     {
-        if ($this->inputFilter) {
-            return $this->inputFilter;
-        }
+        if ($this->inputFilter) return $this->inputFilter;
+        $f = new InputFilter();
 
-        $inputFilter = new InputFilter();
-
-        $inputFilter->add([
+        $f->add([
             'name' => 'titulo',
             'required' => true,
-            'filters' => [
-                ['name' => StripTags::class],
-                ['name' => StringTrim::class],
-                /* ['name' => StringToUpper::class], */
-            ],
-            'validators' => [
-                [
-                    'name' => StringLength::class,
-                    'options' => [
-                        'encoding' => 'UTF-8',
-                        'max' => 100,
-                    ],
-                ],
-            ],
+            'filters' => [['name' => StripTags::class], ['name' => StringTrim::class]],
+            'validators' => [[
+                'name' => StringLength::class,
+                'options' => ['encoding' => 'UTF-8', 'max' => 100],
+            ]],
         ]);
-        $inputFilter->add([
+        $f->add([
             'name' => 'descripcion',
             'required' => true,
-            'filters' => [
-                ['name' => StripTags::class],
-                ['name' => StringTrim::class],
-            ],
-            'validators' => [
-                [
-                    'name' => StringLength::class,
-                    'options' => [
-                        'encoding' => 'UTF-8',
-                        /* 'max' => 100, */
-                    ],
-                ],
-            ],
+            'filters' => [['name' => StripTags::class], ['name' => StringTrim::class]],
         ]);
+        $f->add(['name' => 'idPrograma',  'required' => true]);
+        $f->add(['name' => 'transmision', 'required' => true]);
+        $f->add(['name' => 'audio_url',   'required' => true]);
+        $f->add(['name' => 'categoria',   'required' => false]);
+        $f->add(['name' => 'imagen',      'required' => false]);
 
-        $this->inputFilter = $inputFilter;
+        $this->inputFilter = $f;
         return $this->inputFilter;
     }
 
-    //------------------------------------------------------------------------------
     public function getIdPodcast()
     {
         return $this->idPodcast;
     }
-
-    public function setIdPodcast($value)
+    public function setIdPodcast($v)
     {
-        $this->idPodcast = $value;
+        $this->idPodcast = $v;
     }
 
     public function getTitulo()
     {
         return $this->titulo;
     }
-
-    public function setTitulo($value)
+    public function setTitulo($v)
     {
-        $this->titulo = $value;
+        $this->titulo = $v;
     }
 
     public function getDescripcion()
     {
         return $this->descripcion;
     }
-
-    public function setDescripcion($value)
+    public function setDescripcion($v)
     {
-        $this->descripcion = $value;
+        $this->descripcion = $v;
     }
 
     public function getImagen()
     {
         return $this->imagen;
     }
-
-    public function setImagen($value)
+    public function setImagen($v)
     {
-        $this->imagen = $value;
+        $this->imagen = $v;
     }
 
     public function getAudio_url()
     {
         return $this->audio_url;
     }
-
-    public function setAudio_url($value)
+    public function setAudio_url($v)
     {
-        $this->audio_url = $value;
+        $this->audio_url = $v;
     }
 
     public function getCategoria()
     {
         return $this->categoria;
     }
-
-    public function setCategoria($value)
+    public function setCategoria($v)
     {
-        $this->categoria = $value;
+        $this->categoria = $v;
     }
 
     public function getTransmision()
     {
         return $this->transmision;
     }
-
-    public function setTransmision($value)
+    public function setTransmision($v)
     {
-        $this->transmision = $value;
+        $this->transmision = $v;
+    }
+
+    public function getIdPrograma()
+    {
+        return $this->idPrograma;
+    }
+    public function setIdPrograma($v)
+    {
+        $this->idPrograma = $v;
     }
 
     public function getEstado()
     {
         return $this->estado;
     }
-
-    public function setEstado($value)
+    public function setEstado($v)
     {
-        $this->estado = $value;
+        $this->estado = $v;
     }
 
     public function getRegistradopor()
     {
         return $this->registradopor;
     }
-
-    public function setRegistradopor($value)
+    public function setRegistradopor($v)
     {
-        $this->registradopor = $value;
+        $this->registradopor = $v;
     }
 
     public function getModificadopor()
     {
         return $this->modificadopor;
     }
-
-    public function setModificadopor($value)
+    public function setModificadopor($v)
     {
-        $this->modificadopor = $value;
+        $this->modificadopor = $v;
     }
 
     public function getFechahorareg()
     {
         return $this->fechahorareg;
     }
-
-    public function setFechahorareg($value)
+    public function setFechahorareg($v)
     {
-        $this->fechahorareg = $value;
+        $this->fechahorareg = $v;
     }
 
     public function getFechahoramod()
     {
         return $this->fechahoramod;
     }
-
-    public function setFechahoramod($value)
+    public function setFechahoramod($v)
     {
-        $this->fechahoramod = $value;
+        $this->fechahoramod = $v;
     }
 }

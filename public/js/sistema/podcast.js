@@ -1,226 +1,246 @@
+/* ============================================================================
+ * Módulo Podcast — GestorPortalV2
+ * La subida del MP3 se hace DIRECTO al servidor de la emisora vía XMLHttpRequest.
+ * El formulario a Laminas solo lleva texto + audio_url (5 KB aprox).
+ * ==========================================================================*/
+
 //------------------------------------------------------------------------------
-function bloqueoAjax() {
-    $.blockUI(
-        {
-            message: $('#msgBloqueo'),
+function bloqueoAjaxPodcast() {
+    if (typeof $.blockUI === 'function') {
+        $.blockUI({
+            message: $('#msgBloqueoPodcast'),
             css: {
-                border: 'none',
-                padding: '15px',
-                backgroundColor: '#000',
-                '-webkit-border-radius': '10px',
-                '-moz-border-radius': '10px',
-                opacity: .85,
-                color: '#fff',
-                'z-index': 10000000
+                border: 'none', padding: '15px', backgroundColor: '#000',
+                '-webkit-border-radius': '10px', '-moz-border-radius': '10px',
+                opacity: .85, color: '#fff', 'z-index': 10000000
             }
-        }
-    );
-    $('.blockOverlay').attr('style', $('.blockOverlay').attr('style') + 'z-index: 1100 !important');
+        });
+        $('.blockOverlay').attr('style', $('.blockOverlay').attr('style') + 'z-index: 1100 !important');
+    }
 }
 
 //------------------------------------------------------------------------------
+// Apertura de modales
+//------------------------------------------------------------------------------
+function verRegistrarPodcast() {
+    $.get('registrar', {}, setFormularioPodcast);
+    bloqueoAjaxPodcast();
+}
+function verEditarPodcast(idPodcast) {
+    $.get('editar', { idPodcast: idPodcast }, setFormularioPodcast);
+    bloqueoAjaxPodcast();
+}
+function verDetallePodcast(idPodcast) {
+    $.get('detalle', { idPodcast: idPodcast }, setFormularioPodcast);
+    bloqueoAjaxPodcast();
+}
+function verDesactivarPodcast(idPodcast) {
+    $.get('desactivar', { idPodcast: idPodcast }, setFormularioPodcast);
+    bloqueoAjaxPodcast();
+}
+function verActivarPodcast(idPodcast) {
+    $.get('activar', { idPodcast: idPodcast }, setFormularioPodcast);
+    bloqueoAjaxPodcast();
+}
+function verEliminarPodcast(idPodcast) {
+    $.get('eliminar', { idPodcast: idPodcast }, setFormularioPodcast);
+    bloqueoAjaxPodcast();
+}
 
-function verRegistrar() {
-    $.get('registrar-podcast', {}, setFormulario);
-    bloqueoAjax();
-}
-function verEditar(idPodcast) {
-    $.get('editar-podcast', { idPodcast: idPodcast }, setFormulario);
-    bloqueoAjax();
-}
-function verDetalle(idPodcast) {
-    $.get('detalle-podcast', { idPodcast: idPodcast }, setFormulario);
-    bloqueoAjax();
-}
-function verEliminar(idPodcast) {
-    $.get('eliminar-podcast', { idPodcast: idPodcast }, setFormulario);
-    bloqueoAjax();
-}
-function verActivar(idPodcast) {
-    $.get('activar-podcast', { idPodcast: idPodcast }, setFormulario);
-    bloqueoAjax();
-}
-function setFormulario(datos) {
-    $("#divContenido").html(datos);
+function setFormularioPodcast(datos) {
+    $('#divContenidoPodcast').html(datos);
     $('#modalFormulario').modal('show');
 }
 
-function validarGuardar(evt, formulario, tipo) {
+//------------------------------------------------------------------------------
+// Validación del formulario (registrar / editar)
+//------------------------------------------------------------------------------
+function validarGuardarPodcast(evt, formulario, tipo) {
     evt.preventDefault();
+
+    var inputAudio = document.getElementById('audio');
+    var inputImagen = document.getElementById('imagen_file');
+
+    var tieneAudioNuevo = inputAudio && inputAudio.files && inputAudio.files[0];
+    var tieneImagenNueva = inputImagen && inputImagen.files && inputImagen.files[0];
+
+    if (tipo === 'REGISTRAR' || tipo === 'EDITAR') {
+        var titulo = document.getElementById('titulo');
+        if (!titulo || titulo.value.trim() === '') {
+            Swal.fire('Falta el título', 'Debe ingresar un título.', 'warning');
+            return false;
+        }
+    }
+
+    if (tieneAudioNuevo) {
+        var ext = inputAudio.files[0].name.split('.').pop().toLowerCase();
+        if (ext !== 'mp3') {
+            Swal.fire('Archivo inválido', 'Solo se permiten archivos MP3.', 'error');
+            return false;
+        }
+    }
+
+    if (tieneImagenNueva) {
+        var extI = inputImagen.files[0].name.split('.').pop().toLowerCase();
+        if (['jpg', 'jpeg', 'png', 'gif', 'webp'].indexOf(extI) === -1) {
+            Swal.fire('Imagen inválida', 'Solo JPG, PNG, GIF o WEBP.', 'error');
+            return false;
+        }
+        if (inputImagen.files[0].size > 2 * 1024 * 1024) {
+            Swal.fire('Imagen muy grande', 'Máximo 2 MB.', 'error');
+            return false;
+        }
+    }
+
     Swal.fire({
-        title: "&#191;DESEA " + tipo + " EL PODCAST&#63;",
-        text: "",
-        icon: "warning",
+        title: '¿DESEA ' + tipo + ' EL PODCAST?',
+        icon: 'warning',
         showCancelButton: true,
-        confirmButtonText: "Si",
-        cancelButtonText: "No",
+        confirmButtonText: 'Si',
+        cancelButtonText: 'No',
         allowOutsideClick: false
-    }).then((result) => {
-        if (result.isConfirmed) {
+    }).then(function (result) {
+        if (!result.isConfirmed) return;
+
+        // Si hay audio nuevo O imagen nueva, subimos al Servidor B
+        if (tieneAudioNuevo || tieneImagenNueva) {
+            var audioFile = tieneAudioNuevo ? inputAudio.files[0] : null;
+            var imagenFile = tieneImagenNueva ? inputImagen.files[0] : null;
+
+            subirArchivosAlServidor(audioFile, imagenFile)
+                .then(function (data) {
+                    // Solo actualizamos el DOM si el servidor devolvió un valor nuevo
+                    if (data.audio) document.getElementById('audio_url').value = data.audio;
+                    if (data.imagen) document.getElementById('imagen').value = data.imagen;
+
+                    formulario.removeAttribute('onsubmit');
+                    if (inputAudio) inputAudio.disabled = true;
+                    if (inputImagen) inputImagen.disabled = true;
+
+                    formulario.submit();
+                    bloqueoAjaxPodcast();
+                })
+                .catch(function (err) {
+                    Swal.fire('Error al subir los archivos', String(err), 'error');
+                });
+        } else {
+            // No hay archivos nuevos, solo se actualizan textos
             formulario.removeAttribute('onsubmit');
             formulario.submit();
-            bloqueoAjax();
+            bloqueoAjaxPodcast();
         }
     });
-}
 
-//------------------------------------------------------------------------------
-function actualizarImagen() {
-    var idPodcast = $("#idPodcast").val();
-    $.get('actualizarimagen-podcast', { idPodcast: idPodcast }, setFormulario);
-    bloqueoAjax();
-}
-function actualizarAudio() {
-    var idPodcast = $("#idPodcast").val();
-    $.get('actualizaraudio-podcast', { idPodcast: idPodcast }, setFormulario);
-    bloqueoAjax();
-}
-function setFormularioAux(datos) {
-    $("#divContenidoAux").html(datos);
-    $('#modalFormularioAux').modal('show');
+    return false;
 }
 //------------------------------------------------------------------------------
-function validarImagen() {
-    const input = $('#imagen')[0];
-    const file = input.files[0];
+// Subida del MP3 al servidor de la emisora
+//------------------------------------------------------------------------------
+function subirArchivosAlServidor(audioFile, imagenFile) {
+    return new Promise(function (resolve, reject) {
+        var cfg = window.PODCAST_UPLOAD;
+        if (!cfg || !cfg.endpoint) return reject('No hay endpoint configurado.');
 
-    if (!file) return;
-
-    const ALLOWED_EXT = ['jpg', 'jpeg', 'png', 'webp'];
-    const MAX_SIZE = 300 * 1024; // 300 KB recomendado
-    const IMG_MIN = 600; // lado mínimo de la imagen cuadrada (600x600)
-
-    const ext = file.name.split('.').pop().toLowerCase();
-
-    // Validar tipo archivo
-    if (!file.type.startsWith('image/')) {
-        mostrarError("El archivo no es una imagen.");
-        limpiarInput();
-        return;
-    }
-
-    // Validar extensión
-    if (!ALLOWED_EXT.includes(ext)) {
-        mostrarError("La imagen debe ser JPG, PNG o WebP.");
-        limpiarInput();
-        return;
-    }
-
-    // Validar peso
-    if (file.size > MAX_SIZE) {
-        mostrarError("La imagen no debe superar los 300KB.");
-        limpiarInput();
-        return;
-    }
-
-    // Validar dimensiones
-    const img = new Image();
-    img.onload = function () {
-        if (this.width !== this.height) {
-            mostrarError("La imagen debe ser estrictamente cuadrada.");
-            limpiarInput();
-            return;
-        }
-
-        if (this.width < IMG_MIN || this.height < IMG_MIN) {
-            mostrarError(`La imagen cuadrada debe ser mínimo de ${IMG_MIN}x${IMG_MIN} píxeles.`);
-            limpiarInput();
-            return;
-        }
-
-        // Imagen válida
-        Swal.fire({
-            title: "Imagen válida.",
-            text: "GestorPortalV2",
-            icon: "success",
-            confirmButtonColor: '#f0ad4e',
-            confirmButtonText: 'CERRAR',
-            allowOutsideClick: false
-        });
-    };
-
-    img.src = URL.createObjectURL(file);
-
-    // Funciones auxiliares
-    function mostrarError(msg) {
-        Swal.fire({
-            title: msg,
-            text: "GestorPortalV2",
-            icon: "error",
-            confirmButtonColor: '#f0ad4e',
-            confirmButtonText: "CERRAR",
-            allowOutsideClick: false
-        });
-    }
-
-    function limpiarInput() {
-        $('#imagen').val('');
-    }
-}
-function validarAudio() {
-    var input = $('#audio_url')[0];
-    var file = input.files[0];
-
-    if (file) {
-        var ext = file.name.split('.').pop().toLowerCase();
-        var fileSize = file.size; // tamaño en bytes (10MB son 10 * 1024 * 1024 bytes)
-        var audio = new Audio();
-
-        if (file.type.startsWith('audio/')) {
-            if (ext !== 'mp3' && ext !== 'wav' && ext !== 'aac') {
-                Swal.fire({
-                    title: "El audio debe ser de formato MP3, WAV o AAC.",
-                    text: "GestorPortalV2",
-                    icon: "error",
-                    confirmButtonColor: '#f0ad4e',
-                    confirmButtonText: 'CERRAR',
-                    allowOutsideClick: false
-                });
-                $('#audio_url').val('');
-            } else if (fileSize > 25 * 1024 * 1024) { // 10MB límite
-                Swal.fire({
-                    title: "El audio no debe superar 25MB.",
-                    text: "GestorPortalV2",
-                    icon: "error",
-                    confirmButtonColor: '#f0ad4e',
-                    confirmButtonText: 'CERRAR',
-                    allowOutsideClick: false
-                });
-                $('#audio_url').val('');
-            } else {
-                audio.onloadedmetadata = function () {
-                    Swal.fire({
-                        title: "Audio correcto.",
-                        text: "GestorPortalV2",
-                        icon: "success",
-                        confirmButtonColor: '#f0ad4e',
-                        confirmButtonText: 'CERRAR',
-                        allowOutsideClick: false
-                    });
-                };
-                audio.src = URL.createObjectURL(file);
-            }
-        } else {
+        // -------- Modo MOCK --------
+        if (cfg.mock === true || String(cfg.endpoint).indexOf('MOCK:') === 0) {
             Swal.fire({
-                title: "El archivo no es un audio.",
-                text: "GestorPortalV2",
-                icon: "error",
-                confirmButtonColor: '#f0ad4e',
-                confirmButtonText: 'CERRAR',
-                allowOutsideClick: false
+                title: 'Subiendo (modo desarrollo)…',
+                html: '<div class="progress" style="height:22px"><div class="progress-bar progress-bar-striped active" style="width:100%">100%</div></div>',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                timer: 1000
             });
-            $('#audio_url').val('');
+            setTimeout(function () {
+                Swal.close();
+                var res = {};
+                if (audioFile) res.audio = 'https://www.unicauca.edu.co/sitioemisora/audios/podcast/MOCK_' + Date.now() + '.mp3';
+                if (imagenFile) res.imagen = 'MOCK_' + Date.now() + '.png';
+                resolve(res);
+            }, 1200);
+            return;
         }
+
+        // -------- Modo real --------
+        var fd = new FormData();
+        if (audioFile) {
+            var nombreFinal = 'podcast_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8) + '.mp3';
+            fd.append('audio', audioFile);
+            fd.append('nombreFinal', nombreFinal);
+        }
+        if (imagenFile) {
+            fd.append('imagen', imagenFile);
+        }
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', cfg.endpoint, true);
+        if (cfg.token) xhr.setRequestHeader('X-Upload-Token', cfg.token);
+        xhr.timeout = 0;
+
+        Swal.fire({
+            title: 'Subiendo archivos…',
+            html: '<div class="progress" style="height:22px"><div id="uploadProgressPodcast" class="progress-bar progress-bar-striped active" style="width:0%">0%</div></div><small class="text-muted d-block mt-2">No cierres esta ventana</small>',
+            allowOutsideClick: false,
+            showConfirmButton: false
+        });
+
+        xhr.upload.onprogress = function (e) {
+            if (e.lengthComputable) {
+                var pct = Math.round((e.loaded / e.total) * 100);
+                var bar = document.getElementById('uploadProgressPodcast');
+                if (bar) { bar.style.width = pct + '%'; bar.textContent = pct + '%'; }
+            }
+        };
+
+        xhr.onload = function () {
+            Swal.close();
+            var r = null;
+            try { r = JSON.parse(xhr.responseText); } catch (e) { }
+            if (xhr.status === 200 && r && r.ok) {
+                resolve({ audio: r.audio_url, imagen: r.imagen });
+            } else {
+                reject((r && r.error) ? r.error : ('HTTP ' + xhr.status));
+            }
+        };
+
+        xhr.onerror = function () { Swal.close(); reject('Error de red'); };
+        xhr.ontimeout = function () { Swal.close(); reject('Timeout'); };
+
+        xhr.send(fd);
+    });
+}
+//------------------------------------------------------------------------------
+// Validaciones locales de archivos (antes de enviar)
+//------------------------------------------------------------------------------
+function validarAudioPodcast() {
+    var input = document.getElementById('audio');
+    if (!input || !input.files || !input.files[0]) return;
+    var f = input.files[0];
+    var ext = f.name.split('.').pop().toLowerCase();
+    if (ext !== 'mp3') {
+        Swal.fire('Archivo inválido', 'Solo se permiten archivos MP3.', 'error');
+        input.value = '';
+        return;
     }
+    var mb = (f.size / 1024 / 1024).toFixed(2);
+    Swal.fire({
+        toast: true, position: 'top-end', icon: 'success',
+        title: 'MP3 listo: ' + mb + ' MB',
+        showConfirmButton: false, timer: 2500
+    });
 }
 
-
-function verImagen(imagen) {
-    Swal.fire({
-        html:
-            '<img src="./../../../archivos/emisora/podcast/' + imagen + '" width="100%" height="100%"/>',
-        confirmButtonColor: '#f0ad4e',
-        confirmButtonText: 'CERRAR',
-        allowOutsideClick: false
-    });
+function validarImagenPodcast() {
+    var input = document.getElementById('imagen_file'); // <--- Corregido aquí
+    if (!input || !input.files || !input.files[0]) return;
+    var f = input.files[0];
+    var ext = f.name.split('.').pop().toLowerCase();
+    if (['jpg', 'jpeg', 'png', 'gif', 'webp'].indexOf(ext) === -1) {
+        Swal.fire('Imagen inválida', 'Solo JPG, PNG, GIF o WEBP.', 'error');
+        input.value = '';
+        return;
+    }
+    if (f.size > 2 * 1024 * 1024) {
+        Swal.fire('Imagen muy grande', 'Máximo 2 MB.', 'error');
+        input.value = '';
+    }
 }

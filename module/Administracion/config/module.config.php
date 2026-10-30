@@ -290,6 +290,20 @@ return [
                             'defaults' => ['controller' => Controller\EmisoraExcepcionController::class, 'action' => 'index'],
                         ],
                     ],
+                    'podcast' => [
+                        'type' => \Laminas\Router\Http\Segment::class,
+                        'options' => [
+                            'route' => '/podcast/:action[/:id1]',
+                            'constraints' => [
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id1'    => '[a-zA-Z0-9_-]*',
+                            ],
+                            'defaults' => [
+                                'controller' => Controller\PodcastController::class,
+                                'action'     => 'index',
+                            ],
+                        ],
+                    ],
                     'directorio' => [
                         'type' => \Laminas\Router\Http\Segment::class,
                         'options' => [
