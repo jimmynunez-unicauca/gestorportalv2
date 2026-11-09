@@ -32,12 +32,15 @@ echo $this->form()->openTag($form);
 
                 <div class="form-group col-md-12">
                     <label>Audio actual</label><br>
-                    <?php if (!empty($audioActual)): ?>
+                    <?php
+                    $audioUrlCompleta = !empty($audioActual) ? $baseUrlArchivos . htmlspecialchars($audioActual) : '';
+                    ?>
+                    <?php if (!empty($audioUrlCompleta)): ?>
                         <audio controls preload="none" style="width:100%">
-                            <source src="<?= htmlspecialchars($audioActual) ?>" type="audio/mpeg">
+                            <source src="<?= $audioUrlCompleta ?>" type="audio/mpeg">
                             Tu navegador no soporta audio.
                         </audio>
-                        <a href="<?= htmlspecialchars($audioActual) ?>" target="_blank" class="small">Abrir en nueva pestaña</a>
+                        <a href="<?= $audioUrlCompleta ?>" target="_blank" class="small">Abrir en nueva pestaña</a>
                     <?php else: ?>
                         <span class="text-muted">Sin audio registrado.</span>
                     <?php endif; ?>

@@ -169,11 +169,21 @@ class PodcastForm extends Form
             ]);
         }
 
+        if ($accion === 'editar') {
+            $hidden = Element\Text::class;
+        } else {
+            $hidden = Element\Hidden::class;
+        }
+
         // ---- Campos ocultos y auditoría ----
         $this->add([
-            'type' => Element\Hidden::class,
+            'type' => $hidden,
             'name' => 'idPodcast',
-            'attributes' => ['id' => 'idPodcast'],
+            'attributes' => [
+                'readonly' => true,
+                'class' => 'form-control',
+                'id' => 'idPodcast',
+            ],
         ]);
 
         // audio_url: la llena el JS después de subir el MP3 al servidor B

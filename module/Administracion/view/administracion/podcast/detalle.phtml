@@ -1,10 +1,13 @@
 <?php $p = $this->info; ?>
+<?php
+$imagenUrl = $baseUrlArchivos . 'imagenes/' . htmlspecialchars($p['imagen'] ?: 'sinImagen.png');
+$audioUrlCompleta = $baseUrlArchivos . htmlspecialchars($p['audio_url']);
+?>
 <div class="modal-body">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-4 text-center">
-                <img src="https://unicauca.edu.co/sitioemisora/podcast_storage/audios/podcast/imagenes/<?= htmlspecialchars($p['imagen'] ?: 'sinImagen.png') ?>"
-                    class="img-fluid rounded shadow-sm" style="max-width:220px;">
+                <img src="<?= $imagenUrl ?>" class="img-fluid rounded shadow-sm" style="max-width:220px;">
             </div>
             <div class="col-md-8">
                 <table class="table table-bordered table-sm">
@@ -41,10 +44,11 @@
                         <td>
                             <?php if (!empty($p['audio_url'])): ?>
                                 <audio controls preload="none" style="width:100%">
-                                    <source src="<?= htmlspecialchars($p['audio_url']) ?>" type="audio/mpeg">
+                                    <!-- Usamos la URL completa calculada -->
+                                    <source src="<?= $audioUrlCompleta ?>" type="audio/mpeg">
                                     Tu navegador no soporta audio.
                                 </audio>
-                                <a href="<?= htmlspecialchars($p['audio_url']) ?>" target="_blank" class="small">
+                                <a href="<?= $audioUrlCompleta ?>" target="_blank" class="small">
                                     Abrir en nueva pestaña
                                 </a>
                             <?php else: ?>

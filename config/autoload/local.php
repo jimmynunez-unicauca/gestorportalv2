@@ -32,5 +32,6 @@ return [
         /* 'endpoint' => 'http://10.200.2.15/podcast_storage/upload_podcast.php', */
         'endpoint' => 'https://unicauca.edu.co/sitioemisora/podcast_storage/upload_podcast.php',
         'token'    => 'AdminPodcast2026*',
+        'base_url_archivos' => 'https://unicauca.edu.co/sitioemisora/podcast_storage/audios/podcast/',
     ],
 ];
