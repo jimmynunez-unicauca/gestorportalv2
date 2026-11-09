@@ -29,7 +29,8 @@ return [
     // Módulo Podcast — configuración de subida
     // ================================================================
     'podcast_upload' => [
-        'endpoint' => 'http://192.168.52.158/upload_podcast.php',
-        'token'    => 'token_de_prueba_123',
+        /* 'endpoint' => 'http://10.200.2.15/podcast_storage/upload_podcast.php', */
+        'endpoint' => 'https://unicauca.edu.co/sitioemisora/podcast_storage/upload_podcast.php',
+        'token'    => 'AdminPodcast2026*',
     ],
 ];
