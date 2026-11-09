@@ -50,8 +50,11 @@ class PodcastController extends AbstractActionController
     // =========================================================================
     public function indexAction()
     {
+        $baseUrlArchivos = str_replace('upload_podcast.php', 'audios/podcast/', $this->uploadConfig['endpoint']);
+
         return new ViewModel([
             'fetchAll' => $this->DAO->fetchAll(),
+            'baseUrlArchivos' => $baseUrlArchivos,
         ]);
     }
 
@@ -94,7 +97,8 @@ class PodcastController extends AbstractActionController
             $imagen = (string) $request->getPost('imagen', 'sinImagen.png');
 
             $obj->exchangeArray($form->getData());
-            $obj->setAudio_url($audioUrl);
+            $nombreAudio = basename(parse_url($audioUrl, PHP_URL_PATH));
+            $obj->setAudio_url($nombreAudio);
             $obj->setImagen($imagen);
             $obj->setEstado('Activo');
             $obj->setRegistradopor($infosesion['login']);
@@ -137,12 +141,14 @@ class PodcastController extends AbstractActionController
         $form->setData($obj->getArrayCopy());
 
         if (!$request->isPost()) {
+            $baseUrlArchivos = str_replace('upload_podcast.php', 'audios/podcast/', $this->uploadConfig['endpoint']);
             return (new ViewModel([
                 'form'           => $form,
                 'uploadEndpoint' => $this->uploadConfig['endpoint'],
                 'uploadToken'    => $this->uploadConfig['token'],
                 'uploadMock'     => str_starts_with($this->uploadConfig['endpoint'], 'MOCK:'),
                 'audioActual'    => $obj->getAudio_url(),
+                'baseUrlArchivos' => $baseUrlArchivos,
             ]))->setTerminal(true);
         }
 
@@ -166,8 +172,9 @@ class PodcastController extends AbstractActionController
             }
 
             $session = $this->getInfoSesion();
+            $nombreAudio = basename(parse_url($audioUrl, PHP_URL_PATH));
             $obj->exchangeArray($form->getData());
-            $obj->setAudio_url($audioUrl);
+            $obj->setAudio_url($nombreAudio);
             $obj->setImagen($imagen);
             $obj->setModificadopor($session['login']);
             $obj->setFechahoramod(date('Y-m-d H:i:s'));
@@ -187,11 +194,19 @@ class PodcastController extends AbstractActionController
     {
         $id   = (int) $this->params()->fromQuery('idPodcast', 0);
         $info = $this->DAO->getPodcastDetalle($id);
+
         if (!$info) {
             $this->flashMessenger()->addErrorMessage('EL PODCAST NO EXISTE');
             return $this->redirect()->toUrl('index');
         }
-        return (new ViewModel(['info' => $info]))->setTerminal(true);
+
+        // Calculamos la URL base
+        $baseUrlArchivos = str_replace('upload_podcast.php', 'audios/podcast/', $this->uploadConfig['endpoint']);
+
+        return (new ViewModel([
+            'info' => $info,
+            'baseUrlArchivos' => $baseUrlArchivos // Se la pasamos a la vista
+        ]))->setTerminal(true);
     }
 
     // =========================================================================
