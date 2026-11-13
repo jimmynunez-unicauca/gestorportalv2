@@ -96,7 +96,7 @@ class UnisaludfinancieraForm extends Form
                 'empty_option' => 'Seleccione...',
                 'value_options' => [
                     'Conjunto Completo de Estados Financieros y Revelaciones' => 'Conjunto Completo de Estados Financieros y Revelaciones',
-                    'Ejecusión Presupuestal' => 'Ejecusión Presupuestal',
+                    'Ejecución Presupuestal' => 'Ejecución Presupuestal',
                     'Estado de Resultados' => 'Estado de Resultados',
                     'Situación Financiera' => 'Situación Financiera',
                     'Cumplimiento Resolución 356 de 2022 Contraloría General de la Nación' => 'Cumplimiento Resolución 356 de 2022 Contraloría General de la Nación',

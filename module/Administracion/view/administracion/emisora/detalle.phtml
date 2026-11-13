@@ -25,6 +25,12 @@ $programa = $this->form; // array con los datos
                         <td><?= nl2br(htmlspecialchars($programa['detalle_programa'])) ?></td>
                     </tr>
                     <tr>
+                        <th>Descripcion</th>
+                        <td>
+                            <?= $programa['descripcion_programa'] ?>
+                        </td>
+                    </tr>
+                    <tr>
                         <th>Color</th>
                         <td>
                             <span style="display:inline-block; width:20px; height:20px; background:<?= htmlspecialchars($programa['color_programa']) ?>; border:1px solid #ccc; vertical-align:middle;"></span>
