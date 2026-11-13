@@ -15,6 +15,7 @@ class Programa implements InputFilterAwareInterface
     private $idPrograma;
     private $nombre_programa;
     private $detalle_programa;
+    private $descripcion_programa;
     private $color_programa;
     private $imagen;
     private $estado;
@@ -98,6 +99,15 @@ class Programa implements InputFilterAwareInterface
     public function setDetalle_programa($v)
     {
         $this->detalle_programa = $v;
+    }
+
+    public function getDescripcion_programa()
+    {
+        return $this->descripcion_programa;
+    }
+    public function setDescripcion_programa($v)
+    {
+        $this->descripcion_programa = $v;
     }
 
     public function getColor_programa()

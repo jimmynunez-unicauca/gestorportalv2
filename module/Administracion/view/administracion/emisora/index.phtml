@@ -37,7 +37,11 @@ foreach (array_filter($notificaciones) as $tipo => $mensajes) {
 
 $title = 'Programas';
 $this->headTitle($title);
-$this->headLink();
+
+// NUEVO: CSS de Summernote (Bootstrap 4) vía CDN
+$this->headLink()
+    ->appendStylesheet('https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs4.min.css');
+
 $this->headScript()
     ->prependScript('
         $(document).ajaxStop($.unblockUI);
@@ -96,11 +100,41 @@ $this->headScript()
                 });
             });
 
+            // NUEVO: Inicializar Summernote cuando el modal se abre
+            $("#modalFormulario").on("shown.bs.modal", function () {
+                setTimeout(function () {
+                    var $editor = $("#descripcion_programa");
+                    if (!$editor.length) return;
+                    if (typeof $editor.summernote !== "function") {
+                        console.warn("[emisora] Summernote no está cargado");
+                        return;
+                    }
+                    // Destruir instancia previa si el modal se reabre
+                    if ($editor.next(".note-editor").length) {
+                        $editor.summernote("destroy");
+                    }
+                    $editor.summernote({
+                        lang: "es-ES",
+                        height: 300,
+                        toolbar: [
+                            ["style", ["bold", "italic", "clear"]],
+                            ["color", ["color"]],
+                            ["para", ["ul", "ol"]],
+                            ["insert", ["link"]],
+                            ["view", ["codeview"]]
+                        ]
+                    });
+                }, 150);
+            });
+
             ' . $mostrarMensajes . '
         });
     ', 'text/javascript', ['noescape' => true])
+    // NUEVO: JS de Summernote vía CDN (antes de emisora.js)
+    ->prependFile('https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs4.min.js')
+    // Idioma español (opcional)
+    ->prependFile('https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/lang/summernote-es-ES.min.js')
     ->prependFile($this->basePath('js/sistema/emisora.js'))
-    ->prependFile($this->basePath('js/ckeditor.js'))
     ->prependFile($this->basePath('js/jquery.blockUI.js'));
 ?>
 <div class="col-md-12 col-sm-12">

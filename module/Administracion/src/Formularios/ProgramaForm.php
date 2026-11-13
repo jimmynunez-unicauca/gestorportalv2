@@ -61,7 +61,7 @@ class ProgramaForm extends Form
         $this->setAttribute('onsubmit', $onsubmit);
 
         $this->add([
-            'type' => Element\Textarea::class,
+            'type' => Element\Text::class,
             'name' => 'nombre_programa',
             'options' => ['label' => 'Título *'],
             'attributes' => [
@@ -82,6 +82,17 @@ class ProgramaForm extends Form
                 'required' => $required,
                 'class' => 'form-control',
                 'id' => 'detalle_programa',
+            ],
+        ]);
+
+        $this->add([
+            'type' => Element\Textarea::class,
+            'name' => 'descripcion_programa',
+            'options' => ['label' => 'Descripción detallada'],
+            'attributes' => [
+                'class' => 'form-control',
+                'id' => 'descripcion_programa',
+                'rows' => 8,
             ],
         ]);
 
