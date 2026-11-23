@@ -331,6 +331,7 @@ $this->headLink()->appendStylesheet($this->basePath('css/select2.min.css'));
                     <tr>
                         <th data-toggle="tooltip" title="ID" scope="col"><i class="fa fa-key"></i></th>
                         <th data-toggle="tooltip" title="OPCIONES" scope="col"><i class="fa fa-cog fa-spin fa-lg"></i></th>
+                        <th scope="col"><i class="fas fa-id-card"></i> IDENTIFICACIÓN</th>
                         <th scope="col"><i class="fas fa-id-card"></i> NOMBRE</th>
                         <th scope="col"><i class="fas fa-phone"></i> TELEFONO</th>
                         <th scope="col"><i class="fas fa-envelope"></i> CORREO</th>
@@ -342,11 +343,23 @@ $this->headLink()->appendStylesheet($this->basePath('css/select2.min.css'));
                 <tbody>
                     <?php
                     foreach ($this->fetchAll as $qs) {
+                        $ti = '';
+                        if ($qs['tipoIdentificacion'] == 'Cédula de Ciudadanía') {
+                            $ti = 'CC';
+                        } else if ($qs['tipoIdentificacion'] == 'Tarjeta de Identidad') {
+                            $ti = 'TI';
+                        } else if ($qs['tipoIdentificacion'] == 'Passport') {
+                            $ti = 'PA';
+                        } else if ($qs['tipoIdentificacion'] == 'Cédula de Extranjería') {
+                            $ti = 'CE';
+                        }
+
                         echo '<tr>';
                         echo '<td>' . $qs['idForm']  . '</td>';
                         echo '<td>';
                         echo '<a href="javascript:verDetalle(' . $qs['idForm']  . ')" title="VER"><i class="fa fa-eye"></i></a>';
                         echo '</td>';
+                        echo '<td>' . $ti . ' - ' . $qs['identificacion']  . '</td>';
                         echo '<td>' . $qs['nombre']  . '</td>';
                         echo '<td>' . $qs['telefono'] . '</td>';
                         echo '<td>' . $qs['correo']  . '</td>';

@@ -120,14 +120,16 @@ class ColoquioinscripcionController extends AbstractActionController
         $headers = [
             'A1' => 'ID',
             'B1' => 'NOMBRE',
-            'C1' => 'CORREO',
-            'D1' => 'INSTITUCIÓN',
-            'E1' => 'ROL ACADÉMICO',
-            'F1' => 'TELÉFONO',
-            'G1' => 'PAÍS',
-            'H1' => 'ESTADO',
-            'I1' => 'REGISTRADO POR',
-            'J1' => 'FECHA REGISTRO'
+            'C1' => 'TIPO IDENTIFICACIÓN',
+            'D1' => 'IDENTIFICACIÓN',
+            'E1' => 'CORREO',
+            'F1' => 'INSTITUCIÓN',
+            'G1' => 'ROL ACADÉMICO',
+            'H1' => 'TELÉFONO',
+            'I1' => 'PAÍS',
+            'J1' => 'ESTADO',
+            'K1' => 'REGISTRADO POR',
+            'L1' => 'FECHA REGISTRO'
         ];
 
         foreach ($headers as $celda => $titulo) {
@@ -144,19 +146,21 @@ class ColoquioinscripcionController extends AbstractActionController
         foreach ($datos as $row) {
             $sheet->setCellValue('A' . $fila, $row['idForm'] ?? '');
             $sheet->setCellValue('B' . $fila, $row['nombre'] ?? '');
-            $sheet->setCellValue('C' . $fila, $row['correo'] ?? '');
-            $sheet->setCellValue('D' . $fila, $row['institucion'] ?? '');
-            $sheet->setCellValue('E' . $fila, $row['rol_academico'] ?? '');
-            $sheet->setCellValue('F' . $fila, $row['telefono'] ?? '');
-            $sheet->setCellValue('G' . $fila, $row['pais'] ?? '');
-            $sheet->setCellValue('H' . $fila, $row['estado'] ?? '');
-            $sheet->setCellValue('I' . $fila, $row['registradopor'] ?? '');
-            $sheet->setCellValue('J' . $fila, $row['fechahorareg'] ?? '');
+            $sheet->setCellValue('C' . $fila, $row['tipoIdentificacion'] ?? '');
+            $sheet->setCellValue('D' . $fila, $row['identificacion'] ?? '');
+            $sheet->setCellValue('E' . $fila, $row['correo'] ?? '');
+            $sheet->setCellValue('F' . $fila, $row['institucion'] ?? '');
+            $sheet->setCellValue('G' . $fila, $row['rol_academico'] ?? '');
+            $sheet->setCellValue('H' . $fila, $row['telefono'] ?? '');
+            $sheet->setCellValue('I' . $fila, $row['pais'] ?? '');
+            $sheet->setCellValue('J' . $fila, $row['estado'] ?? '');
+            $sheet->setCellValue('K' . $fila, $row['registradopor'] ?? '');
+            $sheet->setCellValue('L' . $fila, $row['fechahorareg'] ?? '');
             $fila++;
         }
 
         // Autoajustar columnas
-        foreach (range('A', 'J') as $col) {
+        foreach (range('A', 'L') as $col) {
             $sheet->getColumnDimension($col)->setAutoSize(true);
         }
 
@@ -169,10 +173,10 @@ class ColoquioinscripcionController extends AbstractActionController
                 ]
             ]
         ];
-        $sheet->getStyle('A1:J' . ($fila - 1))->applyFromArray($styleArray);
+        $sheet->getStyle('A1:L' . ($fila - 1))->applyFromArray($styleArray);
 
         // Centrar contenido
-        $sheet->getStyle('A2:J' . ($fila - 1))->getAlignment()
+        $sheet->getStyle('A2:L' . ($fila - 1))->getAlignment()
             ->setHorizontal(Alignment::HORIZONTAL_CENTER)
             ->setVertical(Alignment::VERTICAL_CENTER);
 

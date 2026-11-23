@@ -117,13 +117,15 @@ class ColoquioarticuloController extends AbstractActionController
             'C1' => 'RESUMEN',
             'D1' => 'PALABRAS CLAVE',
             'E1' => 'AUTORES',
-            'F1' => 'AFILIACIONES',
-            'G1' => 'SUGERENCIA EVALUADORES',
-            'H1' => 'CORREO',
-            'I1' => 'TELÉFONO',
-            'J1' => 'ESTADO',
-            'K1' => 'REGISTRADO POR',
-            'L1' => 'FECHA REGISTRO'
+            'F1' => 'TIPO IDENTIFICACIÓN',
+            'G1' => 'IDENTIFICACIÓN',
+            'H1' => 'AFILIACIONES',
+            'I1' => 'SUGERENCIA EVALUADORES',
+            'J1' => 'CORREO',
+            'K1' => 'TELÉFONO',
+            'L1' => 'ESTADO',
+            'M1' => 'REGISTRADO POR',
+            'N1' => 'FECHA REGISTRO'
         ];
 
         foreach ($headers as $celda => $titulo) {
@@ -143,18 +145,20 @@ class ColoquioarticuloController extends AbstractActionController
             $sheet->setCellValue('C' . $fila, $row['resumen'] ?? '');
             $sheet->setCellValue('D' . $fila, $row['palabras_clave'] ?? '');
             $sheet->setCellValue('E' . $fila, $row['autores'] ?? '');
-            $sheet->setCellValue('F' . $fila, $row['afiliaciones'] ?? '');
-            $sheet->setCellValue('G' . $fila, $row['sugerencia_evaluadores'] ?? '');
-            $sheet->setCellValue('H' . $fila, $row['correo'] ?? '');
-            $sheet->setCellValue('I' . $fila, $row['telefono'] ?? '');
-            $sheet->setCellValue('J' . $fila, $row['estado'] ?? '');
-            $sheet->setCellValue('K' . $fila, $row['registradopor'] ?? '');
-            $sheet->setCellValue('L' . $fila, $row['fechahorareg'] ?? '');
+            $sheet->setCellValue('F' . $fila, $row['tipoIdentificacion'] ?? '');
+            $sheet->setCellValue('G' . $fila, $row['identificacion'] ?? '');
+            $sheet->setCellValue('H' . $fila, $row['afiliaciones'] ?? '');
+            $sheet->setCellValue('I' . $fila, $row['sugerencia_evaluadores'] ?? '');
+            $sheet->setCellValue('J' . $fila, $row['correo'] ?? '');
+            $sheet->setCellValue('K' . $fila, $row['telefono'] ?? '');
+            $sheet->setCellValue('L' . $fila, $row['estado'] ?? '');
+            $sheet->setCellValue('M' . $fila, $row['registradopor'] ?? '');
+            $sheet->setCellValue('N' . $fila, $row['fechahorareg'] ?? '');
             $fila++;
         }
 
         // Autoajustar columnas
-        foreach (range('A', 'L') as $col) {
+        foreach (range('A', 'N') as $col) {
             $sheet->getColumnDimension($col)->setAutoSize(true);
         }
 
@@ -167,10 +171,10 @@ class ColoquioarticuloController extends AbstractActionController
                 ]
             ]
         ];
-        $sheet->getStyle('A1:L' . ($fila - 1))->applyFromArray($styleArray);
+        $sheet->getStyle('A1:N' . ($fila - 1))->applyFromArray($styleArray);
 
         // Centrar contenido
-        $sheet->getStyle('A2:L' . ($fila - 1))->getAlignment()
+        $sheet->getStyle('A2:N' . ($fila - 1))->getAlignment()
             ->setHorizontal(Alignment::HORIZONTAL_CENTER)
             ->setVertical(Alignment::VERTICAL_CENTER);
 
