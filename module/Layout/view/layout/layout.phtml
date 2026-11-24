@@ -248,7 +248,7 @@
                                     <?php
                                     if (isset($container->rbac)) {
                                         if ($rbac->isGranted($rol, 'Usermanager\Controller\EmpleadoclienteController.index:GET')) { ?>
-                                            <li><a><img src="<?= $this->basePath('img/iconos/usuarios.png') ?>"> GESTOR USUARIOS <span class="fa fa-chevron-down"></span></a>
+                                            <li><a><img src="<?= $this->basePath('img/iconos/configuracion.png') ?>"> CONFIGURACIÓN <span class="fa fa-chevron-down"></span></a>
                                                 <ul class="nav child_menu">
                                                     <li><a href="<?= $this->url('usermanager/acceso', array('controller' => 'acceso', 'action' => 'index')) ?>">Accesos</a></li>
                                                     <li><a href="<?= $this->url('usermanager/empleadocliente', array('controller' => 'empleadocliente', 'action' => 'index')) ?>">Usuarios</a></li>
@@ -257,6 +257,15 @@
                                                     <li><a href="<?= $this->url('administracion/wpposts', array('controller' => 'wpposts', 'action' => 'index')) ?>">Historial de Cambios</a></li>
                                                     <li><a href="<?= $this->url('administracion/wplogin', array('controller' => 'wplogin', 'action' => 'index')) ?>">Historial de logeos</a></li>
                                                     <li><a href="<?= $this->url('administracion/pluginunicauca', array('controller' => 'pluginunicauca', 'action' => 'index')) ?>">Plugin Unicauca</a></li>
+                                                    <li>
+                                                        <a> Ubicaciones <span class="fa fa-chevron-down"></span></a>
+                                                        <ul class="nav child_menu">
+                                                            <li><a href="<?= $this->url('documentos/orii', array('controller' => 'orii', 'action' => 'index')) ?>">Paises</a></li>
+                                                            <li><a href="<?= $this->url('documentos/ciudad', array('controller' => 'ciudad', 'action' => 'index')) ?>">Ciudades</a></li>
+                                                            <li><a href="<?= $this->url('documentos/instituto', array('controller' => 'instituto', 'action' => 'index')) ?>">Institutos</a></li>
+                                                            <li><a href="">Gestión de Facultades</a></li>
+                                                        </ul>
+                                                    </li>
                                                 </ul>
                                             </li>
                                     <?php }

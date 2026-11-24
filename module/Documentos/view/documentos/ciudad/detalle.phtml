@@ -1,0 +1,46 @@
+<?php $info = $this->form; ?>
+<div class="modal-body">
+    <div class="container-fluid">
+        <table class="table table-bordered table-sm">
+            <tr>
+                <th style="width:35%">ID</th>
+                <td><?= $info['idCiudades'] ?></td>
+            </tr>
+            <tr>
+                <th>Ciudad</th>
+                <td><?= htmlspecialchars($info['ciudad']) ?></td>
+            </tr>
+            <tr>
+                <th>Departamento / Estado / Provincia</th>
+                <td><?= htmlspecialchars($info['state_province'] ?? '-') ?></td>
+            </tr>
+            <tr>
+                <th>País</th>
+                <td><?= htmlspecialchars($info['pais'] ?? '-') ?></td>
+            </tr>
+            <tr>
+                <th>Estado</th>
+                <td><?= $info['estado'] ?></td>
+            </tr>
+            <tr>
+                <th>Registrado por</th>
+                <td><?= $info['registradopor'] ?></td>
+            </tr>
+            <tr>
+                <th>Fecha registro</th>
+                <td><?= $info['fechahorareg'] ?></td>
+            </tr>
+            <tr>
+                <th>Modificado por</th>
+                <td><?= $info['modificadopor'] ?: '-' ?></td>
+            </tr>
+            <tr>
+                <th>Fecha actualización</th>
+                <td><?= $info['fechahoramod'] ?: '-' ?></td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-warning" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
+</div>

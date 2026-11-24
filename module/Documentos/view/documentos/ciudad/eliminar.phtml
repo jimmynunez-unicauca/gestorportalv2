@@ -1,0 +1,46 @@
+<?php $form->prepare();
+echo $this->form()->openTag($form); ?>
+<div class="modal-body">
+    <?php if ($this->tieneInstitutos): ?>
+        <div class="alert alert-danger">
+            <i class="fas fa-exclamation-triangle"></i>
+            <strong>NO SE PUEDE ELIMINAR ESTA CIUDAD.</strong><br>
+            Tiene instituciones asociadas. Debe <strong>eliminar o reasignar</strong>
+            las instituciones antes de borrarla definitivamente.
+        </div>
+    <?php else: ?>
+        <div class="alert alert-danger">
+            <i class="fas fa-times-circle"></i>
+            <strong>¡ATENCIÓN!</strong> Esta acción <strong>ELIMINA DEFINITIVAMENTE</strong>
+            la ciudad de la base de datos. <strong>No se puede deshacer.</strong>
+        </div>
+    <?php endif; ?>
+    <div class="container-fluid">
+        <table class="table table-bordered table-sm">
+            <tr>
+                <th style="width:35%">ID</th>
+                <td><?= $form->get('idCiudades')->getValue() ?></td>
+            </tr>
+            <tr>
+                <th>Ciudad</th>
+                <td><?= htmlspecialchars($form->get('ciudad')->getValue()) ?></td>
+            </tr>
+            <tr>
+                <th>Departamento</th>
+                <td><?= htmlspecialchars($form->get('state_province')->getValue() ?? '-') ?></td>
+            </tr>
+            <tr>
+                <th>Estado</th>
+                <td><?= $form->get('estado')->getValue() ?></td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="modal-footer">
+    <?php if (!$this->tieneInstitutos): ?>
+        <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i> Eliminar definitivamente</button>
+    <?php endif; ?>
+    <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
+</div>
+<?php echo $this->formHidden($form->get('idCiudades'));
+echo $this->form()->closeTag(); ?>

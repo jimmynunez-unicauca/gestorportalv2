@@ -1,0 +1,36 @@
+<?php $form->prepare();
+echo $this->form()->openTag($form); ?>
+<div class="modal-body">
+    <div class="alert alert-success">
+        <i class="fas fa-play-circle"></i>
+        ¿Está seguro de <strong>ACTIVAR</strong> la ORII
+        <strong><?= htmlspecialchars($form->get('numero_convenio')->getValue()) ?></strong>?
+        Volverá al estado <b>Vigente</b>.
+    </div>
+    <div class="container-fluid">
+        <table class="table table-bordered table-sm">
+            <tr>
+                <th style="width:35%">ID</th>
+                <td><?= $form->get('idOrii')->getValue() ?></td>
+            </tr>
+            <tr>
+                <th>Número</th>
+                <td><?= htmlspecialchars($form->get('numero_convenio')->getValue()) ?></td>
+            </tr>
+            <tr>
+                <th>Nombre</th>
+                <td><?= htmlspecialchars($form->get('nombre_convenio')->getValue()) ?></td>
+            </tr>
+            <tr>
+                <th>Estado actual</th>
+                <td><?= $form->get('estado')->getValue() ?></td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="submit" class="btn btn-success"><i class="fas fa-play-circle"></i> Activar</button>
+    <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
+</div>
+<?php echo $this->formHidden($form->get('idOrii'));
+echo $this->form()->closeTag(); ?>

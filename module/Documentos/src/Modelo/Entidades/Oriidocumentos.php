@@ -5,43 +5,26 @@ namespace Documentos\Modelo\Entidades;
 use DomainException;
 use Laminas\Filter\StringTrim;
 use Laminas\Filter\StripTags;
-use Laminas\Filter\ToInt;
-use Laminas\Filter\StringToUpper;
-use Laminas\Filter\StringToLower;
-use Laminas\Form\Element\DateTimeLocal;
 use Laminas\InputFilter\InputFilter;
 use Laminas\InputFilter\InputFilterAwareInterface;
 use Laminas\InputFilter\InputFilterInterface;
 use Laminas\Validator\StringLength;
-use Laminas\Validator\EmailAddress;
-use Laminas\Validator\Date;
-use Laminas\Validator\Digits;
-use Laminas\Validator\GreaterThan;
-use Laminas\Validator\LessThan;
 
 class Oriidocumentos implements InputFilterAwareInterface
 {
-
     private $id_documentos_orii;
     private $idOrii;
     private $nombre_documento;
-    private $documento;
+    private $documento = '';
     private $estado_documento;
     private $registradopor_documento;
     private $fechahorareg_documento;
-    //------------------------------------------------------------------------------
     private $inputFilter;
-
-    //------------------------------------------------------------------------------
 
     public function __construct(array $datos = null)
     {
-        if (is_array($datos)) {
-            $this->exchangeArray($datos);
-        }
+        if (is_array($datos)) $this->exchangeArray($datos);
     }
-
-    //------------------------------------------------------------------------------
 
     public function exchangeArray($data)
     {
@@ -54,8 +37,6 @@ class Oriidocumentos implements InputFilterAwareInterface
         }
     }
 
-    //------------------------------------------------------------------------------
-
     public function getArrayCopy()
     {
         $datos = get_object_vars($this);
@@ -63,116 +44,95 @@ class Oriidocumentos implements InputFilterAwareInterface
         return $datos;
     }
 
-    //------------------------------------------------------------------------------
-
     public function setInputFilter(InputFilterInterface $inputFilter)
     {
-        throw new DomainException(sprintf('%s does not allow injection of an alternate input filter', __CLASS__));
+        throw new DomainException('No permite inyección de filtro alterno');
     }
-
-    //------------------------------------------------------------------------------
 
     public function getInputFilter()
     {
-        if ($this->inputFilter) {
-            return $this->inputFilter;
-        }
+        if ($this->inputFilter) return $this->inputFilter;
 
         $inputFilter = new InputFilter();
 
+        // ✅ SOLO nombre_documento. Nada de 'documento': lo valida procesarArchivo()
         $inputFilter->add([
             'name' => 'nombre_documento',
             'required' => true,
             'filters' => [
                 ['name' => StripTags::class],
                 ['name' => StringTrim::class],
-                /*   ['name' => StringToUpper::class], */
             ],
             'validators' => [
-                [
-                    'name' => StringLength::class,
-                    'options' => [
-                        'encoding' => 'UTF-8',
-                        /*  'max' => 100, */
-                    ],
-                ],
+                ['name' => StringLength::class, 'options' => ['encoding' => 'UTF-8', 'max' => 500]],
             ],
         ]);
-
 
         $this->inputFilter = $inputFilter;
         return $this->inputFilter;
     }
 
-    //------------------------------------------------------------------------------
-
+    // ---- getters/setters ----
     public function getId_documentos_orii()
     {
         return $this->id_documentos_orii;
     }
-
-    public function setId_documentos_orii($value)
+    public function setId_documentos_orii($v)
     {
-        $this->id_documentos_orii = $value;
+        $this->id_documentos_orii = $v;
     }
 
     public function getIdOrii()
     {
         return $this->idOrii;
     }
-
-    public function setIdOrii($value)
+    public function setIdOrii($v)
     {
-        $this->idOrii = $value;
+        $this->idOrii = $v;
     }
 
     public function getNombre_documento()
     {
         return $this->nombre_documento;
     }
-
-    public function setNombre_documento($value)
+    public function setNombre_documento($v)
     {
-        $this->nombre_documento = $value;
+        $this->nombre_documento = $v;
     }
 
     public function getDocumento()
     {
         return $this->documento;
     }
-
-    public function setDocumento($value)
+    public function setDocumento($v)
     {
-        $this->documento = $value;
+        $this->documento = $v;
     }
 
     public function getEstado_documento()
     {
         return $this->estado_documento;
     }
-
-    public function setEstado_documento($value)
+    public function setEstado_documento($v)
     {
-        $this->estado_documento = $value;
+        $this->estado_documento = $v;
     }
 
     public function getRegistradopor_documento()
     {
         return $this->registradopor_documento;
     }
-
-    public function setRegistradopor_documento($value)
+    public function setRegistradopor_documento($v)
     {
-        $this->registradopor_documento = $value;
+        $this->registradopor_documento = $v;
     }
 
     public function getFechahorareg_documento()
     {
         return $this->fechahorareg_documento;
     }
-
-    public function setFechahorareg_documento($value)
+    public function setFechahorareg_documento($v)
     {
-        $this->fechahorareg_documento = $value;
+        $this->fechahorareg_documento = $v;
     }
 }

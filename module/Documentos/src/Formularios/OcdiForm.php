@@ -5,11 +5,11 @@ namespace Documentos\Formularios;
 use Laminas\Form\Form;
 use Laminas\Form\Element;
 
-class OcdiForm extends Form
+class OriiForm extends Form
 {
-
-    public function __construct($accion = '')
+    public function __construct($accion = '', $listaInsti = [])
     {
+        // ─── Configuración por acción ─────────────────────────────────
         switch ($accion) {
             case 'registrar':
                 $onsubmit = 'return validarGuardar(event, this,"REGISTRAR")';
@@ -26,13 +26,18 @@ class OcdiForm extends Form
                 $required = false;
                 $disabled = true;
                 break;
-            case 'subirdocumento':
-                $onsubmit = 'return validarGuardar(event, this,"EDITAR")';
+            case 'desactivar':
+                $onsubmit = 'return validarGuardar(event, this,"DESACTIVAR")';
                 $required = false;
                 $disabled = true;
                 break;
-            case 'subirimagen':
-                $onsubmit = 'return validarGuardar(event, this,"EDITAR")';
+            case 'activar':
+                $onsubmit = 'return validarGuardar(event, this,"ACTIVAR")';
+                $required = false;
+                $disabled = true;
+                break;
+            case 'eliminar':
+                $onsubmit = 'return validarGuardar(event, this,"ELIMINAR")';
                 $required = false;
                 $disabled = true;
                 break;
@@ -43,7 +48,7 @@ class OcdiForm extends Form
                 break;
         }
 
-        parent::__construct('formOcdi');
+        parent::__construct('formOrii');
         $this->setAttribute('method', 'post');
         $this->setAttribute('data-toggle', 'validator');
         $this->setAttribute('role', 'form');
@@ -51,23 +56,64 @@ class OcdiForm extends Form
         $this->setAttribute('action', $accion);
         $this->setAttribute('onsubmit', $onsubmit);
 
+        // ─── Campos del formulario ────────────────────────────────────
+        $this->add([
+            'type' => Element\Select::class,
+            'name' => 'idInstituto',
+            'options' => [
+                'label' => 'Instituciones *',
+                'empty_option' => 'Seleccione...',
+                'value_options' => $listaInsti,
+                'disable_inarray_validator' => true,
+            ],
+            'attributes' => [
+                'required' => $required,
+                'class' => 'form-control',
+                'id' => 'idInstituto',
+            ],
+        ]);
+
         $this->add([
             'type' => Element\Text::class,
-            'name' => 'titulo',
-            'options' => [
-                'label' => 'Titulo *',
+            'name' => 'numero_convenio',
+            'options' => ['label' => 'Número de Convenio *'],
+            'attributes' => [
+                'maxlength' => 100,
+                'readonly' => !$required,
+                'required' => $required,
+                'class' => 'form-control',
+                'id' => 'numero_convenio',
             ],
+        ]);
+
+        $this->add([
+            'type' => Element\Text::class,
+            'name' => 'nombre_convenio',
+            'options' => ['label' => 'Nombre de Convenio *'],
             'attributes' => [
                 'maxlength' => 200,
                 'readonly' => !$required,
                 'required' => $required,
                 'class' => 'form-control',
-                'id' => 'titulo',
+                'id' => 'nombre_convenio',
             ],
         ]);
+
+        $this->add([
+            'type' => Element\Textarea::class,
+            'name' => 'descripcion',
+            'options' => ['label' => 'Descripción'],
+            'attributes' => [
+                'readonly' => !$required,
+                'required' => false,
+                'class' => 'form-control',
+                'id' => 'descripcion',
+            ],
+        ]);
+
         $this->add([
             'type' => Element\Date::class,
-            'name' => 'fecha',
+            'name' => 'publicacion',
             'options' => [
                 'label' => 'Publicación *',
                 'format' => 'Y-m-d',
@@ -76,93 +122,62 @@ class OcdiForm extends Form
                 'class' => 'form-control',
                 'readonly' => !$required,
                 'required' => $required,
-                'id' => 'fecha',
+                'id' => 'publicacion',
             ],
         ]);
+
         $this->add([
             'type' => Element\Select::class,
-            'name' => 'asuntos_interes',
+            'name' => 'tipo',
             'options' => [
-                'label' => 'Asunto de Interés *',
+                'label' => 'Tipo *',
                 'empty_option' => 'Seleccione...',
                 'value_options' => [
-                    'Boletines' => 'Boletines',
-                    'Informes de gestión' => 'Informes de gestión',
-                    'Circulares' => 'Circulares',
-                    'Asuntos de género' => 'Asuntos de género',
-                    'Rutas de atención' => 'Rutas de atención',
+                    'Marco' => 'Marco',
+                    'Específico' => 'Específico',
                 ],
                 'disable_inarray_validator' => true,
             ],
             'attributes' => [
-                'readonly' => !$required,
                 'required' => $required,
                 'class' => 'form-control',
-                'id' => 'asuntos_interes',
+                'id' => 'tipo',
             ],
         ]);
-        $this->add([
-            'type' => Element\File::class,
-            'name' => 'documento',
-            'options' => [
-                'label' => 'Documento: pdf',
-            ],
-            'attributes' => [
-                'title' => 'Archivos permitidos: pdf',
-                'onchange' => 'validarPDF(this)',
-                'readonly' => !$required,
-                'required' => $required,
-                'accept' => '.pdf',
-                'class' => 'form-control',
-                'id' => 'documento',
-            ],
-        ]);
-        $this->add([
-            'type' => Element\File::class,
-            'name' => 'imagen',
-            'options' => [
-                'label' => 'Imagen',
-            ],
-            'attributes' => [
-                'onchange' => 'validarImagen(this)',
-                'readonly' => !$required,
-                'required' => !$required,
-                'accept' => 'image/*',
-                'class' => 'form-control',
-                'id' => 'imagen',
-            ],
-        ]);
-        //------------------------------------------------------------------------------
 
+        // ─── ID (auditoría) ───────────────────────────────────────────
         $this->add([
             'type' => Element\Number::class,
-            'name' => 'idRevistasOcdi',
-            'options' => [
-                'label' => 'ID',
-            ],
+            'name' => 'idOrii',
+            'options' => ['label' => 'ID'],
             'attributes' => [
                 'readonly' => true,
-                'style' => "font-weight: bold",
+                'style' => 'font-weight: bold',
                 'class' => 'form-control',
-                'id' => 'idRevistasOcdi',
+                'id' => 'idOrii',
             ],
         ]);
-        if ($accion == 'editar') {
+
+        // ─── Estado ───────────────────────────────────────────────────
+        // IMPORTANTE: SIEMPRE required => false, así el InputFilter
+        // automático del Form NUNCA lo exige.
+        // ✅ CORREGIDO: comparación === (no asignación =)
+        if ($accion === 'editar') {
             $this->add([
                 'type' => Element\Select::class,
                 'name' => 'estado',
                 'options' => [
-                    'label' => 'Tipo *',
+                    'label' => 'Estado',
                     'empty_option' => 'Seleccione...',
                     'value_options' => [
-                        'Activo' => 'Activo',
+                        'Vigente'   => 'Vigente',
+                        'Cancelado' => 'Cancelado',
                         'Eliminado' => 'Eliminado',
                     ],
                     'disable_inarray_validator' => true,
                 ],
                 'attributes' => [
-                    'readonly' => !$required,
-                    'required' => $required,
+                    'required' => false,           // ← NUNCA requerido
                     'class' => 'form-control',
                     'id' => 'estado',
                 ],
@@ -171,67 +186,40 @@ class OcdiForm extends Form
             $this->add([
                 'type' => Element\Text::class,
                 'name' => 'estado',
-                'options' => [
-                    'label' => 'Estado',
-                ],
+                'options' => ['label' => 'Estado'],
                 'attributes' => [
                     'readonly' => true,
+                    'required' => false,           // ← NUNCA requerido
                     'class' => 'form-control',
                     'id' => 'estado',
                 ],
             ]);
         }
 
+        // ─── Auditoría (todos required => false) ─────────────────────
         $this->add([
             'type' => Element\Text::class,
             'name' => 'registradopor',
-            'options' => [
-                'label' => 'Registrado Por',
-            ],
-            'attributes' => [
-                'readonly' => true,
-                'class' => 'form-control',
-                'id' => 'registradopor',
-            ],
+            'options' => ['label' => 'Registrado Por'],
+            'attributes' => ['readonly' => true, 'required' => false, 'class' => 'form-control', 'id' => 'registradopor'],
         ]);
-
         $this->add([
             'type' => Element\Text::class,
             'name' => 'modificadopor',
-            'options' => [
-                'label' => 'Modificado Por',
-            ],
-            'attributes' => [
-                'readonly' => true,
-                'class' => 'form-control',
-                'id' => 'modificadopor',
-            ],
+            'options' => ['label' => 'Modificado Por'],
+            'attributes' => ['readonly' => true, 'required' => false, 'class' => 'form-control', 'id' => 'modificadopor'],
         ]);
-
         $this->add([
             'type' => Element\Text::class,
             'name' => 'fechahorareg',
-            'options' => [
-                'label' => 'Fecha Registro',
-            ],
-            'attributes' => [
-                'readonly' => true,
-                'class' => 'form-control',
-                'id' => 'fechahorareg',
-            ],
+            'options' => ['label' => 'Fecha Registro'],
+            'attributes' => ['readonly' => true, 'required' => false, 'class' => 'form-control', 'id' => 'fechahorareg'],
         ]);
-
         $this->add([
             'type' => Element\Text::class,
             'name' => 'fechahoramod',
-            'options' => [
-                'label' => 'Fecha Actualizacion',
-            ],
-            'attributes' => [
-                'readonly' => true,
-                'class' => 'form-control',
-                'id' => 'fechahoramod',
-            ],
+            'options' => ['label' => 'Fecha Actualización'],
+            'attributes' => ['readonly' => true, 'required' => false, 'class' => 'form-control', 'id' => 'fechahoramod'],
         ]);
     }
 }

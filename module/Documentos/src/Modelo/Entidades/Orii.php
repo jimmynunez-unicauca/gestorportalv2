@@ -5,23 +5,16 @@ namespace Documentos\Modelo\Entidades;
 use DomainException;
 use Laminas\Filter\StringTrim;
 use Laminas\Filter\StripTags;
-use Laminas\Filter\ToInt;
-use Laminas\Filter\StringToUpper;
-use Laminas\Filter\StringToLower;
-use Laminas\Form\Element\DateTimeLocal;
 use Laminas\InputFilter\InputFilter;
 use Laminas\InputFilter\InputFilterAwareInterface;
 use Laminas\InputFilter\InputFilterInterface;
-use Laminas\Validator\StringLength;
-use Laminas\Validator\EmailAddress;
 use Laminas\Validator\Date;
-use Laminas\Validator\Digits;
 use Laminas\Validator\GreaterThan;
-use Laminas\Validator\LessThan;
+use Laminas\Validator\InArray;
+use Laminas\Validator\StringLength;
 
 class Orii implements InputFilterAwareInterface
 {
-
     private $idOrii;
     private $idInstituto;
     private $numero_convenio;
@@ -34,19 +27,12 @@ class Orii implements InputFilterAwareInterface
     private $modificadopor;
     private $fechahorareg;
     private $fechahoramod;
-    //------------------------------------------------------------------------------
     private $inputFilter;
-
-    //------------------------------------------------------------------------------
 
     public function __construct(array $datos = null)
     {
-        if (is_array($datos)) {
-            $this->exchangeArray($datos);
-        }
+        if (is_array($datos)) $this->exchangeArray($datos);
     }
-
-    //------------------------------------------------------------------------------
 
     public function exchangeArray($data)
     {
@@ -59,8 +45,6 @@ class Orii implements InputFilterAwareInterface
         }
     }
 
-    //------------------------------------------------------------------------------
-
     public function getArrayCopy()
     {
         $datos = get_object_vars($this);
@@ -68,22 +52,37 @@ class Orii implements InputFilterAwareInterface
         return $datos;
     }
 
-    //------------------------------------------------------------------------------
-
     public function setInputFilter(InputFilterInterface $inputFilter)
     {
-        throw new DomainException(sprintf('%s does not allow injection of an alternate input filter', __CLASS__));
+        throw new DomainException('No permite inyección de filtro alterno');
     }
-
-    //------------------------------------------------------------------------------
 
     public function getInputFilter()
     {
-        if ($this->inputFilter) {
-            return $this->inputFilter;
-        }
+        if ($this->inputFilter) return $this->inputFilter;
 
         $inputFilter = new InputFilter();
+
+        $inputFilter->add([
+            'name' => 'idInstituto',
+            'required' => true,
+            'filters' => [['name' => 'Int']],
+            'validators' => [
+                ['name' => GreaterThan::class, 'options' => ['min' => 0]],
+            ],
+        ]);
+
+        $inputFilter->add([
+            'name' => 'numero_convenio',
+            'required' => true,
+            'filters' => [
+                ['name' => StripTags::class],
+                ['name' => StringTrim::class],
+            ],
+            'validators' => [
+                ['name' => StringLength::class, 'options' => ['encoding' => 'UTF-8', 'max' => 100]],
+            ],
+        ]);
 
         $inputFilter->add([
             'name' => 'nombre_convenio',
@@ -91,18 +90,12 @@ class Orii implements InputFilterAwareInterface
             'filters' => [
                 ['name' => StripTags::class],
                 ['name' => StringTrim::class],
-                /*   ['name' => StringToUpper::class], */
             ],
             'validators' => [
-                [
-                    'name' => StringLength::class,
-                    'options' => [
-                        'encoding' => 'UTF-8',
-                        /*  'max' => 100, */
-                    ],
-                ],
+                ['name' => StringLength::class, 'options' => ['encoding' => 'UTF-8', 'max' => 200]],
             ],
         ]);
+
         $inputFilter->add([
             'name' => 'descripcion',
             'required' => false,
@@ -111,141 +104,153 @@ class Orii implements InputFilterAwareInterface
                 ['name' => StripTags::class],
                 ['name' => StringTrim::class],
             ],
+        ]);
+
+        $inputFilter->add([
+            'name' => 'publicacion',
+            'required' => true,
+            'filters' => [['name' => StringTrim::class]],
             'validators' => [
-                [
-                    'name' => StringLength::class,
-                    'options' => [
-                        'encoding' => 'UTF-8',
-                        /*  'max' => 200, */
-                    ],
-                ],
+                ['name' => Date::class, 'options' => ['format' => 'Y-m-d']],
             ],
         ]);
 
+        $inputFilter->add([
+            'name' => 'tipo',
+            'required' => true,
+            'validators' => [
+                ['name' => InArray::class, 'options' => ['haystack' => ['Marco', 'Específico']]],
+            ],
+        ]);
+
+        // 🛡️ BLINDAJE: aunque 'estado' venga en el Form o en el POST,
+        //    NUNCA será requerido. El controller lo setea por código
+        //    (Vigente en registrar, Cancelado/Vigente en desactivar/activar).
+        $inputFilter->add([
+            'name' => 'estado',
+            'required' => false,
+            'allow_empty' => true,
+        ]);
+
+        // 🛡️ Mismo blindaje para campos de auditoría (por si acaso)
+        foreach (['registradopor', 'modificadopor', 'fechahorareg', 'fechahoramod', 'idOrii'] as $campo) {
+            $inputFilter->add([
+                'name' => $campo,
+                'required' => false,
+                'allow_empty' => true,
+            ]);
+        }
 
         $this->inputFilter = $inputFilter;
         return $this->inputFilter;
     }
 
-    //------------------------------------------------------------------------------
-
+    // ---- getters/setters ----
     public function getIdOrii()
     {
         return $this->idOrii;
     }
-
-    public function setIdOrii($value)
+    public function setIdOrii($v)
     {
-        $this->idOrii = $value;
+        $this->idOrii = $v;
     }
 
     public function getIdInstituto()
     {
         return $this->idInstituto;
     }
-
-    public function setIdInstituto($value)
+    public function setIdInstituto($v)
     {
-        $this->idInstituto = $value;
+        $this->idInstituto = $v;
     }
 
     public function getNumero_convenio()
     {
         return $this->numero_convenio;
     }
-
-    public function setNumero_convenio($value)
+    public function setNumero_convenio($v)
     {
-        $this->numero_convenio = $value;
+        $this->numero_convenio = $v;
     }
 
     public function getNombre_convenio()
     {
         return $this->nombre_convenio;
     }
-
-    public function setNombre_convenio($value)
+    public function setNombre_convenio($v)
     {
-        $this->nombre_convenio = $value;
+        $this->nombre_convenio = $v;
     }
 
     public function getDescripcion()
     {
         return $this->descripcion;
     }
-
-    public function setDescripcion($value)
+    public function setDescripcion($v)
     {
-        $this->descripcion = $value;
+        $this->descripcion = $v;
     }
 
     public function getPublicacion()
     {
         return $this->publicacion;
     }
-
-    public function setPublicacion($value)
+    public function setPublicacion($v)
     {
-        $this->publicacion = $value;
+        $this->publicacion = $v;
     }
 
     public function getEstado()
     {
         return $this->estado;
     }
-
-    public function setEstado($value)
+    public function setEstado($v)
     {
-        $this->estado = $value;
+        $this->estado = $v;
     }
 
     public function getTipo()
     {
         return $this->tipo;
     }
-
-    public function setTipo($value)
+    public function setTipo($v)
     {
-        $this->tipo = $value;
+        $this->tipo = $v;
     }
 
     public function getRegistradopor()
     {
         return $this->registradopor;
     }
-
-    public function setRegistradopor($value)
+    public function setRegistradopor($v)
     {
-        $this->registradopor = $value;
+        $this->registradopor = $v;
     }
 
     public function getModificadopor()
     {
         return $this->modificadopor;
     }
-
-    public function setModificadopor($value)
+    public function setModificadopor($v)
     {
-        $this->modificadopor = $value;
+        $this->modificadopor = $v;
     }
 
     public function getFechahorareg()
     {
         return $this->fechahorareg;
     }
-
-    public function setFechahorareg($value)
+    public function setFechahorareg($v)
     {
-        $this->fechahorareg = $value;
+        $this->fechahorareg = $v;
     }
 
     public function getFechahoramod()
     {
         return $this->fechahoramod;
     }
-
-    public function setFechahoramod($value)
+    public function setFechahoramod($v)
     {
-        $this->fechahoramod = $value;
+        $this->fechahoramod = $v;
     }
 }
