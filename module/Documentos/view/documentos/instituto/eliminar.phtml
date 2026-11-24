@@ -1,0 +1,30 @@
+<?php $form->prepare();
+echo $this->form()->openTag($form); ?>
+<div class="modal-body">
+    <div class="alert alert-danger">
+        <i class="fas fa-times-circle"></i>
+        <strong>¡ATENCIÓN!</strong> Esta acción <strong>ELIMINA DEFINITIVAMENTE</strong> la institución de la base de datos.
+    </div>
+    <div class="container-fluid">
+        <table class="table table-bordered table-sm">
+            <tr>
+                <th style="width:35%">ID</th>
+                <td><?= $form->get('idInstituto')->getValue() ?></td>
+            </tr>
+            <tr>
+                <th>Institución</th>
+                <td><?= htmlspecialchars($form->get('institucion')->getValue()) ?></td>
+            </tr>
+            <tr>
+                <th>Estado</th>
+                <td><?= $form->get('estado')->getValue() ?></td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i> Eliminar definitivamente</button>
+    <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
+</div>
+<?php echo $this->formHidden($form->get('idInstituto'));
+echo $this->form()->closeTag(); ?>

@@ -1,0 +1,35 @@
+<?php $form->prepare();
+echo $this->form()->openTag($form); ?>
+<div class="modal-body ui-front">
+    <div style="padding: 10px" class="container-fluid">
+        <fieldset>
+            <legend>Datos de la institución</legend>
+            <div class="row">
+                <div class="form-group col-md-6 col-sm-12">
+                    <?= $this->formLabel($form->get('idCiudades')) ?>
+                    <?= $this->formElement($form->get('idCiudades')) ?>
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    <?= $this->formLabel($form->get('institucion')) ?>
+                    <?= $this->formElement($form->get('institucion')) ?>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>Información del registro</legend>
+            <div class="form-row">
+                <div class="form-group col-md-4 col-sm-12"><label>ID</label><?= $this->formElement($form->get('idInstituto')) ?></div>
+                <div class="form-group col-md-4 col-sm-12"><label>Estado</label><?= $this->formElement($form->get('estado')) ?></div>
+                <div class="form-group col-md-4 col-sm-12"><label>Registrado por</label><?= $this->formElement($form->get('registradopor')) ?></div>
+                <div class="form-group col-md-4 col-sm-12"><label>Modificado por</label><?= $this->formElement($form->get('modificadopor')) ?></div>
+                <div class="form-group col-md-4 col-sm-12"><label>Fecha registro</label><?= $this->formElement($form->get('fechahorareg')) ?></div>
+                <div class="form-group col-md-4 col-sm-12"><label>Fecha actualización</label><?= $this->formElement($form->get('fechahoramod')) ?></div>
+            </div>
+        </fieldset>
+    </div>
+</div>
+<div class="modal-footer" style="padding: 20px">
+    <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Editar</button>
+    <button type="button" class="btn btn-warning" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
+</div>
+<?php echo $this->form()->closeTag(); ?>

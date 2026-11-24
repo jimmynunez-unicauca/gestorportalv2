@@ -32,23 +32,42 @@ function verDetalle(idOrii) {
     $.get('detalle', { idOrii: idOrii }, setFormulario);
     bloqueoAjax();
 }
+function verDesactivar(idOrii) {
+    $.get('desactivar', { idOrii: idOrii }, setFormulario);
+    bloqueoAjax();
+}
+function verActivar(idOrii) {
+    $.get('activar', { idOrii: idOrii }, setFormulario);
+    bloqueoAjax();
+}
+function verEliminar(idOrii) {
+    $.get('eliminar', { idOrii: idOrii }, setFormulario);
+    bloqueoAjax();
+}
+
 function eliminarDoc(id_documentos_orii) {
     Swal.fire({
-        title: "&#191;DESEA ELIMINAR EL DOCUMENTO DE ORII&#63;",
-        text: "",
-        icon: "info",
+        title: "&iquest;DESEA ELIMINAR EL DOCUMENTO?",
+        text: "El archivo también se borrará del servidor.",
+        icon: "warning",
         showCancelButton: true,
-        confirmButtonText: "Si",
+        confirmButtonText: "Sí",
         cancelButtonText: "No",
         allowOutsideClick: false
     }).then((result) => {
         if (result.isConfirmed) {
-            $.get('eliminar-doc', { id_documentos_orii: id_documentos_orii }, setDatos, 'json');
+            $.get('eliminar-doc', { id_documentos_orii: id_documentos_orii }, function (r) {
+                if (r && r.success === false) {
+                    Swal.fire('Error', r.message || 'No se pudo eliminar', 'error');
+                    return;
+                }
+                window.location.reload();
+            }, 'json');
             bloqueoAjax();
         }
     });
-
 }
+
 function verSubir(idOrii) {
     $.get('subirdocumento', { idOrii: idOrii }, setFormulario);
     bloqueoAjax();

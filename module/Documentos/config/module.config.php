@@ -156,6 +156,34 @@ return [
                             ],
                         ],
                     ],
+                    'instituto' => [
+                        'type' => \Laminas\Router\Http\Segment::class,
+                        'options' => [
+                            'route' => '/instituto/:action[/:id1]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id1' => '[a-zA-Z0-9_-]*',
+                            ),
+                            'defaults' => [
+                                'controller' => Controller\InstitutoController::class,
+                                'action' => 'index',
+                            ],
+                        ],
+                    ],
+                    'ciudad' => [
+                        'type' => \Laminas\Router\Http\Segment::class,
+                        'options' => [
+                            'route' => '/ciudad/:action[/:id1]',
+                            'constraints' => [
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id1'    => '[a-zA-Z0-9_-]*',
+                            ],
+                            'defaults' => [
+                                'controller' => Controller\CiudadController::class,
+                                'action'     => 'index',
+                            ],
+                        ],
+                    ],
                     //Módulos acá
                 ],
             ],

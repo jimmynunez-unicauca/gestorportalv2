@@ -1,0 +1,37 @@
+<?php $form->prepare();
+echo $this->form()->openTag($form); ?>
+<div class="modal-body">
+    <div class="alert alert-warning">
+        <i class="fas fa-trash"></i>
+        ¿Está seguro de <strong>DESACTIVAR</strong> la ORII
+        <strong><?= htmlspecialchars($form->get('numero_convenio')->getValue()) ?></strong>?
+        El convenio quedará con estado <b>Eliminado</b> pero seguirá en la base de datos
+        y podrá reactivarse más adelante.
+    </div>
+    <div class="container-fluid">
+        <table class="table table-bordered table-sm">
+            <tr>
+                <th style="width:35%">ID</th>
+                <td><?= $form->get('idOrii')->getValue() ?></td>
+            </tr>
+            <tr>
+                <th>Número</th>
+                <td><?= htmlspecialchars($form->get('numero_convenio')->getValue()) ?></td>
+            </tr>
+            <tr>
+                <th>Nombre</th>
+                <td><?= htmlspecialchars($form->get('nombre_convenio')->getValue()) ?></td>
+            </tr>
+            <tr>
+                <th>Estado actual</th>
+                <td><?= $form->get('estado')->getValue() ?></td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="submit" class="btn btn-warning"><i class="fas fa-pause-circle"></i> Desactivar</button>
+    <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
+</div>
+<?php echo $this->formHidden($form->get('idOrii'));
+echo $this->form()->closeTag(); ?>
