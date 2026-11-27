@@ -263,7 +263,13 @@
                                                             <li><a href="<?= $this->url('documentos/orii', array('controller' => 'orii', 'action' => 'index')) ?>">Paises</a></li>
                                                             <li><a href="<?= $this->url('documentos/ciudad', array('controller' => 'ciudad', 'action' => 'index')) ?>">Ciudades</a></li>
                                                             <li><a href="<?= $this->url('documentos/instituto', array('controller' => 'instituto', 'action' => 'index')) ?>">Institutos</a></li>
-                                                            <li><a href="">Gestión de Facultades</a></li>
+                                                        </ul>
+                                                    </li>
+                                                    <li>
+                                                        <a><i class="fa fa-graduation-cap"></i> Académico <span class="fa fa-chevron-down"></span></a>
+                                                        <ul class="nav child_menu">
+                                                            <li><a href="<?= $this->url('administracion/facultades', ['action' => 'index']) ?>"><i class="fa fa-university"></i> Facultades</a></li>
+                                                            <li><a href="<?= $this->url('administracion/programaacademico', ['action' => 'index']) ?>"><i class="fa fa-book"></i> Programas</a></li>
                                                         </ul>
                                                     </li>
                                                 </ul>

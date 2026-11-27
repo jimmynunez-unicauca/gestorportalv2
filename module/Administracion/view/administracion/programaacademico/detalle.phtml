@@ -1,0 +1,24 @@
+<?php
+$programa = $this->form; // array con los datos (incluye 'facultad' por el JOIN)
+?>
+<div class="modal-body">
+    <div class="container-fluid">
+        <table class="table table-bordered table-sm">
+            <tr>
+                <th style="width:35%">ID</th>
+                <td><?= $programa['idPrograma'] ?></td>
+            </tr>
+            <tr>
+                <th>Facultad</th>
+                <td><?= htmlspecialchars($programa['facultad'] ?? '—') ?></td>
+            </tr>
+            <tr>
+                <th>Programa</th>
+                <td><?= htmlspecialchars($programa['programa']) ?></td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-warning" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
+</div>

@@ -1,0 +1,26 @@
+<?php
+$form->prepare();
+echo $this->form()->openTag($form);
+?>
+<div class="modal-body">
+    <?php if ($this->tieneProgramas): ?>
+        <div class="alert alert-danger">
+            <strong>NO SE PUEDE ELIMINAR.</strong> La facultad tiene programas asociados.
+        </div>
+    <?php else: ?>
+        <div class="alert alert-danger">
+            <strong>¡ATENCIÓN!</strong> Esta acción elimina definitivamente la facultad.
+        </div>
+    <?php endif; ?>
+    <table class="table table-bordered table-sm">
+        <tr><th>ID</th><td><?= $form->get('idFacultad')->getValue() ?></td></tr>
+        <tr><th>Facultad</th><td><?= htmlspecialchars($form->get('facultad')->getValue()) ?></td></tr>
+    </table>
+</div>
+<div class="modal-footer">
+    <?php if (!$this->tieneProgramas): ?>
+        <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i> Eliminar</button>
+    <?php endif; ?>
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+</div>
+<?php echo $this->formHidden($form->get('idFacultad')); echo $this->form()->closeTag(); ?>
