@@ -444,6 +444,34 @@ return [
                             ],
                         ],
                     ],
+                    'facultades' => [
+                        'type' => \Laminas\Router\Http\Segment::class,
+                        'options' => [
+                            'route' => '/facultades/:action[/:id1]',
+                            'constraints' => [
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id1'    => '[a-zA-Z0-9_-]*',
+                            ],
+                            'defaults' => [
+                                'controller' => Controller\FacultadesController::class,
+                                'action'     => 'index',
+                            ],
+                        ],
+                    ],
+                    'programaacademico' => [
+                        'type' => \Laminas\Router\Http\Segment::class,
+                        'options' => [
+                            'route' => '/programaacademico/:action[/:id1]',
+                            'constraints' => [
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id1'    => '[a-zA-Z0-9_-]*',
+                            ],
+                            'defaults' => [
+                                'controller' => Controller\ProgramaacademicoController::class,
+                                'action'     => 'index',
+                            ],
+                        ],
+                    ],
                 ],
             ],
         ],

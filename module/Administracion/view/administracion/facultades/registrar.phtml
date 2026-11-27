@@ -1,0 +1,18 @@
+<?php
+$form->prepare();
+echo $this->form()->openTag($form);
+?>
+<div class="modal-body">
+    <div class="container-fluid">
+        <div class="form-group">
+            <?= $this->formLabel($form->get('facultad')) ?>
+            <?= $this->formElement($form->get('facultad')) ?>
+            <?= $this->formElementErrors($form->get('facultad')) ?>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Registrar</button>
+    <button type="button" class="btn btn-warning" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
+</div>
+<?php echo $this->formHidden($form->get('idFacultad')->setValue(0)); echo $this->form()->closeTag(); ?>
